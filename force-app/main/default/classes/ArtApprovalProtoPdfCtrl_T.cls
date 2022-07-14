@@ -1,7 +1,7 @@
 /**
 *	Description   	:   Test class for ArtApprovalProtoPdfCtrl class.
 * 
-*  	Version			:   v1.0 Created by Chirag Soni....
+*  	Version			:   v1.0 Created by Chirag Soni sir
 *
 *   Date            :   03/16/2021
 **/ 
