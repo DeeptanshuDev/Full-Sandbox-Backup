@@ -1,0 +1,25 @@
+<!--
+* Purpose		: Component to display custom links from the correspodning custom metadata types.
+*
+* Created by	: Abhinav Sharma
+* 	
+* Created Date 	: 10/01/2019
+* 
+* Version		: V.0 Created
+-->
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" controller="CustomLinkRetrieveController">
+    
+    <aura:attribute name="customLinks" type="List" access="public"/>
+    <aura:attribute name="homePageComponentName" type="String" access="global"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <div aura:id="container">
+        <lightning:card title="{!v.homePageComponentName}">
+            <aura:iteration items="{!v.customLinks}" var="linkItem">
+                <p class="slds-p-horizontal_small">
+                    <lightning:formattedUrl value="{!linkItem.customLinkURL}" label="{!linkItem.customLinkName}"/>
+                </p>
+            </aura:iteration>   
+        </lightning:card>
+    </div>
+</aura:component>

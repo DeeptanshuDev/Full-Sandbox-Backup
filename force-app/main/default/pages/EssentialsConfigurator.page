@@ -1,0 +1,40 @@
+<apex:page id="EssentialsConfigurator" standardController="Opportunity"
+           extensions="EssentialsConfiguratorCtrl" lightningStylesheets="False">
+    <style>
+        iframe {
+        /*box-sizing: border-box;   !* make the border size be included in the height *!*/
+        /*display: block;           !* make them block to fix white space margin *!*/
+        width: 100%;
+        position: relative;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        min-height: 800px;
+        border: 0;
+        }
+    </style>
+    {!HasItems}
+    <apex:pageMessage severity="warning" rendered="{!hasItems}">
+        The Essentials configurator can only be run before items are added to the Opportunity.
+        <br/><br/>
+        <a href="{!URLFOR($Action.Opportunity.View, Opportunity.Id)}">Return to Opportunity</a>
+    </apex:pageMessage>
+    
+    <apex:pageMessage severity="warning" rendered="{!Opportunity.Collection_Picklist__c != 'The Essentials' }">
+        Please set Collection to 'The Essentials' before running the Essentials configurator.
+        <br/><br/>
+        <a href="{!URLFOR($Action.Opportunity.View, Opportunity.Id)}">Return to Opportunity</a>
+    </apex:pageMessage>
+    
+    <apex:outputPanel rendered="{! !HasItems
+                                && Opportunity.Collection_Picklist__c = 'The Essentials'}">
+        
+        <iframe src="{!URLFOR($Resource.EssentialsResource, 'index.html',
+                     [sid=$Api.Session_ID,
+                     salesforceBaseUrl=$Setup.Essentials__c.SalesforceBaseUrl__c,
+                     oid=$CurrentPage.parameters.id])}">
+        </iframe>
+        
+    </apex:outputPanel>
+</apex:page>

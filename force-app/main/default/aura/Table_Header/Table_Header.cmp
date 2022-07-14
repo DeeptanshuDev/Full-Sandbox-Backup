@@ -1,0 +1,46 @@
+<!--
+	Description  : Table Header Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="A single header cell the TableComponent">
+    
+    <aura:attribute name="column" type="Object" required="true" description="The information of this column, includes fieldName, label and type" access="public" />
+    
+    <aura:attribute name="orders" type="List" description="An array of the fields on which to sort on by fieldName and direction" access="public"/>
+    <aura:attribute name="isActionColumn" type="Boolean" default="false" description="Is this an action column. Action columns do not join in the spacing out and do not have a header." access="public"/>
+    <aura:attribute name="truncateFields" type="List" default="[]" description="set max width to headers" access="public"/>
+    <aura:attribute name="isMobileShrink" type="Boolean" default="false" description="Shrink header on mobile devices"  access="public"/>
+    
+    <aura:attribute name="hasOrder" type="Boolean" description="Private shorthand to check if we have sorting" access="private"/>
+    <aura:attribute name="orderDirection" type="String" description="Private shorthand, for sort direction" access="private"/>
+    <aura:attribute name="orderFieldName" type="String" description="Private shorthand, for sort fileName" access="private"/>
+    <aura:attribute name="isTruncateHeader" type="Boolean" default="false" description="Truncating headers" access="private"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.orders}" action="{!c.doInit}"/>
+
+    <th aria-sort="{! v.hasOrder ? v.orderDirection : 'none' }"
+        class="{! 'cxs-data-row slds-text-title_caps ' + (v.column.isSortable ? ' slds-is-sortable' : ' slds-truncate') + (and(v.hasOrder, v.column.fieldName == v.orderFieldName) ? ' slds-is-sorted slds-is-sorted_' + v.orderDirection : '') + (and(v.isMobileShrink,$Browser.isPhone)?'':' setMinWidth')}"
+            aria-label="{!v.column.label}"
+            scope="col">
+        <aura:if isTrue="{!not(v.isActionColumn)}">
+            <aura:if isTrue="{!v.column.isSortable}">
+                <a class="slds-th__action slds-text-link_reset" onclick="{!c.handleSort}" role="button" tabindex="0">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="{!and(v.isMobileShrink,$Browser.isPhone)?'max_mobile_width_header':(v.isTruncateHeader?'max_width_header':'slds-truncate')}" title="{!v.column.label}">{!v.column.label}</div>
+                    <div class="slds-icon_container" aura:id="dataColumn">
+                        <span class="slds-is-sortable__icon">
+                            <lightning:icon iconName="utility:arrowdown" size="x-small"/>
+                        </span>
+                    </div>
+                </a>
+
+                <aura:set attribute="else">
+                    <div class="slds-truncate" title="{!v.column.label}">{!v.column.label}</div>
+                </aura:set>
+            </aura:if>
+            <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true">{!'Sorted '+(v.hasOrder &amp;&amp; v.column.fieldName == v.orderFieldName?v.orderDirection+'ending':'none')}</span>
+        </aura:if>
+    </th>
+    
+</aura:component>

@@ -1,0 +1,11 @@
+<!--
+	Description  : Generic component event
+	Created By   : Abhinav Sharma
+-->
+<aura:event type="COMPONENT" description="A generic component event used to braodcast messages from child to parent components">
+    <aura:attribute name="sourceGlobalId" type="String" description="The global component ID of the component that fired the event" />
+    <aura:attribute name="sourceLocalId" type="String" description="The local component ID of the component that fired the event (set by aura:id)" />
+    <aura:attribute name="source" type="String" description="The name of the component that fired the event" />
+    <aura:attribute name="state" type="String" description="Use this attribute to broadcast the state of the component, for example LOADED, SAVED, CANCELLED etc" />
+    <aura:attribute name="data" type="Object" description="Object containing the event's information. Use this to provide extra data to listeners" />
+</aura:event>

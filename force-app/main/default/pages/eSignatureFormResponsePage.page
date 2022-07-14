@@ -1,0 +1,38 @@
+<!-- Response page when user click on save button of eSignature form page -->
+
+<apex:page showHeader="false" standardStylesheets="false" lightningStylesheets="true" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <title>eSignature Success</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        <body>
+            <div class="slds-scope">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                       <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                           <div class="slds-scoped-notification slds-media slds-media_center slds-theme_success " role="status">
+                               <div class="slds-media__figure">
+                                   <span class="slds-icon_container slds-icon-utility-success" title="success">
+                                       <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                       <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#success')}"></use>
+                                        </svg>
+                                       <span class="slds-assistive-text">success</span>
+                                   </span>
+                               </div>
+                               <div class="slds-media__body">
+                                   <p style="font-size : 15px;">Success! Your Response Been Recorded Thank You. </p>
+                               </div>
+                           </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </body>
+    </html>
+</apex:page>

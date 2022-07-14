@@ -1,0 +1,90 @@
+<!--
+
+@OutputEvent
+type:           genericComponentEvent
+description:    When the fieldset data has finished loading
+eventdata:      {
+    state: LOADED
+}
+
+-->
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" controller="FieldsetController" access="global" extends="c:Form" description="Displays the fields in a field set">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{! c.doInit }"/>
+    
+    <!-- (optional) design attributes -->
+    <aura:attribute name="fieldsetName" type="String" access="Global" description="The system name of the fieldset used for the fields of this component"/>
+    <aura:attribute name="sObjectName" type="String" access="Global" description="The system name of the object used"/>
+    <aura:attribute name="recordId" type="String" access="Global" description="The Id of the record, use null for creation"/>
+    <aura:attribute name="state" type="String" access="Global" default="Read" description="'Read' or 'Edit'"/>
+    <aura:attribute name="readOnly" type="Boolean" access="Global" default="false" description="Is this fieldset read only?"/>
+    <aura:attribute name="buttonsVisible" type="Boolean" access="Global" default="true" description="Show or hide the buttons."/>
+    <aura:attribute name="recalculateFields" type="Boolean" access="Global" default="false" description="If true, the formula fields will be recalculated server side without DML operations" />
+    <aura:attribute name="recordDetailStyle" default="false" type="Boolean" access="Global" description="Defines if the component is Standalone or Embedded"/>
+	<aura:attribute name="columns" type="String" access="Global" description="Create two column layout"/>
+    
+    <!-- internal attributes -->
+    <aura:attribute name="formulaResult" default="" type="String" description="formula result"/>
+    <aura:attribute name="formulaDefinition" default="" type="String" description="formula definition"/>
+    <aura:attribute name="recordTypeId" type="Id" description="This optional attribute is used to fill the defaults"/>
+    <aura:attribute name="defaults" type="List" access="public" description="Use when embedding, contains default values are used for new objects. This is a list of Wizard.DefaultField objects, holding default values."/>
+    <aura:attribute name="fieldsToBlock" type="List" access="public" description="List of fields that should not be displayed if they are in the field set" />
+    <aura:attribute name="picklistOptionOverrides" type="Object" description="A list of options that will be used for a picklist field" access="public"/>
+    <aura:attribute name="forceUpload" type="Boolean" default="false" description="Indicates whether it should queue the various actions or if they should be called automatically" />
+
+    <!-- Event Register -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent"/>
+    
+    <!-- event handlers -->
+    <aura:handler name="formulaFieldChange" event="c:formulaFieldChange" action="{!c.recalculateFormula}"/>
+    <aura:handler name="genericComponentEvent" event="c:genericComponentEvent" action="{! c.onGenericComponentEvent }" />
+    <aura:handler name="change" value="{!v.picklistOptionOverrides}" action="{!c.changePicklistOptionOverrides}"/>
+    <aura:handler event="force:refreshView" action="{!c.refresh}"/>
+    
+    <!-- required to refresh component when a related component is deleted on page and some field's value is update by trigger -->
+    <aura:handler event="force:showToast" action="{!c.refresh}"/>
+
+    <!--Aura Methods-->
+    <aura:method name="saveAction" action="{! c.save }" access="public" />
+    <aura:method name="cancelAction" action="{! c.cancel }" access="public" />
+    <aura:method name="recalculateFormulaAction" action="{! c.recalculateFormula }" access="public" />
+    <aura:method name="recalculateFormulaFields" action="{! c.recalculateFormulaFields }" access="public" />
+
+    <aura:method name="showFieldsError" action="{!c.showFieldsError}"
+                 description="Highlight fields with errors ">
+        <aura:attribute name="fieldList" type="List" />
+    </aura:method>
+    
+    <aura:method name="callFieldComponentMethod" action="{!c.callFieldComponentMethod}" description="Calls field's component aura method.">
+        <aura:attribute name="data" type="Object" description="Format of data should be data = {componentId:'',auraMethodName:'',auraMethodData:'',isReturnData:true/false}"/>
+    </aura:method>
+
+    <div class="{!if(v.recordDetailStyle == true,'slds-p-left_small')}">
+        <aura:if isTrue="{!v.columns == '3'}">
+            <lightning:layout multipleRows="true">
+                <aura:iteration items="{!v.fieldList}" var="fieldData">
+                    <lightning:layoutItem padding="around-small" size="12" smallDeviceSize="12" mediumDeviceSize="4">
+                        <c:Field aura:id="field" sObjectName ="{!v.sObjectName}" fieldData="{!fieldData}" fieldList ="{!v.fieldList}" recordId="{!v.recordId}" state="{!v.state}" editAllowed="{!v.editmodeAllowed}" />
+                    </lightning:layoutItem>
+                </aura:iteration>
+            </lightning:layout>
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.columns == '2'}">
+                    <lightning:layout multipleRows="true">
+                        <aura:iteration items="{!v.fieldList}" var="fieldData">
+                            <lightning:layoutItem padding="around-small" size="12" smallDeviceSize="12" mediumDeviceSize="6">
+                                <c:Field aura:id="field" sObjectName ="{!v.sObjectName}" fieldData="{!fieldData}" fieldList ="{!v.fieldList}" recordId="{!v.recordId}" state="{!v.state}" editAllowed="{!v.editmodeAllowed}" />
+                            </lightning:layoutItem>
+                        </aura:iteration>
+                    </lightning:layout>
+                    <aura:set attribute="else">
+                        <aura:iteration items="{!v.fieldList}" var="fieldData">
+                            <c:Field aura:id="field" sObjectName ="{!v.sObjectName}" fieldData="{!fieldData}" fieldList ="{!v.fieldList}" recordId="{!v.recordId}" state="{!v.state}" editAllowed="{!v.editmodeAllowed}" />
+                        </aura:iteration>
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </div>
+</aura:component>

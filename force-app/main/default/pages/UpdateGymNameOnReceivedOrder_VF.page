@@ -1,0 +1,9 @@
+<!-- 
+This page call the Batch_UpdateAccNumberOnReceivedOrder to populate Reated_Account__c and Gym_Name__c on Received Orders
+
+-->
+
+<apex:page standardController="SCMC__Received_Order__c" recordSetVar="ordr" extensions="UpdateGymNameOnReceivedOrderController" 
+           action="{!callBatch}" lightningStylesheets="true">
+    <apex:pageMessages ></apex:pageMessages> 
+</apex:page>

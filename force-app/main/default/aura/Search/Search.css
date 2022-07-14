@@ -1,0 +1,24 @@
+.THIS .slds-section {
+    /*background-color: #F9F9FA ;*/
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.THIS .slds-page-header {
+    border-bottom: 0px;
+    padding: 0px !important;
+    margin: 0px !important;
+    background-color: #fff;
+}
+
+.THIS .slds-m-around_medium, .THIS .slds-m-around--medium {
+    margin: 0px !important;
+}
+
+.THIS .slds-section__content {
+    background-color: token(colorBackground);
+}
+
+.THIS > div {
+    padding: 0px !important;
+}

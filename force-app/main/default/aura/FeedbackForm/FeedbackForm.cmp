@@ -1,0 +1,51 @@
+<!--
+	Description  : Feedback Form Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component controller="FeedbackFormController">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!-- Register event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!--public attributes-->
+    <aura:attribute name="objectName" type="String" access="public" default="Feedback__c" />
+    <aura:attribute name="initDone" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="showSpinner" type="Boolean" access="public" default="true"/>
+    <aura:attribute name="fieldSetName" type="String" access="public" default="" />
+    <aura:attribute name="fields" type="List" access="public" />
+    <aura:attribute name="errorMessage" type="String" access="private" description="String to hold error message"/>
+    
+    <div class="slds-is-relative slds-p-bottom_large slds-p-left_large" style="width:auto; padding: 20px;">      
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner size="medium"/>
+        </aura:if>
+        <aura:if isTrue="{!v.initDone}">
+            
+            <aura:if isTrue="{!v.errorMessage}">
+                <c:ScopedNotification severity="error" inverse="true" class="slds-m-bottom--small" roundedBorders="true" messageTitle="{!v.errorMessage}" allowClosing="true"/>
+                <div class="slds-m-top_medium"></div>
+            </aura:if>
+            
+            <lightning:recordEditForm aura:id="feedbackForm" 
+                                      objectApiName="{!v.objectName}" 
+                                      onsubmit="{!c.handleSubmit}" 
+                                      onerror="{!c.handleError}" 
+                                      onsuccess="{!c.handleSuccess}">
+                <lightning:messages />
+                <aura:iteration items="{! v.fields }" var="field">
+                    <lightning:inputField fieldName="{! field.APIName}" 
+                                          required="{! field.Required}" 
+                                          class="slds-p-top_small slds-m-top_medium"/>   
+                </aura:iteration>
+                
+                <div class="slds-float_right slds-m-top_medium">
+                    <lightning:button aura:id="submit" type="submit" label="Submit" class="slds-button_brand" />
+                    <lightning:button aura:id="cancel" onclick="{!c.handleCancel}" label="Cancel" />
+                </div>
+            </lightning:recordEditForm>
+        </aura:if>
+    </div>  
+</aura:component>

@@ -1,0 +1,13 @@
+<apex:page standardController="SCMC__Sales_Order__c" extensions="SalesOrderAllocateController" recordSetVar="sos" 
+           lightningStylesheets="true">
+    <!-- Header -->
+    <apex:sectionHeader title="Sales Order" subtitle="Sales Orders"/>
+    <apex:pagemessages /> 
+    <apex:form >
+        <div style="margin:15px;">
+            <apex:commandButton value="Yes" action="{!allocate}" style="width:50px;text-align:center;font-weight:bold" rendered="{!Not(isError) && Not(isSuccess)}"/>
+            <apex:commandButton value="No" action="{!Cancel}" style="margin-left:15px;;width:50px;text-align:center;font-weight:bold" rendered="{!Not(isError) && Not(isSuccess)}"/>
+            <apex:commandButton value="Back" action="{!URLFOR($Action.SCMC__Sales_Order__c.List, $ObjectType.SCMC__Sales_Order__c)}" style="margin-left:15px;;width:50px;text-align:center;font-weight:bold" rendered="{!isError || isSuccess}"/>
+        </div>
+    </apex:form>  
+</apex:page>

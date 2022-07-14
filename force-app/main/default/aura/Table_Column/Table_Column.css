@@ -1,0 +1,28 @@
+.THIS div.slds-truncate {
+    max-width: 300px;
+}
+.THIS .slds-progress-bar.slds-progress-bar_medium.slds-progress-bar_circular{
+    width: 120px;
+}
+.THIS .slds-grid .progressBar{
+    width:auto;
+    display:inline-block;
+}
+
+.THIS .slds-grid .bh-cell-text-area {
+    white-space: inherit;
+}
+
+.THIS .bh-max-three-lines {
+    line-height: 1.2em;
+    max-height: 3.6em;
+    overflow: hidden;
+    display: inline-block;
+    white-space: initial;
+}
+
+.THIS .max_mobile_width_header {
+    max-width : 100px !important;
+    word-break: break-word;
+    white-space: normal;
+}

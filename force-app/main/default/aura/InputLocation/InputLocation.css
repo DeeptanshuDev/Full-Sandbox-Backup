@@ -1,0 +1,8 @@
+.THIS .cxsSearchInput {
+    padding: 0 2rem;
+}
+
+/* Remove 'clear field' X button from Edge browser */
+.THIS .cxsSearchInput::-ms-clear { 
+    display: none;
+}

@@ -1,0 +1,203 @@
+<!--
+*  Purpose          :   VF page for fits resizing on a Gym/Account Level.
+*
+*  Create By        :   Abhinav Sharma - 5/18/2020 - FF3.0-SFDC Integration
+*  
+*  Revision Log     :   v1.0 -  Created
+* 
+-->
+<apex:page standardController="Account" extensions="FF_Recall_Order_Controller" lightningStylesheets="true" sidebar="false">
+    
+    <!-- Show Spinner -->
+    <apex:actionStatus onstart="startLoading();" onstop="stopLoading();" id="loadStatus" />
+    <style>
+        .overlay {
+        display: none;
+        height: 100%;
+        left: 0;
+        position: fixed;
+        top: 0;
+        opacity: 0.3;
+        -moz-opacity: 0.3;
+        width: 100%;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+        filter: alpha(opacity=30);
+        background: #000;
+        -khtml-opacity: 0.3;
+        z-index: 1000;
+        }
+        
+        .loader {
+        background: url('/img/loading32.gif') scroll no-repeat 0 0;
+        width: 32px;
+        height: 32px;
+        position: absolute;
+        left: 50%;
+        }
+    </style>
+    
+    <div id="load_scrl" class="loadingBox loader" style="display:none"> </div>
+    <div class="loadingBox overlay"> </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        
+        function startLoading() {
+        $('#load_scrl').css('top', $(document).scrollTop() + 200);
+        $('.loadingBox').show();
+    }
+    
+    function stopLoading() {
+        $('.loadingBox').hide();
+    }
+    </script>
+    
+    <script type="text/javascript">
+    function selectAllCheckboxes(obj,receivedInputID){
+        var inputCheckBox = document.getElementsByTagName("input");                  
+        for(var i=0; i<inputCheckBox.length; i++){          
+            if(inputCheckBox[i].id.indexOf(receivedInputID)!=-1){                                     
+                inputCheckBox[i].checked = obj.checked;
+            }
+        }
+    }
+    </script>
+    
+    <!-- This section use to show image and Header Name -->
+   <!--  <div align="center" draggable="false" >
+        <apex:image url="{!$Resource.FFAthletic}" width="50" height="50"/>
+    </div>
+	-->
+    
+    <br/>
+    
+    <div align="center" draggable="false" style=" font-size: 30px;">
+        Recall Orders
+    </div>
+    
+    <!-- This section use to show Custom and Standard item tables -->
+    <apex:form id="formId">
+        <apex:pageMessages id="showmsg"></apex:pageMessages>
+        
+        <!-- This section use to show back button -->
+        <apex:outputText rendered="{!IF(errorMessage != '', true, false)}">
+            <div align="center">
+                <apex:commandButton value="Back" action="{!backMethod}" />
+            </div>
+        </apex:outputText>
+        
+        <!-- Show Error message on screen -->
+        <apex:outputPanel rendered="{!IF(errorMessage == '', true, false)}">
+            <apex:pageBlock >
+                
+                <br/>
+                <!-- Show Edit button and submit button -->
+                <div style="text-align: center">
+                    <apex:commandButton value="Submit" action="{!updateCustomAndStandardItemsRecord}" style="background-color: green; color:white; background-image:none" reRender="formId" status="loadStatus" />
+                    <apex:commandButton value="Back" action="{!backMethod}" immediate="true" />
+                </div>
+                <br/>
+                
+                <apex:pageBlockSection title="Custom Items" columns="1">
+                    
+                    <!-- Show Error message on screen for custom items -->
+                    <apex:outputPanel rendered="{!sizeOfMapCustomItems == 0 }">
+                        <div align="center">
+                            No records to display
+                        </div>
+                    </apex:outputPanel>
+                    
+                    <!-- Show Custom records -->
+                    <apex:outputPanel rendered="{!sizeOfMapCustomItems > 0 }">
+                        
+                        <apex:pageBlockTable id="cT" value="{!sizingOrderCustomItemsWrapper}" var="sOWC">
+                            
+                            <apex:column rendered="{!IF(sOWC.customItem.Fit__c != '', true, false)}">
+                                <apex:facet name="header">
+                                    <apex:inputCheckbox onclick="selectAllCheckboxes(this,'inputCusId')"/>
+                                </apex:facet>
+                                <apex:inputCheckbox value="{!sOWC.isSelected}" id="inputCusId"/>
+                            </apex:column> 
+                            
+                             <apex:column rendered="{!IF(sOWC.customItem.Fit__c != '', false, true)}">
+                                <apex:facet name="header">
+                                    <apex:inputCheckbox disabled="true"/>
+                                </apex:facet>
+                                <apex:inputCheckbox disabled="true" value="{!sOWC.isSelected}"/>
+                            </apex:column>     
+                            
+                            <apex:column value="{!sOWC.customItem.Item_Number_Edit__c}"/>
+                            <apex:column value="{!sOWC.customItem.Name}"/>
+                            <apex:column value="{!sOWC.customItem.Opportunity__r.Opportunity_Auto_Number__c}"/>
+                            <apex:column value="{!sOWC.customItem.Opportunity__c}"/>
+                            <apex:column value="{!sOWC.customItem.Stage__c}"/>
+                            <apex:column value="{!sOWC.customItem.Rosters__c}"/>
+                            <apex:column value="{!sOWC.customItem.Gender__c}"/>
+                            <apex:column value="{!sOWC.customItem.Style__c}"/>
+                            
+                            <apex:column value="{!sOWC.customItem.Fit__c}"/>
+                            <!-- Show input field for fit lookup selection  
+                            <apex:column headerValue="Fit">
+                                <apex:inputField value="{!sOWC.customItem.Fit__c}"/>
+                            </apex:column>-->
+                                                   </apex:pageBlockTable>
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection title="Standardized Items" columns="1">
+                    
+                    <!-- Show Error message on screen for custom items -->
+                    <apex:outputPanel rendered="{!sizeOfMapStandardItems == 0 }">
+                        <div align="center">
+                            There are no records to display
+                        </div>
+                    </apex:outputPanel>
+                    
+                    <!-- Show Standard records -->
+                    <apex:outputPanel rendered="{!sizeOfMapStandardItems > 0 }">
+                        
+                        <apex:pageBlockTable id="sT" value="{!sizingOrderStandardItemsWrapper}" var="sOWS" rowClasses="do nothing">
+                            <apex:column rendered="{!IF(sOWS.standardItem.Fit__c != '', true, false)}">
+                                <apex:facet name="header">
+                                    <apex:inputCheckbox onclick="selectAllCheckboxes(this,'inputStanId')"/>
+                                </apex:facet>
+                                <apex:inputCheckbox value="{!sOWS.isSelected}" id="inputStanId"/>
+                            </apex:column> 
+                            
+                            <apex:column rendered="{!IF(sOWS.standardItem.Fit__c != '', false, true)}">
+                                <apex:facet name="header">
+                                    <apex:inputCheckbox disabled="true"/>
+                                </apex:facet>
+                                <apex:inputCheckbox disabled="true" value="{!sOWS.isSelected}"/>
+                            </apex:column>                             
+                            <apex:column value="{!sOWS.standardItem.Name}"/>
+                            <apex:column value="{!sOWS.standardItem.Opportunity__r.Opportunity_Auto_Number__c}"/>
+                            <apex:column value="{!sOWS.standardItem.Opportunity__c}"/>
+                            <apex:column value="{!sOWS.standardItem.Stage__c}"/>
+                            <apex:column value="{!sOWS.standardItem.Rosters__c}"/>
+                           
+                            <apex:column value="{!sOWS.standardItem.Fit__c}"/>
+                            <!-- Show input field for fit lookup selection 
+                            <apex:column headerValue="Fit">
+                                <apex:inputField value="{!sOWS.standardItem.Fit__c}"/>
+                            </apex:column>-->
+                          
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
+                
+                                
+                <br/>
+                <!-- Show Edit button and submit button -->
+                <div style="text-align: center">
+                    <apex:commandButton value="Submit" action="{!updateCustomAndStandardItemsRecord}" style="background-color: green; color:white; background-image:none" reRender="formId" status="loadStatus" />
+                    <apex:commandButton value="Back" action="{!backMethod}" immediate="true" />
+                </div>
+                <br/>
+                
+                <!-- Show scroll up button to go top -->
+                <apex:commandLink value="Scroll to top" oncomplete="window.scrollTo(0,0);" style="float:right;font-weight:bold;position: relative;bottom: 10px;"></apex:commandLink>
+
+            </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

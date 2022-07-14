@@ -1,0 +1,63 @@
+<!--
+	Description  : Search Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component extends="c:Section" controller="SearchComponentController" description="SearchComponent">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!--Public attributes-->
+    <aura:attribute name="initialItems" type="List" description="List of id's of initial items" default="[]" access="public"/>
+    <aura:attribute name="objectApiName" type="String" description="Main object for searching and selecting records" access="public" default="Contact"/>
+    <aura:attribute name="relatedObjects" type="Object" description="Related objects that need to be searched" access="public"/>
+    <aura:attribute name="fieldSet" type="String" description="Fieldset for the main object to be used in querying and showing the correct columns" access="public" default="SearchContacts"/>
+    <aura:attribute name="selectedItems" type="List" description="Selected items from search" default="[]" access="public"/>
+    <aura:attribute name="additionalFields" type="List" description="Fields to query that will not be shown in the table" default="[]" access="public"/>
+    <aura:attribute name="whereClause" type="String" description="clause that is added to the search query" access="public"/>
+    <aura:attribute name="maximumSelected" type="Integer" description="The maximum number of selected items" access="public"/>
+    
+    <aura:attribute name="contactResponseData" type="Object" description="Data which comes from the search component and is added to the table component"/>
+    <aura:attribute name="contactTableData" type="Object" description="Data which comes from the search component and is added to the table component"/>
+    <aura:attribute name="tableColumns" type="List" description="List of table columns" access="private"/>
+    
+    <!--Event Handlers-->
+    <aura:handler name="change" value="{!v.contactResponseData}" action="{!c.addToTable}"/>
+    <aura:handler name="genericComponentEvent" event="c:genericComponentEvent" action="{!c.onGenericComponentEvent}" />
+    
+    <!-- Register Event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!-- Methods -->
+    <aura:method name="getSelectedItemsAction" access="public" action="{!c.getSelectedItems}"/>
+    <aura:method name="getAvailableTableColumns" access="public" action="{!c.getAvailableTableColumns}"/>
+    
+    <!--Component Markup-->
+    <div class="slds-grid searchcomponent-color" >
+        <div class="slds-col slds-size_2-of-3 slds-p-left_small slds-p-top_small">
+            <c:Search aura:id="searchComponent" objectApiName="{!v.objectApiName}" relatedObjects="{!v.relatedObjects}" recordsFound="{!v.contactResponseData}" whereClause="{!v.whereClause}" hasInitialItems="{!v.initialItems.length > 0}"/>
+        </div>
+    </div>
+    <div class="slds-grid searchcomponent-color">
+        <div class="slds-col slds-size_1-of-1 slds-p-left_medium">
+            {!format($Label.c.Search_records_selected, v.selectedItems.length)}
+        </div>
+    </div>
+    <div class="slds-grid searchcomponent-color">
+        <div class="slds-col slds-size_1-of-1 slds-p-left_small slds-m-bottom_small">
+            <div class="slds-pill_container slds-pill_container--bare slds-wrap slds-m-right_medium">
+                <aura:iteration items="{!v.selectedItems}" var="val">
+                    <lightning:pill label="{! val.Name }" title="{! val.Name }" onremove="{! c.removeSelected }" name="{! val.Id }" />
+                </aura:iteration>
+                <aura:if isTrue="{!v.selectedItems.length > 0}">
+                    <div class="slds-m-left_small slds-align-middle">
+                        <a onclick="{!c.clearSelection}">{!$Label.c.Clear_all}</a>
+                    </div>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid searchcomponent-color">
+        <c:Table aura:id="tableComponent" selectable="true" generateReferenceLinks="false" isHideInfoIcon="true"/>
+    </div>
+</aura:component>

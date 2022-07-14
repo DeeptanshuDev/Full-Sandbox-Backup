@@ -1,0 +1,33 @@
+<template>
+    <div class="slds-col slds-size_9-of-12 slds-m-bottom--medium">
+        <lightning-combobox
+                name="progress"
+                label="Status"
+                value=""
+                placeholder="Select field"
+                options={options}
+                onchange={handleChange}
+                required
+        ></lightning-combobox>
+    </div>
+    <div class="slds-col slds-size_9-of-12 slds-m-bottom--medium">
+        <lightning-button label="Track" title="Non-primary action" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+    </div>
+    <div class="slds-m-around_xx-small">
+        <template if:true={values}>
+
+                <lightning-progress-indicator current-step="3" type="base" has-error="true" variant="base">
+                    <lightning-progress-step label="Proto" value="1"></lightning-progress-step>
+                    <lightning-progress-step label="PP Internal" value="2"></lightning-progress-step>
+                    <lightning-progress-step label="PP Pics" value="3"></lightning-progress-step>
+                    <lightning-progress-step label="N/A" value="4"></lightning-progress-step>
+                    <lightning-progress-step label="Bypass PP Eligible (under 50 qty)" value="5"></lightning-progress-step>
+                    <lightning-progress-step label="Bypass PP -boys under 10" value="6"></lightning-progress-step>
+                    <lightning-progress-step label="Dye Sub Strike Off (under 50 qty)" value="7"></lightning-progress-step>
+                </lightning-progress-indicator>
+        
+        </template>
+        
+    
+    </div>
+</template>

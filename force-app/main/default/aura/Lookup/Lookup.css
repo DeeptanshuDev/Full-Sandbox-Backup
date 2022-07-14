@@ -1,0 +1,59 @@
+.THIS .slds-input-has-icon--left-right .slds-input {
+    padding: 0 2rem;
+}
+
+.THIS .cxsSearchIcon {
+    width: 1rem;
+    height: 1rem;
+    position: absolute;
+    top: 45%;
+    margin-top: -.5rem;
+    left: .75rem;
+    transition: all 1s ease-in-out;
+}
+
+.THIS .cxsClearIcon svg {
+    margin-top: 0;
+    fill: currentColor;
+}
+
+.THIS .cxsSearchIcon svg {
+    fill: rgb(0, 112, 210);
+}
+
+.THIS.cxsValidId .cxsSearchIcon svg {
+    fill: rgb(84, 105, 141);
+}
+
+.THIS.slds-lookup__menu {
+    border: 0;
+    padding: 0;
+    height: 500px;
+    overflow: auto;
+}
+
+.THIS .cxsLookupSelectObject {
+    padding: 0px !important;
+    appearance: menulist !important;
+    -webkit-appearance: menulist !important;
+    background: none !important;
+    width: 22px;
+    position: absolute;
+    z-index: 50;
+    outline: none;
+    background: rgba(0, 0, 0, 0);
+    height: 34px !important;
+    border: none;
+    border-right: 1px solid rgb(217, 219, 221);
+}
+
+.THIS .cxsLookupShowAllResults { 
+    text-align:right;
+    order:2;
+    flex:1;
+}
+
+/* Remove 'clear field' X button from Edge browser */
+.THIS .cxsSearchInput::-ms-clear { 
+    display: none;
+}

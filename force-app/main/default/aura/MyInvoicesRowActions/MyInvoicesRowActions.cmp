@@ -1,0 +1,24 @@
+<!--
+	Description  : Lightning component to display row actions on My Invoices table.
+	Created By   : Abhinav Sharma
+-->
+<aura:component>
+    
+    <!--Static Resource to have Base Utility methods and associated logics-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="row" type="Object" access="public"/>
+    <aura:attribute name="overlay" type="Aura.Component[]"/>
+    
+    <!--Row Action Options-->
+    <lightning:buttonMenu aura:id="menu"  onselect="{!c.handleSelect}" menuAlignment="right" 
+                          alternativeText="Show menu">
+        <lightning:menuItem aura:id="showDetails" value="showDetails" 
+                            label="{!$Label.c.Show_Details}" />
+    </lightning:buttonMenu>
+    
+    <!--Overlay Library-->
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    
+</aura:component>

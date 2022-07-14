@@ -1,0 +1,23 @@
+/* Added to make the icons and container bit bigger */
+.THIS i[class^="icon-object-"]:before {
+    margin: 4px;
+    font-size: x-large;
+}
+
+.THIS i[class^="icon-object-"] {
+    border-radius: .125rem;
+}
+
+.THIS .bh-header {
+    border-top: 1px solid rgb(221, 219, 218);
+    padding-top: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    margin-top: 1rem;
+    padding-right: 2rem;
+    padding-left: 2rem;
+}
+
+.THIS h1 {
+    margin-bottom: -2px;
+}

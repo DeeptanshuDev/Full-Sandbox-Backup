@@ -1,0 +1,72 @@
+<!--
+	Description  : Data Service Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="DataService" controller="DataServiceController" implements="c:DataServiceInterface" access="global">
+
+    <!--Static Resource-->
+    <ltng:require scripts="{!join(',',$Resource.FilterField,$Resource.lightningDataServiceDesignUtility,$Resource.Baseutility)}" afterScriptsLoaded="{! c.doInit }"/>
+	
+    <!--Public Attributes-->
+    <aura:attribute name="sObjectName" type="String" access="public" />
+    <aura:attribute name="fields" type="List" access="public"/>
+    <aura:attribute name="hiddenFields" type="List" description="Attribute to get some additional list of fields that don't need to be displayed UI " access="public"/>
+    <aura:attribute name="fieldSets" type="List" access="public"/>
+    <aura:attribute name="filters" type="Map" access="public"/><!--type="QueryStructure.Filter"-->
+    <aura:attribute name="orders" type="List" access="public"/>
+    <aura:attribute name="groupFields" type="List" access="public"/>
+    <aura:attribute name="pagination" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="pageSize" type="Integer"  default="0" access="public"/>
+    <aura:attribute name="getDescribe" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="queryStructure" type="Object" access="public" />
+    <aura:attribute name="isStorable" type="Boolean" access="public" default="true" description="Do we need to use storable feature or not"/>
+    <aura:attribute name="selectedItems" type="List" default="[]" access="public" description="The list of selected records"/>
+    <aura:attribute name="messageTitle" type="String" default="" description="The title above the messages"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false" description="Is the data service loading more data" access="public"/>
+    <aura:attribute name="isCommunityUser" type="Boolean" default="false" access="public" description="Is logged in user is a community user"/>
+    
+    <!--attribute to use Data service just for query-->
+    <aura:attribute name="onlyQueryData" type="Boolean" default="false" access="public" />
+
+    <!--internal attributes-->
+    <aura:attribute name="dataScope" type="List" />
+    <aura:attribute name="fieldsDescribe" type="Object" />
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" />
+    <aura:attribute name="totalPages" type="Integer"  />
+
+    <!--private attributes-->
+    <aura:attribute name="callback" type="Object" access="private" />
+    <aura:attribute name="returnDescribeData" type="Boolean" default="true" access="private" />
+	<aura:attribute name="showSpinner" type="Boolean" default="false" description="We need seperate show spinner attribute because isLoading is because of passing through not update properly" access="private"/>
+
+    <!--Event Handlers-->
+    <aura:handler name="change" value="{!v.orders}" action="{!c.doDataSetRefresh}"/>
+    <aura:handler name="change" value="{!v.filters}" action="{! c.onFiltersChanged }"/>
+    <aura:handler name="genericComponentEvent" event="c:genericComponentEvent" action="{!c.onGenericComponentEvent}"/>
+
+    <!--Aura Methods-->
+    <aura:method name="doNext" access="public" action="{!c.doNext}"/>
+    <aura:method name="doPrevious" access="public" action="{!c.doPrevious}"/>
+
+    <aura:method name="queryData" action="{! c.queryData }" access="public" description="Method to query data from Database without additional logic for pagination or some interaction with UI">
+        <aura:attribute name="sObjectName" type="String" />
+        <aura:attribute name="fieldsString" type="String" />
+        <aura:attribute name="filtersString" type="String" />
+        <aura:attribute name="filtersLogicString" type="String" />
+        <aura:attribute name="ordersString" type="String" />
+        <aura:attribute name="isStorable" type="Boolean" />
+        <aura:attribute name="returnDescribeData" type="Boolean" />
+        <aura:attribute name="callback" type="Function" />
+    </aura:method>
+    
+    <!--Method to refresh current page with limited data scope-->
+    <aura:method name="doRefreshCurrentPage" access="public" action="{!c.doRefreshCurrentPage}"/>
+    
+    <!--Method to perform hard refresh opertion that will basic invoke the init load for data-->
+	<aura:method name="doHardRefresh" access="public" action="{!c.doHardRefresh}"/>
+
+    <!--Spinner-->
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner size="medium" alternativeText="{!$Label.c.Loading}"/>
+    </aura:if>
+</aura:component>

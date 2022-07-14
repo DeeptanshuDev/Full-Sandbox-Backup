@@ -1,0 +1,130 @@
+<apex:page id="ItemStatus" controller="ItemStatusCtrl" lightningStylesheets="true">
+    
+    <style>
+        .rbl-status-column {
+        width: 50%;
+        }
+        
+        .rbl-control-box {
+        margin-bottom: 10px;
+        }
+        
+        .rbl-button-box {
+        margin-bottom: 10px;
+        text-align: center;
+        }
+        .rbl-button-box > * {
+        margin-right: 5px !important;
+        }
+        
+        .outputText {
+        color: #000;
+        font-size: .9em;
+        font-weight: bold;
+        margin-right: 0.5%;
+        }
+    </style>
+    
+    
+    <apex:sectionHeader title="Change Item Status/Stage" subtitle="{!OpportunityName}"/>
+    
+    <apex:form >
+     <apex:pageMessages escape="false"/>
+        <apex:pageBlock title="Standardized Items">
+            <div class="rbl-control-box">
+                <apex:outputLabel title="Stage" value="Stage" styleClass="outputText" /> 
+                <apex:selectList id="masterStandardizedItemStatusSelector" size="1" label="Stage" >
+                    <apex:selectOptions value="{!StandardizedItemStatusSelectOptions}" />
+                </apex:selectList>
+            </div>
+            <apex:pageBlockTable value="{!StandardizedItemWrappers}" var="w" rendered="{!StandardizedItemWrappers.size > 0}">
+                <apex:column value="{!w.Item.Product_Name__c}"></apex:column>
+                <apex:column headerValue="{!$ObjectType.Standardized_Item__c.Fields.Stage__c.Label}" styleClass="rbl-status-column" >
+                    <apex:selectList value="{!w.Item.Stage__c}" size="1" html-data-standardized-item="">
+                        <apex:selectOptions value="{!StandardizedItemStatusOptions}" />
+                    </apex:selectList>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="Custom Items">
+            <div class="rbl-control-box" style="width:100%">
+                <div style="width:50%;float:left">
+                    <apex:outputLabel title="Design Status" value="Design Status" styleClass="outputText" /> 
+                    <apex:selectList id="masterCustomItemStatusSelector" size="1">
+                        <apex:selectOptions value="{!CustomItemStatusSelectOptions}" />
+                    </apex:selectList> 
+                </div>
+                
+                <div style="width:50%;float:right">
+                    <apex:outputLabel title="Stage" value="Stage" styleClass="outputText" /> 
+                    <apex:selectList id="masterCustomStatusSelector" size="1" label="Stage" >
+                        <apex:selectOptions value="{!customItemStageOptions}" />
+                    </apex:selectList>
+                </div>
+                
+            </div>
+            <br/><br/>
+            <apex:pageBlockTable value="{!CustomItemWrappers}" var="w" rendered="{!CustomItemWrappers.size > 0}">
+                <apex:column value="{!w.Item.Name}"></apex:column>
+                <apex:column headerValue="{!$ObjectType.Custom_Item__c.Fields.Design_Status__c.Label}" styleClass="rbl-status-column" >
+                    <apex:selectList size="1" value="{!w.Item.Design_Status__c}" html-data-custom-item="">
+                        <apex:selectOptions value="{!w.Options}" />
+                        
+                    </apex:selectList>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.Custom_Item__c.Fields.Stage__c.Label}" >
+                    <!--apex:inputField value="{!w.Item.Stage__c}" /-->
+                    <apex:selectList value="{!w.Item.Stage__c}" size="1" html-data-customStage-item="">
+                        <apex:selectOptions value="{!customItemStagetableOptions}" />
+                    </apex:selectList> 
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        
+        <div class="rbl-button-box">
+            <apex:commandButton value="Save" action="{!save}" rendered="{!IF(CustomItemWrappers.size > 0 || StandardizedItemWrappers.size > 0,'true','false')}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" />
+        </div>
+    </apex:form>
+    
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+    crossorigin="anonymous">
+        </script>
+    
+    <script>
+    $(function($) {
+        $('[id$=masterStandardizedItemStatusSelector]').change(function(evt) {
+            var masterEl = evt.target;
+            $('[data-standardized-item]').each(function(idx, el) {
+                console.log(masterEl);
+                $(el).find('option[value="'+$(masterEl).val()+'"]').prop('selected', true);
+            });
+            masterEl.selectedIndex = 0;
+        });
+        
+        $('[id$=masterCustomItemStatusSelector]').change(function(evt) {
+            var masterEl = evt.target;
+            $('[data-custom-item]').each(function(idx, el) {
+                console.log(masterEl);
+                $(el).find('option[value="'+$(masterEl).val()+'"]').prop('selected', true);
+            });
+            masterEl.selectedIndex = 0;
+        });
+        
+        $('[id$=masterCustomStatusSelector]').change(function(evt) {
+            var masterEl = evt.target;
+            $('[data-customStage-item]').each(function(idx, el) {
+                console.log(masterEl);
+                $(el).find('option[value="'+$(masterEl).val()+'"]').prop('selected', true);
+            });
+            masterEl.selectedIndex = 0;
+        });
+    });
+    
+    $.noConflict();
+    </script>
+    
+</apex:page>

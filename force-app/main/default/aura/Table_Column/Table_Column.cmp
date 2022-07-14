@@ -1,0 +1,18 @@
+<!--
+	Description  : Data Grid Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="A single cell in a TableComponent" extends="c:AbstractCellRenderer">
+
+    <!-- call the init of the AbstractTableRenderer -->
+    <aura:handler name="init" value="{!this}" action="{! c.doInit }" />
+
+    <td role="gridcell">
+        
+        <span class="{!and(v.isMobileShrink,$Browser.isPhone)?'slds-grid slds-grid--align-spread max_mobile_width_header':'slds-grid slds-grid--align-spread'}">
+            <div  aura:id="cell" class="slds-truncate">
+                {!v.body}
+            </div>
+        </span>
+    </td>
+</aura:component>

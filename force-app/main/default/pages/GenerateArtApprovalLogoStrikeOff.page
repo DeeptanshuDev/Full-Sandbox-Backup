@@ -1,0 +1,137 @@
+<apex:page id="artDocumentPage" showHeader="true" sidebar="true" standardController="Design_Round__c" docType="html-5.0"
+           extensions="GenerateArtApprovalLogoStrikeOffCtrl" lightningStylesheets="true">
+    
+    <style type="text/css">
+        .rebel-centered-column {
+        text-align: center;
+        width: 70px;
+        }
+        
+        .rbl-design-wrapper {
+        margin: 10px 0 20px 0;
+        }
+        
+        .rbl-design-header {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: .25rem;
+        }
+        
+        p {
+        margin: 5px 0 !important;
+        }
+    </style>
+    <apex:form id="artFormId">
+          <apex:actionFunction name="generatePdfAndUpdateRecipient"  action="{!approve}" reRender="artFormId">
+            <apex:param name="selectedRecipient" value="" assignTo="{!selectedRecipient}"/>
+        </apex:actionFunction>
+        <apex:pageBlock rendered="{!IF(!isCorrectStatus,true,false)}">
+            <apex:pageMessages /><c:Overlay />
+        </apex:pageBlock>
+        <apex:pageBlock id="artPageBlock" title="Approve Designs" rendered="{!isCorrectStatus}">
+            <p>Please Note: If items for approval are missing below, the reasons could be the following:</p>
+            <p>The stage of the custom item is in the prototype phase and not eligible for docusign.</p>
+            <p>The custom item /standard item has previous approvals. Please go to the design round/design item and uncheck the approval to move forward with another docusign approval.</p>
+            <apex:pageMessages /><c:Overlay />
+            <apex:pageBlockSection title="Designs" collapsible="false"></apex:pageBlockSection>
+            <apex:repeat value="{!DesignWrappers}" var="dw">
+                <div class="rbl-design-wrapper">
+                    <div class="rbl-design-header">Option {!dw.Design.Option_Number__c}</div>
+                    <apex:image width="600" value="/sfc/servlet.shepherd/version/download/{!dw.Design.Content_Version_Id__c}" />
+                </div>
+                <apex:pageBlockTable value="{!dw.Items}" var="diw" rendered="{!dw.Items.size > 0 }">
+                    <apex:column headerValue="Include" width="70px" styleClass="rebel-centered-column"
+                                 headerClass="rebel-centered-column">
+                        <apex:inputCheckbox value="{!diw.Selected}" />
+                    </apex:column>
+                    <apex:column headerValue="Type" value="{! diw.Type}" />
+                    <apex:column headerValue="Name" value="{!diw.DesignItem.Custom_Item__r.Name}{!diw.DesignItem.Standardized_Item__r.Product_Name__c}" />
+                    <apex:column headerValue="Item #" value="{!diw.DesignItem.Custom_Item__r.Item_Number_Edit__c}{!diw.DesignItem.Standardized_Item__r.Name}" />
+                    <apex:column headerValue="Wholesale Price" value="{!diw.DesignItem.Wholesale_Price__c}" />
+                    <apex:column headerValue="Price" value="{!diw.DesignItem.Price__c}" />
+                    <apex:column headerValue="Qty" value="{!diw.DesignItem.Custom_Item__r.Quantity__c}{!diw.DesignItem.Standardized_Item__r.Quantity__c}" />
+                    <apex:column headerValue="Style/Code" value="{!diw.DesignItem.Custom_Item__r.Style__c}{!diw.DesignItem.Standardized_Item__r.Product_Code__c}" />
+                </apex:pageBlockTable>
+            </apex:repeat>
+            <apex:pageBlockSection title="Opportunity Info" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Event Date" />
+                    <apex:outputText value="{0,date,M/d/yyyy}">
+                        <apex:param value="{!EventDate}" />
+                    </apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Requested IHD" />
+                    <apex:outputText value="{0}">
+                        <apex:param value="{!RequestedIHD}" />
+                    </apex:outputText>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <!-- select recipient for art approval email -->
+            <apex:pageBlockSection id="addRecipientSection" title="Add Recipient" collapsible="true">
+                <apex:inputField id="contactLookup" label="Contact" value="{!desingRoundLookupContact.eSignature_Recipient_Contact__c}" style="width:80%;" onchange="enableSubmitUncheckedRadioButton(); return false;"/><br/> 
+                <apex:outputPanel >
+                    <div id="errorMessage" style="width:80%; text-align:center; margin-left:23%; margin-top:5px; margin-bottom:5px">--------------- OR ---------------</div> 
+                </apex:outputPanel><br/>
+                <apex:pageBlockSectionItem >
+                    <div style="width:80%; margin-left:25%;">
+                        <input type="radio" id="designRequestContact" value="{!designRequestContacts.Id}" name="default" onchange="enableSubmitButtonClearLookupField(); return false;"/>
+                        <label class="slds-radio__label" for="designRequestContact">
+                            {!designRequestContacts.FirstName} {!designRequestContacts.LastName} (Design Request)
+                        </label>   
+                        <input type="radio" id="opportunityContact" value="{!opportunityContacts.Id}"  name="default" onchange="enableSubmitButtonClearLookupField(); return false;" style="margin-left:10px;"/>
+                        <label for="opportunityContact">
+                            {!opportunityContacts.FirstName} {!opportunityContacts.LastName} (Opportunity)
+                        </label>
+                    </div>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <!-- ----------------------- -->
+            <apex:pageBlockButtons id="artPageBlockButtons" location="bottom">
+                <apex:commandButton id="generateButton" value="Generate PDF" onclick="generatePdfAndUpdate(); return false;" rendered="{!DesignWrappers.size > 0}"/>
+                <apex:commandButton value="View PDF" action="{!viewPdf}" rendered="{!DesignWrappers.size > 0}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    
+    <script type="text/javascript">
+        var lookupField = document.getElementById('{!$Component.artDocumentPage.artFormId.artPageBlock.addRecipientSection.contactLookup}');
+        lookupField.value = null; 
+        function enableSubmitButtonClearLookupField(){
+            lookupField.value = null;
+        } 
+        function enableSubmitUncheckedRadioButton()
+        {
+            document.getElementById('designRequestContact').checked = false;
+            document.getElementById('opportunityContact').checked = false;
+        }
+        function generatePdfAndUpdate()
+        {
+            var lookUpField  =  document.getElementById('{!$Component.artDocumentPage.artFormId.artPageBlock.addRecipientSection.contactLookup}');
+            var designRequestContact = document.getElementById('designRequestContact');
+            var opportunityContact = document.getElementById('opportunityContact');
+            if(designRequestContact.checked || opportunityContact.checked)
+            {
+                if(designRequestContact.checked)
+                {
+                    generatePdfAndUpdateRecipient(designRequestContact.value);
+                }
+                else{
+                    generatePdfAndUpdateRecipient(opportunityContact.value);
+                }
+            }
+            else if (lookUpField.value.length>0)
+            {
+                generatePdfAndUpdateRecipient('*');
+            }
+                else{
+                    var errorPanel = document.getElementById('errorMessage');
+                    errorPanel.innerHTML = "--- Please select recipient ---";
+                    errorPanel.style.color = "white";
+                    errorPanel.style.backgroundColor = "Red";
+                }
+        }
+    </script>
+</apex:page>

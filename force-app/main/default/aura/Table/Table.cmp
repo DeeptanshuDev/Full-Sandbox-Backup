@@ -1,0 +1,81 @@
+<!--
+	Description  : Table Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="Table Component" extends="c:AbstractListView" access="global">
+
+    <!-- Event handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.tableDoInit}"/>
+    <aura:handler name="change" value="{!v.data}" action="{!c.tableDataChanged}"/>
+    <aura:handler name="render" value="{!this}" action="{!c.tableRender}"/>
+
+    <aura:handler name="genericComponentEvent" event="c:genericComponentEvent" action="{!c.onGenericComponentEvent}" />
+
+    <!-- Register event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+	<aura:if isTrue="{!v.data.length > 0}">
+        <div aura:id="container" class="{!'cxs-table-holder cxs-has-overflow_'+v.hasOverflow+(v.isLoading?' cxs-loading':'')}">
+            <table class="slds-table slds-table_bordered" role="grid" aura:id="table">  <!-- slds-table_fixed-layout slds-table_resizable-cols-->
+                <thead>
+                    <tr class="slds-line-height_reset" aura:id="thead">
+                        <aura:if isTrue="{!and(v.selectable,v.selectAllEnable)}">
+                            <th scope="col" class="cxs-select-all">
+                                <span class="slds-truncate slds-align--absolute-center">
+                                    <ui:inputCheckbox value="{!v.selectAll}" change="{!c.selectAll}" />
+                                </span>
+                            </th>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.selectable}">
+                                    <th scope="col" class="cxs-select-all"/>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                        <aura:iteration items="{! v.columns }" var="column" indexVar="columnIndex">
+                            <aura:if isTrue="{!!column.isHiddenField}">
+                                <c:Table_Header isMobileShrink="{!columnIndex &lt; v.mobileShrinkFields}" truncateFields="{!v.truncateFields}" column="{! column }" orders="{! v.orders}" isActionColumn="{!columnIndex &lt; v.actionFields}"/>
+                            </aura:if>
+                        </aura:iteration>
+
+                        <!--info column header-->
+                        <aura:if isTrue="{!v.isHideInfoIcon}">
+                        	<th scope="col" class="cxs-info-column"/>
+                        </aura:if>    
+
+                        <!--action column header-->
+                        <aura:if isTrue="{!v.actionComponents.length > 0}">
+                            <th scope="col" class="cxs-action-column"/>
+                        </aura:if>
+                    </tr>
+                </thead>
+
+                <tbody aura:id="tbody">
+                    <aura:iteration items="{! v.data }" var="row" indexVar="index">
+
+                        <!--Table Row Component-->
+                        <c:Table_Row
+                            rows="{!v.data}"
+                            columns="{! v.columns }"
+                            row="{! row }"
+                            selectable="{!v.selectable}"
+                            actionComponents="{!v.actionComponents}"
+                            isHideInfoIcon="{!v.isHideInfoIcon}"
+                            aura:id="tableRow"
+                            rowNumber="{!index}"
+                            objectAccess="{!v.objectAccess}"
+                            isCommunityUser="{!v.isCommunityUser}"
+                            navigationType="{!v.navigationType}"
+                            generateReferenceLinks="{!v.generateReferenceLinks}"
+                            mobileShrinkFields="{!v.mobileShrinkFields}"/>
+
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+        <aura:set attribute="else">
+            <table><tr>
+                <td class="cxs-no-records">{!$Label.c.No_Records_Found}</td>
+                </tr></table>
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

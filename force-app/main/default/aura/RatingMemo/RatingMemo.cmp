@@ -1,0 +1,97 @@
+<!--
+ Description  : Rating Memo Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component description="RatingMemo" controller="RatingController" >
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!join(',',$Resource.Baseutility,$Resource.ratingStatus)}" afterScriptsLoaded="{! c.doInit }"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="jobApplicationId" type="String" description="Id of the job application" access="public"/>
+    <aura:attribute name="memo" type="String" default="" description="Memo text" access="public"/>
+    <aura:attribute name="memoOld" type="String" default="" description="Uneditted memo text" access="public"/>
+    <aura:attribute name="nubbin" type="String" default="bottom" description="Is the nubbin on the left or the right" access="public"/>
+    <aura:attribute name="loading" type="Boolean" default="true" description="wait flag" access="public"/>
+    <aura:attribute name="edit" type="Boolean" default="false" description="edit flag" access="public"/>
+    <aura:attribute name="standAlone" type="Boolean" default="false" description="standAlone flag" access="public"/>
+    <aura:attribute name="readOnlyMode" type="Boolean" default="false" description="readOnly mode for memo" access="public"/>
+    <aura:attribute name="methodName" type="String" description="Hold method name to call TableCellRating helper methods" access="public"/>
+    
+    <!--Aura Methods-->
+    <aura:method name="setMemoValue" action="{! c.setMemoValue }" access="public" >
+        <aura:attribute name="value" type="String" description="memo value"/>
+    </aura:method>
+    
+    <!--Register Event-->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!--Component Markup-->
+    <aura:if isTrue="{!v.standAlone}">
+        <div class="cxsMemoRead ">
+            <label>{! $Label.c.Memo}</label>
+            <span>
+                <aura:if isTrue="{!v.loading == false}">
+                    <div class="slds-form-element_separator is-read-only">
+                        <aura:if isTrue="{!v.memo != ''}">
+                            <p><aura:unescapedHtml value="{!v.memo}"/></p>
+                            <aura:set attribute="else">
+                                <p class="cxsPlaceholder">{! $Label.c.No_rating_available}</p>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <aura:set attribute="else">
+                        <lightning:spinner size="small" alternativeText="{!$Label.c.Loading}"/>
+                    </aura:set>
+                </aura:if>
+            </span>
+        </div>
+
+        <aura:set attribute="else" >
+            <div aura:id="cxsRatingMemo" class="cxsRatingMemo" onkeyup="{!c.doKeyup}" onkeydown="{!c.doKeydown}">
+                <span>
+                    <aura:if isTrue="{!v.edit == false}">
+                        <div aura:id="memo" class="{!'slds-popover slds-nubbin_'+v.nubbin+' popover-memo'}" role="dialog">
+                            <div class="cxsMemoRead slds-popover__body" onclick="{!c.editMemo}">
+                                <label>{! $Label.c.Memo}</label>
+                                <span>
+                                    <aura:if isTrue="{!v.loading == false}">
+                                        <div>
+                                            <aura:if isTrue="{!v.memo != ''}">
+                                                <p><aura:unescapedHtml value="{!v.memo}"/></p>
+                                                <aura:set attribute="else">
+                                                    <p class="cxsPlaceholder">{! $Label.c.Add_your_rating_here}</p>
+                                                </aura:set>
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.readOnlyMode}">
+                                                <lightning:icon iconName="utility:edit" size="xx-small" class="slds-float--right cxsEditMode"/>
+                                            </aura:if>    
+                                        </div>
+                                        <aura:set attribute="else">
+                                            <lightning:spinner size="small" alternativeText="{!$Label.c.Loading}"/>
+                                        </aura:set>
+                                    </aura:if>
+                                </span>
+                            </div>
+                        </div>
+                    <aura:set attribute="else" >
+                        <div aura:id="memo-edit" class="{! 'slds-popover slds-nubbin_'+v.nubbin+' popover-memo'}" role="dialog">
+                            <button class="slds-button slds-button--icon slds-button--icon-small slds-float--right slds-popover__close" title="{!$Label.c.Close}" onclick="{!c.readMemo}">
+                                <lightning:icon iconName="utility:close" size="xx-small"/>
+                                <span class="slds-assistive-text">{!$Label.c.Close}</span>
+                            </button>
+                            <div class="slds-popover__body slds-p-bottom_medium">
+                                <!--lightning:textarea aura:id="memo-textarea" name="memoInput" label="{!$Label.c.Memo}" maxlength="300" value="{!v.memo}" placeholder="{!$Label.c.Add_your_rating_here}" onblur="{!c.delayedReadMemo}"/ -->
+                                <ui:inputTextArea aura:id="memo-textarea" label="{!$Label.c.Memo}" maxlength="300" value="{!v.memo}" rows="5" placeholder="{!$Label.c.Add_your_rating_here}"
+                                                   updateOn="change" resizable="false" />
+                                <button class="slds-button slds-button--neutral slds-float--right" onclick="{!c.save}">{!$Label.c.Save}</button>
+                            </div>
+                        </div>
+                    </aura:set>
+                    </aura:if>
+                </span>
+            </div>
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

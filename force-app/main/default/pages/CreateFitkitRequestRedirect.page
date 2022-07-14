@@ -1,0 +1,3 @@
+<apex:page id="CreateFitkitRequestRedirect" standardController="Opportunity"
+           extensions="CreateFitKitRequestRedirectCtrl" action="{!redirect}" lightningStylesheets="true">
+</apex:page>

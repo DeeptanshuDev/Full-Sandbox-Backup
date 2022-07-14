@@ -1,0 +1,53 @@
+.THIS .slds-section__content {
+    position:relative;
+}
+
+.THIS .slds-section.slds-is-open .slds-section__content{
+    padding-top: 0.01rem;
+}
+
+.THIS .uiInput--checkbox input[type=checkbox], .THIS input.uiInput--checkbox[type=checkbox] {
+	min-height:1rem;
+    background:none;
+    position:relative;
+    display: inline-block;
+    float: left;
+    margin-right: 3px;
+}
+
+.THIS .uiInput--checkbox input[type=checkbox]:checked:after, .THIS input.uiInput--checkbox[type=checkbox]:checked:after {
+    display: block;
+    content: '';
+    height: .25rem;
+    width: .5rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%,-50%,0) rotate(-45deg);
+    border-bottom: 2px solid rgb(21, 137, 238);
+    border-left: 2px solid rgb(21, 137, 238);
+}
+
+.THIS .uiInput--checkbox input[type=checkbox]:checked, .THIS input.uiInput--checkbox[type=checkbox]:checked {
+    box-shadow: none;
+    border-color: rgb(216, 221, 230);
+}
+
+.THIS .uiInput--checkbox input[type=checkbox]:checked:focus, .THIS input.uiInput--checkbox[type=checkbox]:checked:focus {
+    border-color: rgb(21, 137, 238);
+    box-shadow: 0 0 3px #0070d2;
+}
+
+.THIS .uiInputNumber.cxsInputPercentage {
+    width: calc(100% - 30px);
+    margin-right: 10px;
+}
+
+.THIS .slds-form-element__help, .THIS .cxsButtons {
+    padding-left: .5rem;
+    padding-right: .5rem;
+}
+
+.THIS textarea {
+    max-height: 500px;
+}

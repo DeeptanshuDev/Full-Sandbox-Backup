@@ -1,0 +1,21 @@
+<!--
+	Description  : Data Grid Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:interface description="DataServiceInterface" access="global">
+    
+    <!-- Required attributes -->
+    <aura:attribute name="dataScope" type="List" access="public"/>
+    <aura:attribute name="fieldsDescribe" type="Object"  access="public"/>
+    <aura:attribute name="currentPageNumber" type="Integer" default="1"/>
+    <aura:attribute name="totalPages" type="Integer" />
+    <aura:attribute name="totalNumberOfRecords" type="Integer"  />
+    <aura:attribute name="recordsFromTo" type="String"  />
+    <aura:attribute name="queryStructure" type="QueryStructure" access="public"/>
+    <aura:attribute name="hasMoreRecords" type="Boolean" access="public"/>
+    <aura:attribute name="isInitialData" type="Boolean" access="public" default="false"/>
+
+    <!-- Register Event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+
+</aura:interface>

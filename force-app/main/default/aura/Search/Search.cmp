@@ -1,0 +1,59 @@
+<!--
+ Description  : Search Lightning Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component description="Search" controller="SearchController" extends="c:Section">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!-- Public Attributes -->
+    <aura:attribute name="objectApiName" type="String" description="The search text to search on" access="public" default="Contact"/>
+    <aura:attribute name="relatedObjects" type="Object" description="Key-value pair with object and related field name to include search in parent objects" access="public"/>
+    <aura:attribute name="fieldList" type="List" description="Optional list of fields that need to be queried" access="public"/>
+    <aura:attribute name="recordsFound" type="Object" description="Output list of found records" access="public"/>
+    <aura:attribute name="responseData" type="Object" description="Output object of the search results" access="public"/>
+    <aura:attribute name="additionalfields" type="List" description="Fields to query that will not be shown in the table" default="[]" access="public"/>
+    <aura:attribute name="whereClause" type="String" description="clause that is added to the search query" access="public"/>
+    <aura:attribute name="hasInitialItems" type="Boolean" description="indicates whether there are already selected items for the object referenced in this instance of the Search component" default="false" access="public"/>
+    
+    <!-- Private Attributes -->
+    <aura:attribute name="labelPlural" type="String" description="Plular label of the main object" default=""/>
+    <aura:attribute name="searchText" type="String" description="The search text to search on" default=""/>
+    <aura:attribute name="recordCount" type="Integer" description="The number of found records" default="0"/>
+    <aura:attribute name="showInputSpinner" type="Boolean" description="Attribute can be set to show a spinner in the input seach box" default="false"/>
+    
+    <!-- Register Event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!-- methods -->
+    <aura:method name="setSearchAttributesAction" access="public" action="{!c.setSearchAttributes}">
+        <aura:attribute name="fields" type="List" description="List of fields that need to be queried"/>
+    </aura:method>
+    <aura:method name="initializeDataAction" access="public" action="{!c.initializeData}"/>
+    <aura:method name="retrieveInitialItems" access="public" action="{!c.retrieveInitialItems}">
+        <aura:attribute name="ids" type="List" description="List of fields that need to be queried"/>
+    </aura:method>
+    
+    <!--Component Markup-->
+    <!-- ### Make sure the page will not be reloaded the first time the keyup action is executed. That's why the form element is added ### -->
+    <div class="slds-grid slds-m-around_none">
+        <div class="slds-col">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
+                <ui:inputText aura:id="searchText" class="slds-input" value="{!v.searchText}" placeholder="{!format($Label.c.Search_for, v.labelPlural)}" keyup="{!c.keyAction}"/>
+                <aura:if isTrue="{!v.showInputSpinner}">
+                    <div aura:id="spinner" class="slds-input__icon-group slds-input__icon-group_right">
+                        <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_x-small slds-input__spinner">
+                            <span class="slds-assistive-text">{!$Label.c.Searching}</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+        </div>
+        <div class="slds-col">
+            <lightning:button label="{!$Label.c.Search}" variant="brand" onclick="{!c.searchRecords}" class=" slds-m-left_small"/>
+        </div>
+    </div>
+</aura:component>

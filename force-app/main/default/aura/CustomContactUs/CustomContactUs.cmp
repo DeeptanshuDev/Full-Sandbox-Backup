@@ -1,0 +1,125 @@
+<!--
+     Description : Contact Us Component
+     Created By  : Abhinav Sharma
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,c:DataServiceInterface"
+                controller="ContactUsController"
+                access="global" 
+                extends="c:Section">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!--public attributes-->
+    <aura:attribute name="objectName" type="String" access="public" default="ContactUs__c" />
+    <aura:attribute name="initDone" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="showSpinner" type="Boolean" access="public" default="true"/>
+    <aura:attribute name="fieldSetName" type="String" access="public" default="ContactUsFields" />
+    <aura:attribute name="fields" type="List" access="public" />
+    <aura:attribute name="errorMessage" type="String" access="private" description="String to hold error message"/>
+    <aura:attribute name="successMessage" type="String" access="private" description="String to hold error message"/>
+    
+    <!--Component Markup-->
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem class="slds-show_medium">
+            <lightning:layout class="leftSideBar slds-p-horizontal_medium slds-p-vertical_xx-large">
+                <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                    <div class="slds-p-top_small slds-p-left_small slds-p-right_small slds-p-bottom_xx-small">
+                        <div>
+                            <lightning:icon iconName="utility:email" variant="inverse" size="large" alternativeText="contact us"/>
+                        </div>
+                        <div class="slds-text-heading_large slds-text-align_left slds-text-color_inverse">
+                            <p style="line-height: 1.5;">{!$Label.c.Contact_Us}</p>
+                        </div>
+                        <div class="slds-m-top_xx-small slds-text-body_large slds-text-align_left slds-text-color_inverse">
+                            <p style="line-height: 1.5;">{!$Label.c.contact_us_message}</p>
+                        </div>
+                        <div class="slds-clearfix">
+                            <div class="slds-m-top_xx-large slds-text-body_large slds-text-align_left slds-text-color_inverse">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small">
+                                        <lightning:icon iconName="utility:email" variant="inverse" size="x-small" alternativeText="contact us"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small slds-m-left_x-small">
+                                        <p class="contentStyle">
+                                            <span><a href="{!$Label.c.Custom_Contact_US_Email_MailTo}" class="uiOutputEmail contentStyleColor" target="_blank" >{!$Label.c.Custom_Contact_US_Email}</a></span>
+                                        </p>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small">
+                                        <lightning:icon iconName="utility:call" variant="inverse" size="x-small" alternativeText="contact us"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small slds-m-left_x-small">
+                                        <p class="contentStyle">
+                                            {!$Label.c.Custom_Contact_US_Call_Number}
+                                        </p>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small">
+                                        <lightning:icon iconName="utility:world" variant="inverse" size="x-small" alternativeText="contact us"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small slds-m-left_x-small">
+                                        <p class="contentStyle">
+                                            <span><a href="{!$Label.c.Custom_Contact_US_Web_Address_URL}" class="uiOutputURL contentStyleColor" target="_blank">{!$Label.c.Custom_Contact_US_Web_Address}</a></span>
+                                        </p>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                                 <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small">
+                                        <lightning:icon iconName="utility:checkin" variant="inverse" size="x-small" alternativeText="contact us"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem class="slds-show_small slds-m-top_small slds-m-left_x-small">
+                                        <p class="contentStyle">
+                                            <span>
+                                                <a href="{!$Label.c.Custom_Contact_US_Map_Address}" 
+                                                   class="uiOutputURL contentStyleColor" 
+                                                   target="_blank" >
+                                                    {!$Label.c.Custom_Contact_US_Company_Name}
+                                                    <br/>{!$Label.c.Custom_Contact_US_Address_1}
+                                                    <br/>{!$Label.c.Custom_Contact_US_Address_2}
+                                                </a>
+                                            </span>
+                                        </p>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </div>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" smallDeviceSize="8" class="left-align">
+            <div class="slds-p-left_large slds-p-right_large slds-p-bottom_xx-large slds-p-top_x-large"> 
+                <aura:if isTrue="{!v.initDone}">
+                    <aura:if isTrue="{!v.errorMessage}">
+                        <c:ScopedNotification severity="error" inverse="true" class="slds-m-bottom--small" roundedBorders="true" messageTitle="{!v.errorMessage}" allowClosing="true"/>
+                        <div class="slds-m-top_medium"></div>
+                    </aura:if>
+
+                    <aura:if isTrue="{!v.successMessage}">
+                        <c:ScopedNotification severity="success" inverse="true" theme="success" class="slds-m-bottom--small" roundedBorders="true" messageTitle="{!v.successMessage}" allowClosing="true"/>
+                        <div class="slds-m-top_medium"></div>
+                    </aura:if>
+                    <lightning:recordEditForm aura:id="contactUsForm" 
+                                              objectApiName="{!v.objectName}" 
+                                              onsubmit="{!c.handleSubmit}" 
+                                              onerror="{!c.handleError}" 
+                                              onsuccess="{!c.handleSuccess}">
+                        
+                        <aura:iteration items="{! v.fields }" var="field">
+                            <label for="comments" class="slds-p-left_xxx-small slds-text-heading_medium">{!$Label.c.Comment}</label>
+                            <lightning:inputField class="slds-m-top_xx-small" aura:id="comments" fieldName="{! field.APIName}" required="{! field.Required}"/>   
+                        </aura:iteration>
+                                    
+                        <div class="slds-p-left_xxx-small slds-float_left slds-p-top_large">
+                            <lightning:button aura:id="submit" type="submit" label="Submit" class="slds-button_brand" />
+                        </div>
+                    </lightning:recordEditForm>
+                </aura:if>
+            </div>        
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+</aura:component>

@@ -1,0 +1,70 @@
+<!--
+ Description  : Table Cell Rating Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component description="Rating" controller="RatingController">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!join(',',$Resource.Baseutility,$Resource.ratingStatus)}" afterScriptsLoaded="{! c.doInit }"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="id" type="String" description="Id of the job application" access="public"/>
+    <aura:attribute name="row" type="Object" description="Record for memo" access="public"/>
+    <aura:attribute name="value" type="Integer" description="Current rating value" access="public"/>
+    <aura:attribute name="class" type="String" description="Class of the cell" access="public"/>
+    <aura:attribute name="size" type="String" description="Size of the stars as slds-size classes. xx-small,x-small, small,medium,large" default="xx-small" access="public"/>
+    <aura:attribute name="rowNumber" type="Integer" description="Which row is the cell at" access="public"/>
+    <aura:attribute name="standAlone" type="Boolean" description="If the is a standAlone component instead of a table Cell" default="false" access="public"/>
+    <aura:attribute name="fieldPermission" type="Map" description="It will verify current user FLS for Rating and Memo." access="public"/>
+    
+    <aura:attribute name="tableHelper" type="Object" description="The helper of the table this cell is embedded on, used for the base component helper methods." access="public"/>
+    <aura:attribute name="showMemo" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="editMemo" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="activeHover" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="componentRatingClass" type="String" access="public"/>
+    
+    <aura:attribute name="overlay" type="Aura.Component[]" access="public"/>
+    <aura:attribute name="memoComponent" type="Aura.Component" description="Attribute to hold a reference to the memoComponent so it can be properly destroyed." access="public"/>
+    <aura:attribute name="isCreating" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="openTimeout" type="Integer" description="Attribute to hold a reference to the timeout responsible for controlling the memo popover" access="public"/>
+    <aura:attribute name="closeTimeout" type="Integer" description="Attribute to hold a reference to the timeout responsible for controlling the memo popover" access="public"/>
+    <aura:attribute name="methodName" type="String" description="Hold method name from RatingMemo to call helper methods" access="public"/>
+    <aura:attribute name="updatedMemo" type="String" description="Hold updated memo value from RatingMemo component" access="public"/>
+    
+    <!--Private Attributes-->
+    <aura:attribute name="initDone" type="Boolean" default="false" description="For letting the destroyhandler know, the component has been initialised." access="private"/>
+    
+    <!--Aura Methods-->
+    <aura:method name="updateMemo" action="{! c.updateMemo }" access="public" >
+        <aura:attribute name="value" type="String" description="memo value" />
+    </aura:method>
+    
+    <!--Feteching Dependencies-->
+    <aura:dependency resource="markup://c:RatingMemo"/>
+    
+    <!--Register Event-->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!--Handlers-->
+    <aura:handler name="destroy" value="{!this}" action="{!c.handleDestroy}"/>
+    
+    <!--Component Markup-->
+    <div aura:id="cxsRatingCell" class="{!v.class +' ratingCell' + ' ' +(v.standAlone?' slds-box slds-theme_default':'')}">
+        <aura:if isTrue="{!v.standAlone}">
+            <label>{! $Label.c.Rating_label}</label><br />
+        </aura:if>
+        <span class="{!v.componentRatingClass}" onmouseleave="{!c.mouseleave}" onmouseover="{!c.mouseover}">
+            <span class="{!'star '+if(v.value &gt; 0,'starYellow','starGrey')}" onclick="{!c.click}" data-index="1"><lightning:icon iconName="utility:favorite" size="{!v.size}"/></span>
+            <span class="{!'star '+if(v.value &gt; 1,'starYellow','starGrey')}" onclick="{!c.click}" data-index="2"><lightning:icon iconName="utility:favorite" size="{!v.size}"/></span>
+            <span class="{!'star '+if(v.value &gt; 2,'starYellow','starGrey')}" onclick="{!c.click}" data-index="3"><lightning:icon iconName="utility:favorite" size="{!v.size}"/></span>
+            <span class="{!'star '+if(v.value &gt; 3,'starYellow','starGrey')}" onclick="{!c.click}" data-index="4"><lightning:icon iconName="utility:favorite" size="{!v.size}"/></span>
+            <span class="{!'star '+if(v.value &gt; 4,'starYellow','starGrey')}" onclick="{!c.click}" data-index="5"><lightning:icon iconName="utility:favorite" size="{!v.size}"/></span>
+        </span>
+        <lightning:overlayLibrary aura:id="overlayLib"  />
+        <aura:if isTrue="{!v.standAlone}">
+            <div class="slds-p-top_small">
+                <c:RatingMemo aura:id="RatingMemo" edit="false" standAlone="true" jobApplicationId="{!v.id}" memo="{!v.updatedMemo}"/>
+            </div>
+        </aura:if>
+    </div>
+</aura:component>

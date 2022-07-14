@@ -1,0 +1,17 @@
+<apex:page id="DesignArtPricingWrapper" standardController="Design_Request__c" lightningStylesheets="true">
+    <iframe id="artFrame" src="{!URLFOR($Page.DesignArtPricing, null, [id=$CurrentPage.parameters.id])}"
+            width="100%" scrolling="auto" frameborder="0" ></iframe>
+    <script>
+    
+    document.getElementById('artFrame').height = window.innerHeight - 160;
+    
+    (function() {
+        var windowOnresize = window.onresize;
+        window.onresize = function() {
+            if (windowOnresize) windowOnresize(); //don't trample the handler; intercept it
+            document.getElementById('artFrame').height = window.innerHeight - 160;
+        };
+    }());
+    
+    </script>
+</apex:page>

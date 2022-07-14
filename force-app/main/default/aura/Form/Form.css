@@ -1,0 +1,76 @@
+.THIS ::-webkit-input-placeholder {
+  color: token(colorTextPlaceholder);
+  opacity:0.5;
+}
+.THIS ::-moz-placeholder {
+  color: token(colorTextPlaceholder);
+  opacity:0.5;
+}
+.THIS :-ms-input-placeholder {
+  color: token(colorTextPlaceholder);
+  opacity:0.5;
+}
+.THIS :-moz-placeholder {
+  color: token(colorTextPlaceholder);
+  opacity:0.5;
+}
+
+.THIS .slds-has-divider--bottom {
+    padding-bottom: 10px;
+}
+
+.THIS .cxsEditMode {
+    opacity: 0.2;
+    cursor:pointer;
+    transition: all .1s linear;
+}
+
+.THIS .cxsEditMode:hover {
+    opacity: 1;
+}
+
+.THIS .uiInputSelect[multiple] {
+    height:100px;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.THIS select:not(:focus) option:checked.uiInputSelectOption {
+    background-image: url(/resource/checkbox_lightning), url(/resource/checkbox_back);
+    background-size: 14px;
+    background-repeat: no-repeat, repeat;
+    background-position: 9px center;
+    color: rgb(22, 50, 92) !important;
+}
+
+.THIS select:focus option:checked.uiInputSelectOption {
+    background-image: url(/resource/checkbox_lightning_white);
+    background-size: 14px;
+    background-repeat: no-repeat, repeat;
+    background-position: 9px center;
+}
+
+.THIS option.uiInputSelectOption {
+    padding-left: 30px;
+}
+
+.THIS .uiOutputRichText {
+    display:inline-block;
+    max-width: calc(100% - 20px);
+}
+
+.THIS .form-inline-edit .slds-section__content {
+    padding: token(spacingXSmall);
+}
+
+.THIS .slds-section__content .slds-form-element__label{
+    margin-top: token(spacingXSmall);
+}
+
+.THIS .slds-section__content span.slds-form-element__label{
+    margin-bottom: 0;
+}
+
+.THIS .cxsButtons {
+    margin-top: token(spacingMedium);
+}

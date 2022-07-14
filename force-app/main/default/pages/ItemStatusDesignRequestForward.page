@@ -1,0 +1,4 @@
+<apex:page id="ItemStatusDesignRequestForward" standardController="Design_Request__c"
+           action="{!URLFOR($Page.ItemStatus,null,[did=$CurrentPage.parameters.id])}" lightningStylesheets="true">
+           <apex:pageMessages escape="false"/>
+</apex:page>

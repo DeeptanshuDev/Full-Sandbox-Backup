@@ -1,0 +1,19 @@
+<apex:page standardController="Opportunity" showHeader="false" sidebar="false" extensions="csvUploader">
+    <apex:form >
+        <apex:pagemessages />
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="4"> 
+                  <apex:inputFile value="{!csvFileBody}"  filename="{!csvAsString}"/>
+                  <apex:commandButton value="Import Shipping" action="{!importCSVFile}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock >
+           <apex:pageblocktable value="{!accList}" var="acc">
+              <apex:column value="{!acc.SCMC__Sales_Order__c}" />
+              <apex:column value="{!acc.SCMC__Carrier__c}" />
+              <apex:column value="{!acc.SCMC__Status__c}" />
+
+        </apex:pageblocktable>
+     </apex:pageBlock>
+   </apex:form>
+</apex:page>

@@ -1,0 +1,23 @@
+<!--
+	Description  : Design attributes for My Invoices component
+	Created By   : Abhinav Sharma
+-->
+<design:component label="My Invoices">
+    <design:attribute name="sectionHeader" label="Header" description="An optional header above the view" />
+    <design:attribute name="tabHeader" label="Show the tab header" default="false" description="It is a tab style header." />
+    <design:attribute name="pageSize"  label="Pagination page size" description="Number of records in a single page. Example: 10" />
+	<design:attribute name="fieldsString" label="Object fields" description="Object field names, which are used add to the view. Please do not put in any extra spaces! Example: FirstName,LastName" />
+    <design:attribute name="fieldSetsString"  default="" label="Object field sets" description="Object fieldSet names, which are used add to the view. Please do not put in any extra spaces! Example: My_Invoices_Fields" />
+	<design:attribute name="ordersString" label="Order by"  description="Fields to sorting on. Each order field need to be separated by a comma and contains field API name and one of the available operators (ORDER_ASC, ORDER_DESC). Example: Name ORDER_DESC"/>
+
+    <!--TODO for future-->
+    <!--
+        <design:attribute name="filtersString"  label="Filters" description="Filters for on the data. Each filter need be separated by a comma and contains field API name, one of the available operators (EQ, NE, GT, GE, LT, LE, ISNULL, NOTNULL, VALUEIN, VALUENOTIN) and value. Value in to be inside the brackets () and if it is string values - need to have a single quotes, if it is Integer of Boolean type - not. '{recordId}' - special placeholder to create filter for the ID of the current record. Example: Name EQ ('testing'),AccountId EQ ('{recordId}')" />
+        <design:attribute name="filterLogic" label="Filters logic"  description="Filter logic for advanced filters. Use the keywords OR and AND group them with brackets. Example:({A} OR {B}) AND {C}"/>
+        <design:attribute name="showFilters" label="Show filters or not" default="true" description="Show filters or not." />
+        <design:attribute name="filterFieldSet" default="" label="Fieldset used for filters" description="Provide field set names that will be used to display filters, these filters will be based on fields from the given field sets." />
+        <design:attribute name="showViewSelector" label="Allow users to change the view mode" description="Shows the selector to change the type of view" />
+        <design:attribute name="view" label="Default view mode" description="Either Table" datasource="table" default="table"/>
+	-->
+
+</design:component>

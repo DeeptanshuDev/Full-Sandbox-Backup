@@ -1,0 +1,15 @@
+.THIS .error svg {
+    fill: token(colorTextError);
+}
+.THIS .warning svg {
+    fill: token(colorTextWarningAlt);
+}
+.THIS.slds-has-warning {
+    color: token(colorTextWarningAlt);
+}
+.THIS .slds-list--dotted{
+    color: token(colorTextDefault);
+}
+.THIS .error-title {
+    font-weight: token(fontWeightBold);
+}

@@ -1,0 +1,33 @@
+.THIS .cxs-select-all {
+    width: 40px;
+}
+
+.THIS.cxs-table-holder.cxs-loading {
+    width: 100%;
+    overflow-x:hidden;
+    overflow-y: inherit;
+}
+
+.THIS.cxs-has-overflow_false .cxs-info-column {
+    display:none;
+}
+
+.THIS table {
+    width: initial;
+    border: 8px solid WhiteSmoke;
+}
+
+.THIS .cxs-no-records {
+    text-align: center;
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+/* Alignment headers  */
+.THIS .slds-th__action {
+    padding-left:0px;
+}
+.THIS .slds-button.slds-button_icon.slds-button_icon-small.slds-button_icon-border{
+    height : 20px;
+    width :20px;
+}

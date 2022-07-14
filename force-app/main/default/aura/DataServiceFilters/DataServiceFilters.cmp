@@ -1,0 +1,122 @@
+<!--
+ Description  : Data Service Filters Lightning Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component description="DataServiceFilters" controller="DataServiceFilterController">
+    
+    <!--Static Resources-->
+    <ltng:require scripts="{!join(',',$Resource.FilterField,$Resource.Baseutility)}" afterScriptsLoaded="{! c.doInit}"/>
+    
+    <!-- Public attributes -->
+    <aura:attribute name="class" type="String" access="public" />
+    <aura:attribute name="filters" type="Map" access="public" /><!-- Type: QueryStructure.Filter -->
+    <aura:attribute name="queryStructure" type="String" />
+    <aura:attribute name="sObjectName" type="String" access="public" />
+    <aura:attribute name="fields" type="List" access="public" description="List of fieldnames to use as filters" />
+    <aura:attribute name="fieldsOverflow" type="List" access="public" description="List of fieldnames to use as filters in the overflow area" />
+    <aura:attribute name="fieldSet" type="String" access="public" description="Name of the fieldset to include as filters" />
+    <aura:attribute name="fieldSetOverflow" type="String" access="public" description="Name of the fieldset to include as filters in the overflow area" />
+    <aura:attribute name="enableSoslFilter" type="Boolean" default="true" access="public" description="If true, the sosl search functionality will be enabled" />
+    <aura:attribute name="showContactsFilter" type="Boolean" default="{! false }" access="public" description="If set to true, the filters will include a 'Contacts' filter. This filter will use all referenced Contact fields to filter on" />
+    <aura:attribute name="showSoslFilter" type="Boolean" default="{! false }" access="public" description="Flag to keep track of whether the SOSL search input is visible" />
+    <aura:attribute name="isLoading" type="Boolean" default="false" access="public" description="Is the data for the list view loading?"/>
+    <aura:attribute name="isCommunityUser" type="Boolean" default="false" access="public" description="Is logged in user is a community user"/>
+    <aura:attribute name="requiredDefaultFilters" type="List" default="[]" access="public" description="Holds field API names that are hidden in filters and cannot be removed"/>
+    
+    <!-- Private attributes -->
+    <aura:attribute name="fieldsDescribe" type="List" access="private" />
+    <aura:attribute name="isOverflowNeeded" type="Boolean" access="private" default="{! false }" />
+    <aura:attribute name="highlightOverflowButton" type="Boolean" default="{! false }" access="private" />
+    <aura:attribute name="showClearAllButton" type="Boolean" default="{! false }" access="private" />
+    <aura:attribute name="dropdownClass" type="String" access="private" default="slds-dropdown_right" />
+    <aura:attribute name="soslString" type="String" default="" access="private" description="Attribute to hold the SOSL search term" />
+    <aura:attribute name="filterComponents" type="Aura.Component[]" access="private" description="List to keep track of the rendered visible DataServiceFilter components" />
+    <aura:attribute name="overflowFilterComponents" type="Aura.Component[]" access="private" description="List to keep track of the rendered overflow DataServiceFilter components" />
+    <aura:attribute name="amountFiltersRenderRemaining" type="Integer" default="" access="private" description="This attribute is used to keep track of the total number of filters rendered so we can know when to start the calculations of the overflow filters" />
+    <aura:attribute name="preloadedLabel" type="String"  description="Attribute to preload custom labels" access="private"/>
+    
+    <!-- Handlers -->
+    <aura:handler name="change" value="{! v.soslString }" action="{! c.onSoslStringChange }" />
+    
+    <!--methods-->
+    <aura:method name="clearAllFilters" action="{!c.clearAll}"/>
+    
+    <!-- Component markup -->
+    <div class="{! 'slds-grid slds-m-top_small slds-grid--align-end slds-nowrap ' + v.class +(v.isLoading?' cxs-loading':'')}" aura:id="rootElement">
+        <lightning:layoutItem class="cxs-nowrap slds-p-bottom--xxx-small">
+            
+            <div class="slds-grid slds-show--inline" aura:id="button-clear">
+                <lightning:button label="{! $Label.c.Clear_filters }" variant="base" onclick="{! c.clearAll }" class="{! 'slds-m-right--medium slds-text-color--error ' + (v.showClearAllButton ? '' : 'slds-hidden')}"/>
+            </div>
+            
+            <aura:iteration items="{! v.fieldsDescribe }" var="fieldDescribe">
+                <c:DataServiceFilter aura:id="DataServiceFilter"
+                                     queryStructure="{! v.queryStructure }"
+                                     fieldDescribe="{! fieldDescribe }"
+                                     defaultFilters="{# v.filters }"
+                                     onChange="{! c.onFilterChange }"
+                                     onOpen="{! c.onFilterOpen }"
+                                     onRender="{! c.onFilterRender }"
+                                     />
+            </aura:iteration>
+            <c:Dropdown class="{! (v.isOverflowNeeded ? '' : 'slds-hide ') }"
+                        aura:id="overflow-dropdown"
+                        size="medium"
+                        buttonLabel="{! $Label.c.Other_filters }"
+                        buttonStateful="true"
+                        buttonSelected="{! v.highlightOverflowButton }"
+                        buttonIconName="utility:filterList"
+                        buttonIconNameWhenOpen="utility:close"
+                        buttonIconSize="medium"
+                        dropdownIsOpenClass="cxs-is-open"
+                        persistent="true">
+                
+                <!--<lightning:card title="{! $Label.c.Other_filters }" iconName="utility:filterList" class="">-->
+                
+                <div class="slds-grid slds-p-left--small slds-p-right--small">
+                    <div class="slds-dropdown__header slds-truncate slds-p-left--xx-small slds-p-bottom--none slds-grid slds-grid_vertical-align-center">
+                        
+                        <lightning:icon iconName="utility:filterList" size="x-small" class="slds-m-right--xx-small" />
+                        
+                        <span class="slds-text-title--caps" title="{! $Label.c.Other_filters }">
+                            {! $Label.c.Other_filters }
+                        </span>
+                    </div>
+                </div>
+                
+                <lightning:layout multipleRows="true" class="slds-m-around--medium slds-border--top" verticalAlign="start">
+                    <aura:iteration items="{! v.fieldsDescribe }" var="fieldDescribe">
+                        <c:DataServiceFilter aura:id="DataServiceFilterOverflow"
+                                             queryStructure="{! v.queryStructure }"
+                                             fieldDescribe="{! fieldDescribe }"
+                                             defaultFilters="{# v.filters }"
+                                             fullWidth="{! true }"
+                                             onChange="{! c.onFilterChange }"
+                                             onOpen="{! c.onFilterOpen }"
+                                             class="slds-m-top--medium"
+                                             />
+                    </aura:iteration>
+                </lightning:layout>
+                
+                <!--</lightning:card>-->
+                
+            </c:Dropdown>
+            
+            <aura:if isTrue="{! v.enableSoslFilter }">
+                <div class="slds-show_inline slds-text-color" aura:id="sosl-filter-button">
+                    <lightning:buttonIconStateful iconName="utility:search" onclick="{! c.toggleSoslFilter }" alternativeText="{! $Label.c.Text_search }" selected="{! v.showSoslFilter || not(empty(v.soslString)) }" class="slds-m-right--xx-small" variant="border-filled"/>
+                </div>
+            </aura:if>
+        </lightning:layoutItem>
+        
+    </div>
+    
+    <aura:if isTrue="{! v.enableSoslFilter }">
+        <lightning:layout horizontalAlign="end" verticalAlign="center" class="{! (!v.showSoslFilter ? 'slds-hide' : '') }">
+            <lightning:helptext content="{! $Label.c.Sosl_search_tooltip }" />
+            <lightning:layoutItem class="{! 'slds-grid slds-m-top_xx-small slds-m-right--xx-small slds-grid--align-end slds-nowrap' }" size="6" largeDeviceSize="6" mediumDeviceSize="6" smallDeviceSize="12" aura:id="sosl-search-input-container">
+            </lightning:layoutItem>
+        </lightning:layout>
+    </aura:if>
+
+</aura:component>

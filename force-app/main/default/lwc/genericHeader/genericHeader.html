@@ -1,0 +1,35 @@
+<!--
+* @Created By 	: Abhinav Sharma
+* @Created Date	: 02/14/2020
+* @description	: Header Component
+-->
+<template>
+    <template if:true={showHeader}>
+        <div class={outerDivClass}>
+            <div class="slds-page-header slds-media__body">
+                <div class ="slds-size--1-of-3  slds-float--left slds-grid">
+                    <template if:true={titleAndLabelAreNotBlank}>
+                        <div class ="slds-p-right--small">
+                            <lightning-icon icon-name={iconName} alternative-text={alternativeText}></lightning-icon>
+                        </div>
+                    </template>
+                    <template if:true={titleAndLabelAreNotBlank}>
+                        <div class ="slds-media__body ">
+                            <template if:true={labelNotBlank}>
+                                <p class="slds-text-heading--label slds-breadcrumb slds-line-height_reset slds-truncate">
+                                    {label}
+                                </p>
+                            </template>
+                            <template if:true={titleNotBlank}>
+                                <h1 class ="slds-page-header__title slds-breadcrumb slds-line-height_reset slds-truncate">
+                                    {title}
+                                </h1>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                <slot></slot>
+            </div>
+        </div>         
+    </template>
+</template>

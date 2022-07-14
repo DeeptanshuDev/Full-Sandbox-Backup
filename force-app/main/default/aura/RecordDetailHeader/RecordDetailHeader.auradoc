@@ -1,0 +1,34 @@
+<aura:documentation>
+    <aura:description>
+        <p>
+            A <code>c:RecordDetailHeader</code> component represents a detail page header whose state is controlled by the <code>title</code>,  <code>iconName</code> and <code>label</code> attributes. It's rendered as an HTML <code>div</code> tag of role <code>banner</code>.
+            We are currently utilizing it in <code>c:MyOrdersItems</code>.
+        </p>
+        <p>This is a basic set up of a record detail header.</p>		
+        <pre>&lt;c:RecordDetailHeader title="Account Detail" label="Account" iconName="standard:person_account"/></pre>
+        <p>This example results in the following HTML.</p>
+        <pre>
+            &lt;div class="slds-page-header " role="banner">
+                &lt;div class="slds-media">
+                    &lt;div class="slds-media__figure">
+                        &lt;span class="slds-icon_container">
+                            &lt;span class="slds-icon_container">
+                                &lt;lightning-icon class="slds-icon slds-icon-standard-person-account slds-icon_container" data-data-rendering-service-uid="147">
+                                    &lt;lightning-primitive-icon lightning-primitive-icon_primitive-icon="">
+                                        &lt;svg focusable="false" data-key="person_account" aria-hidden="true" class="slds-icon slds-icon_small" lightning-primitive-icon_primitive-icon="">
+                                            &lt;use xlink:href="/_slds/icons/standard-sprite/svg/symbols.svg?cache=9.8.0#person_account" lightning-primitive-icon_primitive-icon="">&lt;/use>
+                                        &lt;/svg>
+                                    &lt;/lightning-primitive-icon>
+                                &lt;/lightning-icon>
+                            &lt;/span>
+                        &lt;/span>
+                    &lt;/div>
+                    &lt;div class="slds-media__body">
+                        &lt;p class="slds-text-body_small slds-line-height_reset" title="Account">Account&lt;/p>
+                        &lt;h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Account Detail">Account Detail&lt;/h1>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+            </pre>
+    </aura:description>	
+</aura:documentation>

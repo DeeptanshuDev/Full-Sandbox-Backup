@@ -1,0 +1,102 @@
+<!--
+	Description  : Lookup Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="Lookup" extensible="true" controller="LookupController">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{! c.doInit }"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="fieldList" type="List" description="List to hold the fields detail wrapper" access="public"/>
+    <aura:attribute name="recordId" type="String" access="public"/>
+    <aura:attribute name="value" type="Id" description="Id value of the lookup" default="" access="public"/>
+    <aura:attribute name="sObjectName" type="String" access="public" description="The system name of the object used"/>
+    <aura:attribute name="fieldName" type="String" description="Lookup field name" default="" access="public"/>
+    <aura:attribute name="displayValue" type="String" description="Display value of the lookup" default="" access="public"/>
+    <aura:attribute name="referencedObjectName" type="String" description="API Name of the Object the lookup references" required="true" access="public"/>
+    <aura:attribute name="referencedObjectLabel" type="String" description="Label of the Object the lookup references" default="" access="public"/>
+    <aura:attribute name="error" type="String" description="Field error" access="public"/>
+    <aura:attribute name="extraResultFields" type="List" description="List of fieldnames to show under the results"/>
+    <aura:attribute name="namePointingList" type="List" description="List of objects, each object contains a salesforce object that this field can refer to." access="public"/>
+    <aura:attribute name="lookupApiName" type="String" description="Lookup Field Api Name" access="public"/>
+    <aura:attribute name="autoSelectExactName" type="Boolean" description="When the display name exactly matches the typed in text, the value will be auto-selected" default="true" access="public"/>
+    <aura:attribute name="whereField" type="String" description="Field for the where class in query" access="public"/>
+    <aura:attribute name="whereValue" type="Object" description="Value for the where class in query" access="public"/>
+
+    <!-- Private -->
+    <aura:attribute name="searchResultList" type="List" description="Results of the autotype as a list" access="private"/>
+    <aura:attribute name="searchResultMap" type="Object" description="Results of the autotype as a map" access="private"/>
+    <aura:attribute name="results" type="List" description="List of results shown to use to choose from" access="private"/>
+    <aura:attribute name="showResults" type="Boolean" description="Show or hide the result list" access="private"/>
+    <aura:attribute name="hasId" type="Boolean" default="true" description="Lookup has a valid id" access="private"/>
+    <aura:attribute name="oldValue" type="Id" description="Old id value of the lookup" access="private"/>
+    <aura:attribute name="focusedResult" type="Id" description="The ID of the result currently being focused"  access="private"/>
+    <aura:attribute name="valueOnBlur" type="Object" description="Holds the value to be set for value and displayValue on blur" access="private"/>
+    <aura:attribute name="noResultsFound" type="Boolean" description="Show or hide the result list" default="false" access="private"/>
+    <aura:attribute name="showSearchSpinner" type="Boolean" description="Show or hide the result list" default="false" access="private"/>
+    <aura:attribute name="lookupFilterData" type="Object" access="private"/>
+    <aura:attribute name="isInitDone" type="Boolean" default="false" access="private"/>
+    <aura:attribute name="isOptional" type="Boolean" default="false" access="private" description="Lookup filter is optional or not"/>
+    <aura:attribute name="showAllResultsLink" type="Boolean" default="false" access="private" description="Boolean to handle show all results link hide and show"/>
+    <aura:attribute name="showResultsList" type="Boolean" default="true" access="private" description="Boolean to show results only after results came from server-side call"/>
+    <aura:attribute name="labelPrefix" type="String" access="private" default=""/>
+
+    <!--global methods-->
+    <aura:method name="clearField" description="clear lookup field"/>
+
+    <!-- add event handler when lookup is changed -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent"/>
+    
+    <!--Component Markup-->
+    <div class="{! if(v.hasId,'cxsValidId','')}">
+        <div class="{!'slds-lookup slds-input-has-icon slds-input-has-icon--left-right '+if(v.showResults,'slds-is-open','')}">
+            <aura:if isTrue="{!v.namePointingList.length > 1}">
+                <ui:inputSelect change="{!c.onChangeNamePoint}" value="{!v.referencedObjectName}" class="cxsLookupSelectObject">
+                    <aura:iteration items="{!v.namePointingList}" var="namePoint">
+                        <ui:inputSelectOption text="{!namePoint.objectName}" label="{!namePoint.objectLabel}"/>
+                    </aura:iteration>
+                </ui:inputSelect>
+            <aura:set attribute="else">
+                <lightning:icon iconName="utility:search" size="x-small" class="cxsSearchIcon"/>
+            </aura:set>
+            </aura:if>
+            <button type="button" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon" onclick="{!c.clearField}">
+                <lightning:icon iconName="utility:clear" size="xx-small" class="slds-button__icon cxsClearIcon"/>
+            </button>
+            <div aura:id="searchInput">
+                <ui:inputText value="{!v.displayValue}" keydown="{!c.onKeyDown}" keyup="{!c.onKeyUp}" focus="{!c.onFocus}" updateOn="keyup" class="slds-input cxsSearchInput" placeholder="Search+'&nbsp;'+v.referencedObjectLabel}"/>
+                <div id="search-input" tabindex="-1"/>
+            </div>
+            <div class="slds-lookup__menu slds-p-top--none slds-p-bottom--none">
+                <ul aura:id="cxsLookupOptionsContainer" class="slds-lookup__list">
+                    <li>
+                        <span class="slds-lookup__item-action slds-lookup__item-action--label slds-text-body--small slds-text-color_weak slds-border_bottom">
+                            <lightning:icon iconName="utility:search" size="xx-small" class="slds-icon-text-default"/>
+                            <span class="slds-truncate">&quot;{!v.displayValue}&quot;&nbsp;Search in&nbsp;{!v.referencedObjectLabel}</span>
+                            <aura:if isTrue="{!v.isOptional &amp;&amp; v.showAllResultsLink}">
+                                <a class="cxsLookupShowAllResults" onclick="{!c.showAllResults}">Show All Results</a>
+                            </aura:if>
+                        </span>
+                    </li>
+                    <aura:if isTrue="{!v.showResultsList}">
+                        <aura:iteration items="{!v.results}" var="result">
+                            <li aura:id="cxsLookupOption" data-index="{!result.id}" onclick="{!c.clickResult}" class="{! 'slds-listbox__item slds-lookup__item-action slds-truncate ' + (v.focusedResult == result.id ? 'slds-has-focus' : '') }">
+                                <span class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta">
+                                    <span class="slds-media__body">
+                                        <span class="slds-listbox__option-text slds-listbox__option-text_entity"><aura:unescapedHtml value="{!result.showValue}"/></span>
+                                        <span class="slds-listbox__option-meta slds-listbox__option-meta_entity"><aura:unescapedHtml value="{!result.extraInfo}"/></span>
+                                    </span>
+                                </span>
+                            </li>
+                        </aura:iteration>
+                    </aura:if>
+                </ul>
+                <div  class="{!v.showSearchSpinner ? 'slds-is-relative slds-m-bottom_medium':'slds-hide'}">
+                    <lightning:spinner aura:id="SearchSpinner" size="small"/>
+                </div>
+                <div class="{!v.noResultsFound ? 'slds-m-around_small':'slds-hide'}">No Search Result Found</div>
+            </div>
+        </div>
+    </div>
+</aura:component>

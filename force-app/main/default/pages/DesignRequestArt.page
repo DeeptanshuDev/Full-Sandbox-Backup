@@ -1,0 +1,16 @@
+<apex:page id="DesignRequestArt" standardController="Design_Request__c"
+           extensions="DesignRequestArtCtrl" applyBodyTag="false">
+    
+    <apex:stylesheet value="{!URLFOR($Resource.DesignArtUpload)}/static/css/app.css" />
+    
+    <body>
+        <script>
+        	var __sfdcSessionId = '{!GETSESSIONID()}';
+        </script>
+        <div id="app"></div>
+        
+        <script type="text/javascript" src="{!URLFOR($Resource.DesignArtUpload)}/static/js/manifest.js"></script>
+        <script type="text/javascript" src="{!URLFOR($Resource.DesignArtUpload)}/static/js/vendor.js"></script>
+        <script type="text/javascript" src="{!URLFOR($Resource.DesignArtUpload)}/static/js/app.js"></script>
+    </body>
+</apex:page>

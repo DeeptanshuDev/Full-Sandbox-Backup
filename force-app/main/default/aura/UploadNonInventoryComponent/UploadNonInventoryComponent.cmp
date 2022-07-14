@@ -1,0 +1,44 @@
+<aura:component controller="UploadNonInventoryController" implements="force:appHostable,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickActionWithoutHeader,c:sObjectsPropertiesInterface" access="global">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="showLoadingSpinner" type="boolean" default="false" />
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <aura:attribute name="FilesUploaded" type="List" />
+    <aura:attribute name='componentString' type='String' />
+    <aura:attribute name="isUIThemeClassic" type="Boolean" default="false" />
+    
+    <div class="slds-m-top_medium">
+        <lightning:card>
+            <h1 slot="title" style="text-align:center;font-size:40px;"><strong>Custom Item Shipment Record Upload</strong></h1>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_12-of-12">
+                    <div class="slds-border_left">
+                        <p style="font-size:20px;">Upload CSV</p>
+                        <div class="slds-p-left_small slds-p-right_small">
+                            <p class="slds-text-align_center slds-m-around_x-large">
+                                <label class="uploadfilelabel" for="inputFile">
+                                    <div class="fileuploadare">
+                                        Drag &amp; drop files or click image to choose file
+                                    </div>        
+                                    <lightning:input aura:id="fileId" onchange="{!c.handleFilesChange}" 
+                                                     type="file" name="file" label="" multiple="false"
+                                                     accept=".csv"/>
+                                    <div class="slds-text-body_medium slds-text-color_error">{!v.fileName} </div>
+                                    <!--use aura:if for show-hide the loading spinner image--> 
+                                    <aura:if isTrue="{!v.showLoadingSpinner}">
+                                        <div class="slds-text-body_small slds-text-color_error">Uploading... 
+                                            <img src="/auraFW/resources/aura/images/spinner.gif" class="spinner-img" alt="Loading"/>'
+                                        </div>
+                                    </aura:if>                                    
+                                </label>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-align_absolute-center">
+                <button class="slds-button slds-button_brand" onclick="{!c.uploadFiles}">Save</button>
+                <button class="slds-button slds-button_brand" onclick="{!c.cancelButton}">Cancel</button>
+            </div>
+        </lightning:card>
+    </div>
+</aura:component>

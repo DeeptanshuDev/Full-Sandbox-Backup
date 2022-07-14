@@ -1,0 +1,25 @@
+.rbl .hide {
+  display: none; }
+
+.rbl .rbl-label {
+  font-weight: bold; }
+
+.rbl .rbl-pull-right {
+  float: right; }
+
+.rbl button[disabled],
+.rbl html input[disabled] {
+  cursor: default; }
+
+.rbl .rbl-form-control[disabled],
+.rbl .rbl-form-control[readonly],
+.rbl fieldset[disabled] .rbl-form-control {
+  background-color: #eee;
+  opacity: 1; }
+
+.rbl .rbl-form-control[disabled],
+.rbl fieldset[disabled] .rbl-form-control {
+  cursor: not-allowed; }
+
+#create-fit-kit-page .action-column {
+  text-align: center; }

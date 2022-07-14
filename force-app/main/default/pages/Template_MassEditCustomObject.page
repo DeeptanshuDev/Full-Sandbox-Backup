@@ -1,0 +1,55 @@
+<apex:page standardController="abc__c" recordSetVar="unused" sidebar="false" lightningStylesheets="true">
+    
+    <!-- for this page to work with a specific custom object, change standController="entityname" to custom object api name  
+For example, if custom object name is Warehouse__c, change first part of the first line to standardController="warehouse__c" -->
+    
+    
+    <apex:includeScript value="{!$Resource.UtilJS}" />
+    <script>
+        function hadleError(){
+            var nameData = document.getElementsByClassName("nameId");
+            var errorMessage = document.getElementsByClassName("errorMsg");
+            var error = false;
+            
+            for(var i=0; i< nameData.length; i++){
+                if(nameData[i].value == ''){   
+                    error = true;
+                    errorMessage[i].style.borderColor='Red';
+                    errorMessage[i].style.display='block';
+                }
+                else{
+                    
+                    errorMessage[i].style.display='none';
+                }
+            }
+            
+            if(error == false){
+                save();
+            }
+            
+             
+        }
+    </script>
+    <apex:form id="frm">
+       
+        <apex:pageBlock >
+            <apex:pageMessages />
+            <apex:pageBlock >
+                Note: All modifications made on the page will be lost if Return button is clicked without clicking the Save button first. 
+            </apex:pageBlock>
+           <div style="text-align:center;">
+                <apex:commandButton value="Save" onclick="hadleError(); return false;" action="{!save}" />
+                <apex:commandButton value="Return" action="{!cancel}"/>
+          </div>
+            
+            
+            <apex:pageBlockTable value="{!selected}" var="a" id="table" rendered="{!IF(selected != '',true,false)}" >
+                <apex:column headerValue="Name" >
+                    <apex:inputField value="{!a.name}" styleClass="nameId"/>
+                    <span class="errorMsg" style="display:none"><b>ERROR:</b>Please complete the field value.</span>
+                </apex:column>
+            </apex:pageBlockTable>
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

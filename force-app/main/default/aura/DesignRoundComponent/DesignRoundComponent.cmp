@@ -1,0 +1,59 @@
+<!--
+    Purpose         :   This is used to create design round record under design request.
+    
+    Created By      :   Abhinav Sharma
+    
+    Created Date    :   01/20/2020
+    
+    Current Version :   v1.0
+    
+    Revision Log    :   V_1.0 Created - Abhinav Sharma - 01/20/2020
+-->
+<aura:component access="global">
+    
+    <!--To hold selected details of design round to going be create under design request.-->
+    <aura:attribute name="selectedVersion" type="String" default=" " access="public"/>
+    <aura:attribute name="selectedGender" type="String" default=" " access="public"/>
+    <aura:attribute name="selectedReasonForRevision" type="String" default=" " access="public"/>
+    <aura:attribute name="designRound" type="Design_Round__c" 
+                    default="{ 'sobjectType': 'Design_Round__c' }" access="public"/>
+    
+    <aura:attribute name="method" type="Aura.action"/>
+    
+    <!--To draw design round object record screen to create records.-->
+    <br/>
+    
+    <div class="slds-m-left--medium">
+        <div class="slds-grid slds-wrap">
+            
+            <!--To display field with its value-->
+            <div class="slds-col slds-size_3-of-12">
+                <lightning:icon iconName="utility:favorite" class="iconClass" alternativeText="Required" />
+                <label>Version</label> 
+                <br/>
+                <force:inputField value="{!v.designRound.Version__c}" 
+                                  aura:id="versionId" change="{!c.setVersion}"/>
+            </div>
+            <div class="slds-col slds-size_1-of-12">
+                
+            </div>
+            <div class="slds-col slds-size_3-of-12">
+                <lightning:icon iconName="utility:favorite" class="iconClass" alternativeText="Required" />
+                <label>Gender</label>
+                <br/>
+                <force:inputField value="{!v.designRound.Gender__c}" 
+                                  aura:id="genderId"  change="{!c.setGender}"/>
+            </div>
+            <div class="slds-col slds-size_1-of-12">
+                
+            </div>
+            <div class="slds-col slds-size_3-of-12">
+                <lightning:icon iconName="utility:favorite" class="iconHideClass" alternativeText="Required" />
+                <label>Reason for Revision</label>
+                <br/>
+                <force:inputField value="{!v.designRound.Reason_for_Revision__c}" 
+                                  aura:id="reasonForRevisionId" change="{!c.setReasonForRevision}"/>
+            </div>
+        </div>
+    </div>
+</aura:component>

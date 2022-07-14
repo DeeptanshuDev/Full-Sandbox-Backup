@@ -1,0 +1,57 @@
+/** 
+* 
+* Description : Test class for CustomerPurchaseOrderTriggerHandler trigger handler.
+* 
+* Created By : Deeptanshu Bharti
+* 
+* Created Date : 05/23/2022 
+* 
+* Revision Logs : V1.0 - Created - Deeptanshu Bharti 
+* 
+**/
+
+@isTest (seeAllData=false)
+public class CustomerPurchaseOrderTriggerHandler_Test {
+    /**
+    *
+    * @description : Test method for CustomerPurchaseOrderTriggerHandler handler
+    *
+    * @args :
+    *
+    * @return : void
+    *
+    * @revision Log : V1.1 - Created - 05/23/2022 - Deeptanshu Bharti
+    *
+    * coverage : 100
+    *
+    **/
+    static testMethod void myFirstMethod_Test()
+    {
+        SCMC__Currency_Master__c cm = new SCMC__Currency_Master__c(Name='USD',SCMC__Active__c=true,SCMC__Corporate_Currency__c=true);
+        insert cm;
+        Account newAccount = new Account(Name='TestAcc',SCMC__Currency__c=cm.id);
+        insert newAccount;
+        Contact newContact = new Contact(FirstName='Bill',LastName='Bob',AccountId = newAccount.Id);
+        insert newContact;
+        
+        RecordType rt = [SELECT Id, Name FROM RecordType WHERE Name = 'Drop Ship Item' and SObjectType='SCMC__Sales_Order__c'];
+        SCMC__Sales_Order__c newSO = new SCMC__Sales_Order__c(SCMC__Customer_Account__c=newAccount.Id,SCMC__Sales_Order_Date__c=system.today(),SCMC__Primary_Sales_Rep__c='00515000007GsKB',RecordTypeId=rt.Id);
+        insert newSO;
+        SCMC__Sales_Order_Line_Item__c newSOLI = new SCMC__Sales_Order_Line_Item__c(SCMC__Sales_Order__c=newSO.Id,SCMC__Item_Master__c='a8H1C000000TlId',SCMC__Quantity__c=1,Retail_Price__c=10,SCMC__Price__c=10);
+        insert newSOLI;
+        SCMC__Sales_Order__c soObj = [SELECT Id,Name FROM SCMC__Sales_Order__c WHERE Id =: newSO.Id];
+        Customer_Purchase_Order__c cpo1 = new Customer_Purchase_Order__c(Account__c = newAccount.Id,Sales_Orders__c = soObj.Name,Status__c='Approved');
+        //Customer_Purchase_Order__c cpo2 = new Customer_Purchase_Order__c(Account__c = newAccount.Id,Sales_Orders__c = newSO.Name,Status__c='Pending Review');
+        List<Customer_Purchase_Order__c> listOfCPO = new List<Customer_Purchase_Order__c>();
+        listOfCPO.add(cpo1);
+        //listOfCPO.add(cpo2);
+        Test.startTest();
+        insert listOfCPO;
+       
+        
+        //CustomerPurchaseOrderTriggerHandler.getSalesOrderNumber(listOfCPO,NULL);
+        
+        Test.stopTest();
+    }
+
+}

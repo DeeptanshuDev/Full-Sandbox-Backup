@@ -1,0 +1,43 @@
+<!--
+	Description  : Lightning component to display row actions on My Orders table.
+	Created By   : Abhinav Sharma
+-->
+<aura:component>
+    
+    <!--Static Resource to have Base Utility methods and associated logics-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="row" type="Object" access="public"/>
+    <aura:attribute name="objectAccess" type="Object" access="public"/>
+    <aura:attribute name="navigationType" type="String" description="Navigation type value" access="public"/>
+    <aura:attribute name="doRefreshParent" type="Boolean" access="public" default="false"/>
+    
+    <aura:attribute name="overlay" type="Aura.Component[]"/>
+    
+    <!--Row Action Options-->
+    <lightning:buttonMenu aura:id="menu"  onselect="{!c.handleSelect}" menuAlignment="right" 
+                          alternativeText="Show menu">
+        <lightning:menuItem aura:id="showItems" value="showItems" label="{!$Label.c.Show_Items}" />
+        <lightning:menuItem aura:id="showDetails" value="showDetails" 
+                            label="{!$Label.c.Show_Details}" />
+        <lightning:menuItem aura:id="salesOrder" value="salesOrder" 
+                            label="{!$Label.c.Sales_Order}" />
+    </lightning:buttonMenu>
+
+    
+    
+    <aura:html tag="style">
+        @media (min-width: 48em) {
+        	.slds-modal_large .slds-modal__container {
+        		width: 95%;
+        		max-width: none;
+        		min-width: 40rem;
+        	}
+        }
+    </aura:html>
+    
+    <!--Overlay Library-->
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    
+</aura:component>

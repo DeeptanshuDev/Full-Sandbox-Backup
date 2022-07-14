@@ -1,0 +1,9 @@
+.THIS .slds-table [role=gridcell].slds-has-focus, .THIS .slds-table [role=gridcell]:focus, .THIS .slds-table th.slds-has-focus, .THIS .slds-table th:focus {
+    box-shadow: inset 0 0 0 0px #fafafa;
+}
+
+.THIS .errorDiv {
+    color: red;
+    text-align: center;
+    padding-top: 10px;
+}

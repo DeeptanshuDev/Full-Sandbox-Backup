@@ -1,0 +1,46 @@
+<apex:page standardController="Account" id="mainPage" extensions="attachmentCPO">
+	<apex:form id="mainForm">
+    	<apex:pageBlock title="Customer Purchase Order" id="mainBlock">
+            <apex:pageBlockSection title="Sales Order(s)" columns="1" id="soBlockSection">
+                    <!--Picklist-->
+                <apex:panelGrid columns="3" id="multiPick">
+                    <apex:selectList id="sel1" value="{!leftSelected}" multiselect="true" style="width:200px" size="10">
+                        <apex:selectOptions value="{!unselectedValues}"/>
+                    </apex:selectList>
+                    <apex:selectList id="sel2" value="{!rightSelected}" multiselect="true" style="width:200px" size="10">
+                        <apex:selectOptions value="{!selectedValues}"/>
+                    </apex:selectList>
+                    <apex:outputText value="{!msg}"/>
+                </apex:panelGrid>
+                <apex:pageBlockSectionItem >
+                	<apex:actionRegion >
+                    	<apex:commandButton action="{!selectClick}" value="Add" style="width:200px"/>
+                    	<apex:commandButton action="{!unselectClick}" value="Remove" style="width:200px"/>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="CPO Details" columns="1" id="mainBlockSection">
+                <apex:pageMessages />
+                <apex:inputField value="{!myCPO.Account__c}" id="accountField" required="true"/>
+                <apex:inputField value="{!myCPO.PO_Number__c}" id="poNum"/>
+            </apex:pageBlockSection>
+                            <!-- Buttons -->
+            <apex:pageBlockButtons location="bottom" style="left">
+                <apex:inputFile value="{!myFile.body}" fileName="{!myFile.Name}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockButtons location="bottom">
+                <apex:actionRegion >
+                    
+                    <apex:commandButton action="{!saveCPO}" value="Save"/>
+                	<apex:commandButton action="{!cancel}" value="Cancel"/>
+				</apex:actionRegion>
+            </apex:pageBlockButtons>
+    </apex:pageBlock>
+    <script>
+    	window.onload = function(){
+            document.getElementById('mainPage:mainForm:mainBlock:mainBlockSection:accountField').value = "{!Account.name}";
+            };
+    </script>
+	</apex:form>
+</apex:page>

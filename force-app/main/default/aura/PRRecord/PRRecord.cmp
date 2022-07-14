@@ -1,0 +1,14 @@
+<aura:component >
+    <aura:attribute name="prRecord" type="Standardized_Item__c[]"/>
+    <div class="slds-card slds-P-bottom_medium">
+        <p>Product Family : {!v.prRecord.Family}</p>
+        <p>Product Category : {!v.prRecord.Product_Category__c}</p>
+        <p>Product Subcategory : {!v.prRecord.Product_Subcategory__c}</p>
+        <p>SubCategory Detail : {!v.prRecord.SubCategory_Detail__c}</p>
+        <p>Standardized Style Number : {!v.prRecord.Standardized_Style_Number__c}</p>
+        <p>Product Line / Brand : {!v.prRecord.Product_Line_Brand__c}</p>
+        <p>Size : {!v.prRecord.Size__c}</p>
+        <p>Fabric : {!v.prRecord.Fabric__c}</p>
+    </div>
+	
+</aura:component>

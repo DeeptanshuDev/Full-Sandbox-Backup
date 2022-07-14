@@ -1,0 +1,18 @@
+<apex:page standardController="SCMC__Catalog_Load__c"  
+           recordSetVar="loadCat"  
+           extensions="SCMCLLoadCatalogExtension" 
+           action="{!process}"
+           title="Load Catalogs" lightningStylesheets="true">
+   <apex:form id="frm">
+        <apex:pageblock title="Load Catalog from staging table">
+             <apex:pageBlockSection title="Warnings and Errors Associated with submit load catalog" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:pageMessages />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection> 
+        </apex:pageblock>
+        <div style="text-align: center">
+            <apex:commandButton value="Back" action="{!goBack}" style="width:90px" rerender="frm"/>
+        </div>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,20 @@
+<apex:page Standardcontroller="Opportunity">
+    <apex:includeLightning />
+    <div id="lightning" />
+    
+    <script>
+    	var theme  = '{!$User.UITheme}';
+        $Lightning.use("c:SalesOrderDetailsLCApp", function() {
+          $Lightning.createComponent("c:SalesOrderDetailsLC",
+              {
+                  recordId : "{!$CurrentPage.parameters.id}",
+                  isUIThemeClassic : {!$User.UITheme != 'Theme4d'}
+              },
+              "lightning",
+              function(cmp) {
+                  console.log("Lightning Component is loaded");
+              }
+          );
+        });
+    </script>
+</apex:page>

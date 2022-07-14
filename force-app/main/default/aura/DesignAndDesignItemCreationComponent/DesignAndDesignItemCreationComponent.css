@@ -1,0 +1,39 @@
+.THIS .uploadfilelabel {
+    display: block;
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+.THIS .fileuploadare{
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background: #ccc;
+    border: 3px dotted #bebebe;
+    padding: 20px 0;
+    margin: 0 auto;
+}
+.THIS .fileupload .slds-form-element__label {
+    display: none;
+}
+.THIS .fileupload .slds-file-selector.slds-file-selector_files {
+    width: 100%;
+}
+.THIS .fileupload .slds-file-selector__dropzone {
+    width: 100%;
+    min-height: 65px;
+}
+.THIS .fileupload slot[interop-primitiveFileDroppableZone_primitiveFileDroppableZone] {
+    display: inline-block;
+    float: left;
+    width: 100%;
+}
+.THIS .fileupload .slds-file-selector__body {
+    width: 100%;
+    display: block;
+    float: left;
+    align-items: normal;
+}
+.THIS .fileUploadBox{
+    width:800px;
+}

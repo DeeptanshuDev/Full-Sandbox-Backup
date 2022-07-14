@@ -1,0 +1,31 @@
+<!--
+	Description  : Table Row Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="The row in a TableComponent" extends="c:AbstractRowRenderer">
+
+    <aura:dependency resource="markup://c:Table_Column"/>
+    <aura:attribute name="cellComponentName" type="String" access="public" required="true" description="The name of the component to create the cells with" default="Table_Column"/>
+
+    <!-- call the parent type init method -->
+    <aura:handler name="init" value="{!this}" action="{! c.doInit }" />
+    
+    <tr class="slds-hint-parent rowMinHeight" aura:id="row">
+        <aura:if isTrue="{!v.selectable}">
+            <td role="gridcell">
+                <div class="slds-truncate slds-align--absolute-center" aura:id="cell">
+                    <ui:inputCheckbox value="{!v.selected}" change="{!c.selectChange}"/>
+                </div>
+            </td>
+        </aura:if>
+        {! v.body }
+        <aura:if isTrue="{!v.displayInfoColumn}">
+        	<td role="gridcell" class="cxs-info-column slds-p-left_none"></td>
+        </aura:if>
+        <aura:if isTrue="{!v.renderedActionComponents.length > 0}">
+            <td role="gridcell" class="slds-p-left_none">
+                {!v.renderedActionComponents}
+            </td>
+        </aura:if>
+    </tr>
+</aura:component>

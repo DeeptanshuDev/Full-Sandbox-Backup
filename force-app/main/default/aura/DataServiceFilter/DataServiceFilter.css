@@ -1,0 +1,44 @@
+.THIS .filter-values-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.THIS .slds-button--neutral.filter-btn {
+    border-color: token(colorBorderBrand);
+}
+
+.THIS .no-label label {
+    /*display: none;*/
+}
+
+.THIS .footerPosition {
+    position: inherit ;
+    bottom: auto ;
+}
+
+/*hide error message on radius step mismatch validation*/
+.THIS div.search-radius.hideError > lightning-input.slds-has-error .slds-input {
+    border: 1px solid rgb(221, 219, 218);
+    box-shadow: unset;
+}
+
+.THIS div.search-radius.hideError > lightning-input.slds-has-error .slds-input:focus,
+.THIS div.search-radius.hideError > lightning-input.slds-has-error .slds-input:active {
+    border-color: rgb(21, 137, 238);
+    box-shadow: 0 0 3px #0070d2;
+}
+
+.THIS div.search-radius.hideError > .slds-has-error .slds-form-element__help {
+    display: none;
+}
+
+/*hide arrows to increase/decrease number input*/
+.THIS .search-radius input::-webkit-inner-spin-button,
+.THIS .search-radius input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Remove 'clear field' X button from Edge browser */
+.THIS .search-radius input::-ms-clear {
+    display: none;
+}

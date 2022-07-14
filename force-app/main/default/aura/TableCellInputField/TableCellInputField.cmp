@@ -1,0 +1,26 @@
+<aura:component description="Input field">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!join(',',$Resource.Baseutility)}" afterScriptsLoaded="{! c.doInit }"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="id" type="String" description="Id of the job application" access="public"/>
+    <aura:attribute name="row" type="Object" access="public"/>
+    <aura:attribute name="value" type="Integer" access="public"/>
+    <aura:attribute name="type" type="Object" access="public"/>
+    
+    <!--Private Attributes-->
+    <aura:attribute name="initDone" type="Boolean" default="false" description="For letting the destroyhandler know, the component has been initialised." access="private"/>
+    
+    <!--Register Event-->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!--handlers-->
+    <aura:handler name="change" value="{!v.value}" action="{!c.valueChange}"/>
+    
+    <!--Component Markup-->
+    <div aura:id="InputCell" class="input_width_50">
+        <label for="numberField"></label>
+        <lightning:input id="numberField" type="number" name="input" label="" value="{!v.value}" pattern="[0-9]*" formatter="######" min="0"/>
+    </div>
+</aura:component>

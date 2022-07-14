@@ -1,0 +1,216 @@
+@font-face {
+    font-family: "ConnexysIcons";
+    src: url("./ConnexysIcons.eot?39e75f3f6e26e40745a25a25d4edb0f8?#iefix") format("embedded-opentype"),
+url("./ConnexysIcons.woff2?39e75f3f6e26e40745a25a25d4edb0f8") format("woff2"),
+url("./ConnexysIcons.woff?39e75f3f6e26e40745a25a25d4edb0f8") format("woff"),
+url("./ConnexysIcons.ttf?39e75f3f6e26e40745a25a25d4edb0f8") format("truetype"),
+url("./ConnexysIcons.svg?39e75f3f6e26e40745a25a25d4edb0f8#ConnexysIcons") format("svg");
+}
+
+i {
+    line-height: 1;
+}
+
+i[class*="icon-"]:before {
+    font-family: ConnexysIcons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    vertical-align: middle;
+    -webkit-font-smoothing: antialiased;
+
+    /* custom added styles */
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    font-size: medium;
+    color: #fff;
+}
+
+.icon-custom-infoPanel:before {
+    content: "\f101";
+}
+.icon-object-browse:before {
+    content: "\f102";
+}
+.icon-object-campusEvents:before {
+    content: "\f103";
+}
+.icon-object-candidate:before {
+    content: "\f104";
+}
+.icon-object-candidateSearch:before {
+    content: "\f105";
+}
+.icon-object-compare:before {
+    content: "\f106";
+}
+.icon-object-contact:before {
+    content: "\f107";
+}
+.icon-object-generalList:before {
+    content: "\f108";
+}
+.icon-object-jobApplications:before {
+    content: "\f109";
+}
+.icon-object-jobSearch:before {
+    content: "\f10a";
+}
+.icon-object-jobs:before {
+    content: "\f10b";
+}
+.icon-object-proposals:before {
+    content: "\f10c";
+}
+.icon-object-talentpools:before {
+    content: "\f10d";
+}
+.icon-object-workflow:before {
+    content: "\f10e";
+}
+.icon-step-answerShare:before {
+    content: "\f10f";
+}
+.icon-step-application:before {
+    content: "\f110";
+}
+.icon-step-calendar:before {
+    content: "\f111";
+}
+.icon-step-candidateAccept:before {
+    content: "\f112";
+}
+.icon-step-candidateDecline:before {
+    content: "\f113";
+}
+.icon-step-candidateInfo:before {
+    content: "\f114";
+}
+.icon-step-candidateNoshow:before {
+    content: "\f115";
+}
+.icon-step-candidateUpdateRequest:before {
+    content: "\f116";
+}
+.icon-step-candidateWithdraw:before {
+    content: "\f117";
+}
+.icon-step-email:before {
+    content: "\f118";
+}
+.icon-step-extraDoc:before {
+    content: "\f119";
+}
+.icon-step-flibbase:before {
+    content: "\f11a";
+}
+.icon-step-generateCV:before {
+    content: "\f11b";
+}
+.icon-step-jobOffer:before {
+    content: "\f11c";
+}
+.icon-step-jobOfferAccept:before {
+    content: "\f11d";
+}
+.icon-step-jobOfferDecline:before {
+    content: "\f11e";
+}
+.icon-step-notes:before {
+    content: "\f11f";
+}
+.icon-step-questionnaire:before {
+    content: "\f120";
+}
+.icon-step-reject:before {
+    content: "\f121";
+}
+.icon-step-review:before {
+    content: "\f122";
+}
+.icon-step-share:before {
+    content: "\f123";
+}
+.icon-step-step:before {
+    content: "\f124";
+}
+
+/* Custom style stars here */
+
+/* Add border to icons and fit to assigned size */
+[class^="icon-"] {
+    display: inline-block;
+    border-radius: 4px;
+}
+
+/* center align step icons */
+[class^="icon-step-"]::before {
+    padding-top: 4px;
+}
+
+/* Object icons default colors */
+.icon-object-proposals { background-color:#F1D55D; }
+.icon-object-talentpools { background-color:#79C0F1; }
+.icon-object-workflow { background-color:#46D3C9; }
+.icon-object-compare { background-color:#46D3C9; }
+.icon-object-browse { background-color:#46D3C9; }
+.icon-object-jobApplications { background-color:#FDA94B; }
+.icon-object-candidate { background-color:#41C26E; }
+.icon-object-candidateSearch { background-color:#f88962; }
+.icon-object-jobSearch { background-color:#696E71; }
+.icon-object-contact { background-color:#A094ED; }
+.icon-object-generalList { background-color:#54698D; }
+.icon-object-jobs { background-color:#0279BC; }
+
+/* Workflow step default colors */
+.icon-step-answerShare { background-color:#0DC2D9; }
+.icon-step-application { background-color:#95AEC5; }
+.icon-step-candidateNoshow { background-color:#FFB75D; }
+.icon-step-candidateWithdraw { background-color:#ffB75D; }
+.icon-step-flipbase { background-color:#95AEC5; }
+.icon-step-generateCV { background-color:#95AEC5; }
+.icon-step-jobOffer { background-color:#54698D; }
+.icon-step-step { background-color:#54698D; }
+.icon-step-eventLike { background-color:#54698D; }
+.icon-step-eventSelect { background-color:#54698D; }
+.icon-step-reject { background-color:#EF6E64; }
+.icon-step-notes { background-color:#6CA1E9; }
+.icon-step-calendar { background-color:#00C6B7; }
+.icon-step-share { background-color:#62B7ED; }
+.icon-step-questionnaire { background-color:#54698D; }
+.icon-step-email { background-color:#696E71; }
+.icon-step-candidateUpdateRequest { background-color:#0279BC; }
+.icon-step-candidateAccept { background-color:#8B9BE3; }
+.icon-step-candidateDecline { background-color:#F88962; }
+.icon-step-candidateInfo { background-color:#54698D; }
+.icon-step-jobOfferAccept { background-color:#7DC37D; }
+.icon-step-jobOfferDecline { background-color:#f88962; }
+.icon-step-extraDoc { background-color:#95AEC5; }
+.icon-step-review { background-color:#95AEC5; }
+
+/* Timeline step default colors */
+.slds-timeline__step-answerShare:before { background-color:#0DC2D9; }
+.slds-timeline__step-application:before { background-color:#95AEC5; }
+.slds-timeline__step-candidateNoshow:before { background-color:#FFB75D; }
+.slds-timeline__step-candidateWithdraw:before { background-color:#ffB75D; }
+.slds-timeline__step-flipbase:before { background-color:#95AEC5; }
+.slds-timeline__step-generateCV:before { background-color:#95AEC5; }
+.slds-timeline__step-jobOffer:before { background-color:#54698D; }
+.slds-timeline__step-step:before { background-color:#54698D; }
+.slds-timeline__step-eventLike:before { background-color:#54698D; }
+.slds-timeline__step-eventSelect:before { background-color:#54698D; }
+.slds-timeline__step-reject:before { background-color:#EF6E64; }
+.slds-timeline__step-notes:before { background-color:#6CA1E9; }
+.slds-timeline__step-calendar:before { background-color:#00C6B7; }
+.slds-timeline__step-share:before { background-color:#62B7ED; }
+.slds-timeline__step-questionnaire:before { background-color:#54698D; }
+.slds-timeline__step-email:before { background-color:#696E71; }
+.slds-timeline__step-candidateUpdateRequest:before { background-color:#0279BC; }
+.slds-timeline__step-candidateAccept:before { background-color:#8B9BE3; }
+.slds-timeline__step-candidateDecline:before { background-color:#F88962; }
+.slds-timeline__step-candidateInfo:before { background-color:#54698D; }
+.slds-timeline__step-jobOfferAccept:before { background-color:#7DC37D; }
+.slds-timeline__step-jobOfferDecline:before { background-color:#f88962; }
+.slds-timeline__step-extraDoc:before { background-color:#95AEC5; }
+.slds-timeline__step-review:before { background-color:#95AEC5; }

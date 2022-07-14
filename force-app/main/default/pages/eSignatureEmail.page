@@ -1,0 +1,68 @@
+<!--
+*  Purpose          :    Confirmation page for send email for Art Approval
+*
+*  Create By        :    Chirag Soni
+*  
+*  Revision Log     :   v1.0 -  Created - 03/03/2021
+* 
+-->
+<apex:page standardController="Design_Round__c" extensions="eSignatureEmailController" showHeader="false" standardStylesheets="true" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <title>eSignature Confirmation</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <apex:slds />
+        </head>
+        <body class="slds-scope">
+            <apex:form >
+                <apex:outputPanel rendered="{!LEN(errorMessage)<1}">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Confirmation</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <p class="slds-align_absolute-center">Are you sure you want to send document for approval to <b> {!Design_Round__c.eSignature_Recipient_Contact__r.Name}</b>?</p>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <div class="slds-align_absolute-center">
+                                    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!URLFOR($Action.Design_Round__c.View, Design_Round__c.Id)}" value="No"></apex:commandButton>
+                                    <apex:commandButton styleClass="slds-button slds-button_brand" action="{!sendEmailToRecipient}" value="Yes"/>
+                                </div>
+                            </footer>
+                        </div>
+                    </section>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!LEN(errorMessage)>0}"> 
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <div class="slds-scoped-notification slds-media slds-media_center slds-theme_error" role="status">
+                                    <div class="slds-media__figure">
+                                        <span class="slds-icon_container slds-icon-utility-error" title="error">
+                                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#error')}"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Error</span>
+                                        </span>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <p>{!errorMessage}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <div class="slds-align_absolute-center">
+                                    <apex:commandButton styleClass="slds-button slds-button_brand" action="{!URLFOR($Action.Design_Round__c.View, Design_Round__c.Id)}" value="Okay"></apex:commandButton>
+                                </div>
+                            </footer>
+                        </div>
+                    </section>
+                </apex:outputPanel>
+            </apex:form>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </body>
+    </html>
+</apex:page>

@@ -1,0 +1,876 @@
+webpackJsonp([1], {
+	B04Q: function (e, t, n) {
+		"use strict";
+		var s = function () {
+				var e = this,
+					t = e.$createElement,
+					n = e._self._c || t;
+				return n("div", {
+					attrs: {
+						id: "app"
+					}
+				}, [n("LoadingAnimation", {
+					directives: [{
+						name: "show",
+						rawName: "v-show",
+						value: e.isUploading,
+						expression: "isUploading"
+					}]
+				}), e._v(" "), n("div", {
+					staticClass: "title"
+				}, [n("small", [e._v("Upload Designs")]), e._v("Design Request: " + e._s(e.designRequestName))]), e._v(" "), n("div", {
+					staticClass: "gender-version"
+				}, [n("div", {
+					staticClass: "form-group"
+				}, [n("label", {
+					attrs: {
+						for: "version"
+					}
+				}, 
+				[e._v("Version")]), e._v(" "), n("select", {
+					directives: [{
+						name: "model",
+						rawName: "v-model",
+						value: e.version,
+						expression: "version"
+					}],
+					staticClass: "form-control",
+					attrs: {
+						id: "version"
+					},
+					on: {
+						change: function (t) {
+							var n = Array.prototype.filter.call(t.target.options, function (e) {
+								return e.selected
+							}).map(function (e) {
+								return "_value" in e ? e._value : e.value
+							});
+							e.version = t.target.multiple ? n : n[0]
+						}
+					}
+				}, e._l(e.versions, function (t) {
+					return n("option", {
+						domProps: {
+							value: t.value
+						}
+					}, [e._v(e._s(t.label))])
+				}))]), e._v(" "), n("div", {
+					staticClass: "form-group"
+				}, [n("label", {
+					attrs: {
+						for: "version"
+					}
+				}, [e._v("Gender")]), e._v(" "), n("select", {
+					directives: [{
+						name: "model",
+						rawName: "v-model",
+						value: e.gender,
+						expression: "gender"
+					}],
+					staticClass: "form-control",
+					attrs: {
+						id: "version"
+					},
+					on: {
+						change: function (t) {
+							var n = Array.prototype.filter.call(t.target.options, function (e) {
+								return e.selected
+							}).map(function (e) {
+								return "_value" in e ? e._value : e.value
+							});
+							e.gender = t.target.multiple ? n : n[0]
+						}
+					}
+				}, [n("option", {
+					attrs: {
+						value: ""
+					}
+				}, [e._v("-- select --")]), e._v(" "), n("option", {
+					attrs: {
+						value: "Boy"
+					}
+				}, [e._v("Boy")]), e._v(" "), n("option", {
+					attrs: {
+						value: "Girl"
+					}
+				}, [e._v("Girl")])])]), e._v(" "),
+				n("div", {
+					staticClass: "form-group"
+				}, [n("label", {
+					attrs: {
+						for: "version"
+					}
+				}, [e._v("Reason for Revision")]), e._v(" "), n("select", {
+					directives: [{
+						name: "model",
+						rawName: "v-model",
+						value: e.reasonforrevision,
+						expression: "reasonforrevision"
+					}],
+					staticClass: "form-control",
+					attrs: {
+						id: "version"
+					},
+					on: {
+						change: function (t) {
+							var n = Array.prototype.filter.call(t.target.options, function (e) {
+								return e.selected
+							}).map(function (e) {
+								return "_value" in e ? e._value : e.value
+							});
+							e.reasonforrevision = t.target.multiple ? n : n[0]
+						}
+					}
+				}, e._l(e.reasonforrevisions, function (t) {
+					return n("option", {
+						domProps: {
+							value: t.value
+						}
+					}, [e._v(e._s(t.label))])
+				}))]), e._v(" "),
+				]), e._v(" "), n("div", {
+					staticClass: "form-group",
+					style: "width:600px !important;"
+				}, [n("label", {
+					attrs: {
+						for: "version"
+					}
+				})]), /*[e._v("Revision Notes")]), e._v(" "),
+				n("textarea", {
+						directives: [{
+							name: "model",
+							rawName: "v-model",
+							value: e.revisionnotes,
+							expression: "revisionnotes"
+						}],
+						staticClass: "form-control revnotes",
+						domProps: {
+							value: e.revisionnotes
+						},
+						on: {
+							input: function (e) {
+								e.revisionnotes = document.getElementsByClassName("revnotes")[0].value;
+							},
+							change: function (t) {
+								e.revisionnotes = document.getElementsByClassName("revnotes")[0].value;
+							}
+						}
+					})]),*/ e._v(" "), n("DropZone", {
+					on: {
+						fileDropped: e.addFile
+					}
+				}),e._v(" "), n("div", {
+					staticClass: "section-heading"
+				}, [e._v("Designs")]), e._v(" "), 0 === e.designs.length ? n("div", {
+					staticClass: "empty-table-surrogate"
+				}, [e._v("\n    There are no designs yet.\n  ")]) : e._e(), e._v(" "), e.designs.length > 0 ? n("table", {
+					staticClass: "rbl-table"
+				}, [e._m(0), e._v(" "), e._l(e.designs, function (t) {
+					return n("tr", [n("td", [e._v(e._s(t.Name))]), e._v(" "), n("td", [n("img", {
+						attrs: {
+							height: "300px",
+							src: t.dataURL
+						}
+					})]), e._v(" "), n("td", {
+						staticClass: "option-number"
+					}, [n("input", {
+						directives: [{
+							name: "model",
+							rawName: "v-model",
+							value: t.Option_Number__c,
+							expression: "design.Option_Number__c"
+						}],
+						staticClass: "form-control",
+						attrs: {
+							type: "number"
+						},
+						domProps: {
+							value: t.Option_Number__c
+						},
+						on: {
+							input: function (e) {
+								e.target.composing || (t.Option_Number__c = e.target.value)
+							}
+						}
+					})]), e._v(" "), n("td", {
+						staticClass: "needs-pricing"
+					}, [n("input", {
+						directives: [{
+							name: "model",
+							rawName: "v-model",
+							value: t.Needs_Pricing__c,
+							expression: "design.Needs_Pricing__c"
+						}],
+						staticClass: "form-check-input",
+						attrs: {
+							type: "checkbox"
+						},
+						domProps: {
+							checked: Array.isArray(t.Needs_Pricing__c) ? e._i(t.Needs_Pricing__c, null) > -1 : t.Needs_Pricing__c
+						},
+						on: {
+							__c: function (n) {
+								var s = t.Needs_Pricing__c,
+									i = n.target,
+									r = !!i.checked;
+								if (Array.isArray(s)) {
+									var a = e._i(s, null);
+									i.checked ? a < 0 && (t.Needs_Pricing__c = s.concat([null])) : a > -1 && (t.Needs_Pricing__c = s.slice(0, a).concat(s.slice(a + 1)))
+								} else t.Needs_Pricing__c = r
+							}
+						}
+					})]), e._v(" "), n("td", [n("textarea", {
+						directives: [{
+							name: "model",
+							rawName: "v-model",
+							value: t.Notes__c,
+							expression: "design.Notes__c"
+						}],
+						staticClass: "form-control",
+						domProps: {
+							value: t.Notes__c
+						},
+						on: {
+							input: function (e) {
+								e.target.composing || (t.Notes__c = e.target.value)
+							}
+						}
+					})]), e._v(" "), n("td", [n("button", {
+						staticClass: "rbl-btn rbl-btn-primary",
+						on: {
+							click: function (n) {
+								e.deleteDesign(t)
+							}
+						}
+					}, [e._v("Delete")])])])
+				})], 2) : e._e(), e._v(" "), n("div", {
+					staticClass: "section-heading"
+				}, [e._v("Items")]), e._v(" "), 0 === e.items.length ? n("div", {
+					staticClass: "empty-table-surrogate"
+				}, [e._v("\n    There are no items on the Design Request.\n  ")]) : e._e(), e._v(" "), e.items.length > 0 ? n("table", {
+					staticClass: "rbl-table"
+				}, [e._m(1), e._v(" "), e._l(e.items, function (t) {
+					return n("tr", [n("td", [n("input", {
+						directives: [{
+							name: "model",
+							rawName: "v-model",
+							value: t.selected,
+							expression: "item.selected"
+						}],
+						attrs: {
+							type: "checkbox"
+						},
+						domProps: {
+							checked: Array.isArray(t.selected) ? e._i(t.selected, null) > -1 : t.selected
+						},
+						on: {
+							__c: function (n) {
+								var s = t.selected,
+									i = n.target,
+									r = !!i.checked;
+								if (Array.isArray(s)) {
+									var a = e._i(s, null);
+									i.checked ? a < 0 && (t.selected = s.concat([null])) : a > -1 && (t.selected = s.slice(0, a).concat(s.slice(a + 1)))
+								} else t.selected = r
+							}
+						}
+					})]), e._v(" "), n("td", [e._v(e._s(t.Product_Code__c) + e._s(t.Item_Number_Edit__c))]), e._v(" "), n("td", [e._v(e._s(t.Gender__c))]), e._v(" "), n("td", [e._v(e._s("Custom" === t.Type ? t.Name : "") + e._s("Standardized" === t.Type ? t.Product_Description__c : ""))]), e._v(" "), n("td", [e._v(e._s(t.Type))])])
+				})], 2) : e._e(), e._v(" "), n("button", {
+					staticClass: "rbl-btn rbl-btn-primary",
+					attrs: {
+						disabled: !e.isFormValid
+					},
+					on: {
+						click: e.save
+					}
+				}, [e._v("Save")]), e._v(" "), n("button", {
+					staticClass: "rbl-btn rbl-btn-primary",
+					on: {
+						click: e.toDesignRequest
+					}
+				}, [e._v("Cancel")])], 1)
+			},
+			i = [function () {
+				var e = this,
+					t = e.$createElement,
+					n = e._self._c || t;
+				return n("thead", [n("tr", [n("th"), e._v(" "), n("th", [e._v("Artwork")]), e._v(" "), n("th", [e._v("Option #")]), e._v(" "), n("th", {
+					staticClass: "needs-pricing"
+				}, [e._v("Needs Pricing")]), e._v(" "), n("th", [e._v("Notes")]), e._v(" "), n("th")])])
+			}, function () {
+				var e = this,
+					t = e.$createElement,
+					n = e._self._c || t;
+				return n("thead", [n("tr", [n("th", [e._v("Use")]), e._v(" "), n("th", [e._v("Item")]), e._v(" "), n("th", [e._v("Gender")]), e._v(" "), n("th", [e._v("Name")]), e._v(" "), n("th", [e._v("Type")])])])
+			}],
+			r = {
+				render: s,
+				staticRenderFns: i
+			};
+		t.a = r
+	},
+	M93x: function (e, t, n) {
+		"use strict";
+
+		function s(e) {
+			n("gVh2"), n("y95g")
+		}
+		var i = n("xJD8"),
+			r = n("B04Q"),
+			a = n("VU/8"),
+			o = s,
+			c = a(i.a, r.a, o, "data-v-7dd0b06b", null);
+		t.a = c.exports
+	},
+	NHnr: function (e, t, n) {
+		"use strict";
+		Object.defineProperty(t, "__esModule", {
+			value: !0
+		});
+		var s = n("7+uW"),
+			i = n("M93x");
+		s.a.config.productionTip = !1, new s.a({
+			el: "#app",
+			template: "<App/>",
+			components: {
+				App: i.a
+			}
+		})
+	},
+	PRAX: function (e, t, n) {
+		"use strict";
+		var s = function () {
+				var e = this,
+					t = e.$createElement,
+					n = e._self._c || t;
+				return n("div", {
+					staticClass: "container",
+					class: {
+						dragging: e.isDragOver
+					},
+					on: {
+						dragover: e.dragOver,
+						drop: e.drop,
+						dragenter: e.dragEnter,
+						dragleave: e.dragLeave
+					}
+				}, [n("div", {
+					staticClass: "inner"
+				}, [e._v("Drop Design Images Here")])])
+			},
+			i = [],
+			r = {
+				render: s,
+				staticRenderFns: i
+			};
+		t.a = r
+	},
+	QevY: function (e, t, n) {
+		"use strict";
+		var s = n("mvHQ"),
+			i = n.n(s),
+			r = n("BO1k"),
+			a = n.n(r),
+			o = n("Zrlr"),
+			c = n.n(o),
+			d = n("wxAW"),
+			l = n.n(d),
+			u = n("mtWM"),
+			_ = n.n(u),
+			v = function () {
+				function e(t) {
+					c()(this, e), this.sessionId = null
+				}
+				return l()(e, [{
+					key: "setSessionId",
+					value: function (e) {
+						this.baseURL = "/services/data/v40.0/", this.sessionId = e, this.axiosInstance = _.a.create({
+							baseURL: this.baseURL,
+							headers: {
+								Authorization: "Bearer " + this.sessionId
+							}
+						})
+					}
+				}, {
+					key: "getDesignRequest",
+					value: function (e) {
+						console.log("this.sessionId " + this.sessionId);
+						var t = "query/?q=\n    SELECT Name\n      , (SELECT Id, Name, Product_Code__c, Product_Name__c, Product_Description__c\n        FROM Standardized_Items__r\n        ORDER BY CreatedDate ASC)\n      , (SELECT Id, Name, Item_Number_Edit__c, Gender__c FROM Custom_Items__r  ORDER BY CreatedDate ASC)\n    FROM Design_Request__c WHERE Id = '" + e + "'";
+						return this.axiosInstance.get(t).then(function (e) {
+							return e.data.records[0]
+						})
+					}
+				}, {
+					key: "getMetadata",
+					value: function (e) {
+						var t = "sobjects/" + e + "/describe/";
+						return this.axiosInstance.get(t).then(function (e) {
+							return e.data
+						})
+					}
+				}, {
+					key: "getContentDocumentLinksByLinkedEntityIds",
+					value: function (e) {
+						var t = e.map(function (e) {
+								return "'" + e + "'"
+							}).join(","),
+							n = "query/?q=\n    SELECT Id, LinkedEntityId, ContentDocumentId, ContentDocument.LatestPublishedVersionId\n    FROM ContentDocumentLink WHERE LinkedEntityId IN (" + t + ")";
+						return this.axiosInstance.get(n).then(function (e) {
+							return e.data.records
+						})
+					}
+				}, {
+					key: "createDesigns",
+					value: function (e, t, n, s, y, r) {
+						var o = this, 
+							c = [],
+							d = !0,
+							l = !1,
+							u = void 0;
+						try {
+							for (var v, f = a()(t); !(d = (v = f.next()).done); d = !0) {
+								var g = v.value,
+									m = g.file,
+									h = new FormData;
+								h.append("entity_content", new Blob([i()({
+									PathOnClient: m.name
+								})], {
+									type: "application/json"
+								}), ""), h.append("VersionData", m), c.push(this.axiosInstance.post("sobjects/ContentVersion", h))
+							}
+						} catch (e) {
+							l = !0, u = e
+						} finally {
+							try {
+								!d && f.return && f.return()
+							} finally {
+								if (l) throw u
+							}
+						}
+						return _.a.all(c).then(function (e) {
+							for (var n = 0; n < e.length; n++) t[n].contentVersionId = e[n].data.id
+						}).then(function () {
+							var e = "query/?q=SELECT Id, ContentDocumentId FROM ContentVersion WHERE Id IN (" + t.map(function (e) {
+								return "'" + e.contentVersionId + "'"
+							}).join(",") + ")";
+							return o.axiosInstance.get(e)
+						}).then(function (e) {
+							e.data.records.forEach(function (e) {
+								t.filter(function (t) {
+									return t.contentVersionId === e.Id
+								}).forEach(function (t) {
+									t.ContentDocumentId = e.ContentDocumentId
+								})
+							})
+						}).then(function () {
+							var i = "query/?q=SELECT Id FROM Design_Round__c WHERE Design_Request__c =\n        '" + e + "' AND Version__c = '" + n + "' AND Gender__c = '" + s + "' AND Reason_For_Revision__c = '" + y + "'";
+							return o.axiosInstance.get(i).then(function (i) {
+								var a = null;
+								if (i.data.totalSize > 0) return a = i.data.records[0].Id, o.createDesigns2(a, e, t, r);
+								var c = {
+									attributes: {
+										type: "Design_Round__c",
+										referenceId: "designRound1"
+									},
+									Version__c: n,
+									Gender__c: s,
+									Reason_for_Revision__c: y,
+									Design_Request__c: e
+								};
+								return o.axiosInstance.post("sobjects/Design_Round__c", c).then(function (n) {
+									return a = n.data.id, o.createDesigns2(a, e, t, r)
+								})
+							})
+						})
+					}
+				}, {
+					key: "createDesigns2",
+					value: function (e, t, n, s) {
+						var i = this,
+							r = [],
+							o = {
+								compositeRequest: r
+							},
+							c = !0,
+							d = !1,
+							l = void 0;
+						try {
+							for (var u, _ = a()(n); !(c = (u = _.next()).done); c = !0) {
+								var v = u.value;
+								! function (n) {
+									r.push({
+										method: "POST",
+										url: i.baseURL + "sobjects/Design__c",
+										referenceId: "design" + n.contentVersionId,
+										body: {
+											Design_Request__c: t,
+											Design_Round__c: e,
+											Option_Number__c: n.Option_Number__c,
+											Needs_Pricing__c: n.Needs_Pricing__c,
+											Notes__c: n.Notes__c,
+											Content_Version_Id__c: n.contentVersionId
+										}
+									}), r.push({
+										method: "POST",
+										url: i.baseURL + "sobjects/ContentDocumentLink",
+										referenceId: "cdl" + n.contentVersionId,
+										body: {
+											LinkedEntityId: "@{design" + n.contentVersionId + ".id}",
+											ContentDocumentId: n.ContentDocumentId,
+											ShareType: "I"
+										}
+									}), s.forEach(function (e) {
+										var t = {
+											Design__c: "@{design" + n.contentVersionId + ".id}"
+										};
+										"Custom" === e.Type ? t.Custom_Item__c = e.Id : t.Standardized_Item__c = e.Id, r.push({
+											method: "POST",
+											url: i.baseURL + "sobjects/Design_Item__c",
+											referenceId: "" + e.Id + n.contentVersionId,
+											body: t
+										})
+									})
+								}(v)
+							}
+						} catch (e) {
+							d = !0, l = e
+						} finally {
+							try {
+								!c && _.return && _.return()
+							} finally {
+								if (d) throw l
+							}
+						}
+						return this.axiosInstance.post("composite", o)
+					}
+				}]), e
+			}(),
+			f = new v;
+		t.a = f
+	},
+	RQw1: function (e, t, n) {
+		"use strict";
+		t.a = {
+			data: function () {
+				return {
+					files: [],
+					isDragOver: !1
+				}
+			},
+			methods: {
+				dragOver: function (e) {
+					e.preventDefault(), e.dataTransfer.dropEffect = "move"
+				},
+				dragEnter: function (e) {
+					this.isDragOver = !0
+				},
+				dragLeave: function (e) {
+					this.isDragOver = !1
+				},
+				drop: function (e) {
+					this.isDragOver = !1, this.$emit("fileDropped", e.dataTransfer.files[0]), e.preventDefault()
+				}
+			}
+		}
+	},
+	b3z3: function (e, t) {},
+	bb2J: function (e, t) {},
+	gVh2: function (e, t) {},
+	kBMt: function (e, t, n) {
+		"use strict";
+		var s = function () {
+				var e = this,
+					t = e.$createElement;
+				e._self._c;
+				return e._m(0)
+			},
+			i = [function () {
+				var e = this,
+					t = e.$createElement,
+					n = e._self._c || t;
+				return n("div", {
+					staticClass: "wrapper"
+				}, [n("div", {
+					staticClass: "windows8"
+				}, [n("div", {
+					staticClass: "wBall",
+					attrs: {
+						id: "wBall_1"
+					}
+				}, [n("div", {
+					staticClass: "wInnerBall"
+				})]), e._v(" "), n("div", {
+					staticClass: "wBall",
+					attrs: {
+						id: "wBall_2"
+					}
+				}, [n("div", {
+					staticClass: "wInnerBall"
+				})]), e._v(" "), n("div", {
+					staticClass: "wBall",
+					attrs: {
+						id: "wBall_3"
+					}
+				}, [n("div", {
+					staticClass: "wInnerBall"
+				})]), e._v(" "), n("div", {
+					staticClass: "wBall",
+					attrs: {
+						id: "wBall_4"
+					}
+				}, [n("div", {
+					staticClass: "wInnerBall"
+				})]), e._v(" "), n("div", {
+					staticClass: "wBall",
+					attrs: {
+						id: "wBall_5"
+					}
+				}, [n("div", {
+					staticClass: "wInnerBall"
+				})])])])
+			}],
+			r = {
+				render: s,
+				staticRenderFns: i
+			};
+		t.a = r
+	},
+	rwPc: function (e, t, n) {
+		"use strict";
+
+		function s(e) {
+			n("bb2J")
+		}
+		var i = n("kBMt"),
+			r = n("VU/8"),
+			a = s,
+			o = r(null, i.a, a, "data-v-fa684fea", null);
+		t.a = o.exports
+	},
+	vg0r: function (e, t, n) {
+		"use strict";
+
+		function s(e) {
+			n("b3z3")
+		}
+		var i = n("RQw1"),
+			r = n("PRAX"),
+			a = n("VU/8"),
+			o = s,
+			c = a(i.a, r.a, o, "data-v-fc88e9c4", null);
+		t.a = c.exports
+	},
+	xJD8: function (e, t, n) {
+		"use strict";
+
+		function s(e, t) {
+			t || (t = window.location.href), e = e.replace(/[[]]/g, "\\$&");
+			var n = new RegExp("[?&]" + e + "(=([^&#]*)|&|#|$)"),
+				s = n.exec(t);
+			return s ? s[2] ? decodeURIComponent(s[2].replace(/\+/g, " ")) : "" : null
+		}
+		var i = n("BO1k"),
+			r = n.n(i),
+			a = n("QevY"),
+			o = n("vg0r"),
+			c = n("rwPc");
+		t.a = {
+			name: "app",
+			data: function () {
+				return {
+					designRequestId: "",
+					designRequestName: "",
+					versions: [{
+						label: "-- select --",
+						value: ""
+					}],
+					reasonforrevisions: [{
+						label: "-- select --",
+						value: ""
+					}],
+					designs: [],
+					items: [],
+					imgBaseUrl: "https://rebelfullsandbox--full.cs34.content.force.com/sfc/servlet.shepherd/version/download/",
+					isUploading: !1,
+					itemsLoaded: !1,
+					version: "",
+					gender: "",
+					reasonforrevision: ""
+				}
+			},
+			methods: {
+				addFile: function (e) {
+					var t = this,
+						n = new FileReader;
+					n.addEventListener("load", function () {
+						console.log("done reading"), t.designs.push({
+							dataURL: n.result,
+							file: e,
+							Option_Number__c: null,
+							Needs_Pricing__c: !0,
+							Notes__c: null
+						})
+					}), n.readAsDataURL(e)
+				},
+				deleteDesign: function (e) {
+					this.designs.splice(this.designs.indexOf(e), 1)
+				},
+				getDesignRequest: function () {
+					var e = this;
+					a.a.getDesignRequest(this.designRequestId).then(function (t) {
+						e.designRequestName = t.Name;
+						var n = [];
+						if (e.designs = [], !e.itemsLoaded && null !== t.Custom_Items__r) {
+							var s = !0,
+								i = !1,
+								o = void 0;
+							try {
+								for (var c, d = r()(t.Custom_Items__r.records); !(s = (c = d.next()).done); s = !0) {
+									var l = c.value;
+									l.Type = "Custom", l.selected = !1, e.items.push(l)
+								}
+							} catch (e) {
+								i = !0, o = e
+							} finally {
+								try {
+									!s && d.return && d.return()
+								} finally {
+									if (i) throw o
+								}
+							}
+						}
+						if (!e.itemsLoaded && null !== t.Standardized_Items__r) {
+							var u = !0,
+								_ = !1,
+								v = void 0;
+							try {
+								for (var f, g = r()(t.Standardized_Items__r.records); !(u = (f = g.next()).done); u = !0) {
+									var m = f.value;
+									m.Type = "Standardized", m.selected = !1, e.items.push(m)
+								}
+							} catch (e) {
+								_ = !0, v = e
+							} finally {
+								try {
+									!u && g.return && g.return()
+								} finally {
+									if (_) throw v
+								}
+							}
+						}
+						e.itemsLoaded = !0, n.length > 0 && a.a.getContentDocumentLinksByLinkedEntityIds(n).then(function (t) {
+							console.log(t);
+							var n = {},
+								s = !0,
+								i = !1,
+								a = void 0;
+							try {
+								for (var o, c = r()(t); !(s = (o = c.next()).done); s = !0) {
+									var d = o.value;
+									n[d.LinkedEntityId] = d.ContentDocument.LatestPublishedVersionId
+								}
+							} catch (e) {
+								i = !0, a = e
+							} finally {
+								try {
+									!s && c.return && c.return()
+								} finally {
+									if (i) throw a
+								}
+							}
+							var l = !0,
+								u = !1,
+								_ = void 0;
+							try {
+								for (var v, f = r()(e.designs); !(l = (v = f.next()).done); l = !0) {
+									var g = v.value;
+									g.imgUrl = e.imgBaseUrl + n[g.Id], console.log(g.imgUrl)
+								}
+							} catch (e) {
+								u = !0, _ = e
+							} finally {
+								try {
+									!l && f.return && f.return()
+								} finally {
+									if (u) throw _
+								}
+							}
+						})
+					})
+				},
+				save: function () {
+					var e = this,
+						t = this.items.filter(function (e) {
+							return e.selected
+						});
+					this.isUploading = !0, a.a.createDesigns(this.designRequestId, this.designs, this.version, this.gender, this.reasonforrevision, t).then(function (t) {
+						console.log('@@@@@ data ' + JSON.stringify(t.data));
+						var n = !0,
+							s = !0,
+							i = !1,
+							a = void 0;
+						try {
+							for (var o, c = r()(t.data.compositeResponse); !(s = (o = c.next()).done); s = !0) {
+								var d = o.value;
+								d.body.success || (n = !1, console.log(d.body.errors), alert(d.body.errors[0]))
+							}
+						} catch (e) {
+							i = !0, a = e
+						} finally {
+							try {
+								!s && c.return && c.return()
+							} finally {
+								if (i) throw a
+							}
+						}
+						e.isUploading = !1, n && e.toDesignRequest()
+					})
+				},
+				toDesignRequest: function () {
+					window.location = "/" + this.designRequestId
+				}
+			},
+			computed: {
+				isFormValid: function () {
+					return !!this.version && !!this.gender && this.designs.length > 0 && this.designs.reduce(function (e, t) {
+						return e && !!t.Option_Number__c
+					}, !0) && this.items.filter(function (e) {
+						return e.selected
+					}).length > 0
+				}
+			},
+			components: {
+				DropZone: o.a,
+				LoadingAnimation: c.a
+			},
+			created: function () {
+				var e = this;
+				a.a.sessionId || a.a.setSessionId(window.__sfdcSessionId), this.designRequestId || (this.designRequestId = s("id")), this.getDesignRequest(this.designRequestId), a.a.getMetadata("Design_Round__c").then(function (t) {
+					e.statuses = t.fields.filter(function (e) {
+						return "Version__c" === e.name
+					})[0].picklistValues.filter(function (e) {
+						return e.active
+					}).forEach(function (t) {
+						e.versions.push({
+							label: t.label,
+							value: t.value
+						})
+					})
+
+					e.statuses1 = t.fields.filter(function (e) {
+						return "Reason_for_Revision__c" === e.name
+					})[0].picklistValues.filter(function (e) {
+						return e.active
+					}).forEach(function (t) {
+						e.reasonforrevisions.push({
+							label: t.label,
+							value: t.value
+						})
+					})
+				})
+			}
+		}
+	},
+	y95g: function (e, t) {}
+}, ["NHnr"]);
+//# sourceMappingURL=app.js.map

@@ -1,0 +1,78 @@
+.THIS {
+    clear: both;
+}
+.THIS .field_warning{
+    color: #ffb75d;
+}
+
+.THIS abbr[title] {
+    text-decoration:none;
+}
+
+.THIS input.uiInput--checkbox[type=checkbox] {
+    margin-bottom: 10px;
+}
+
+.THIS .uiInputTextArea {
+    height: 200px;
+    line-height: 1.4rem !important;
+}
+
+.THIS .undo-text-container {
+    display: inline-flex;
+    /* TODO: As slds truncate doesn't likes percentage due to some reason, adding a fixed max-width in percentage */
+    max-width: 200px;
+}
+
+.THIS .undo-text-container * {
+    display: inline;
+}
+
+.THIS .undo-text-container br {
+    display: none;
+}
+
+/* Requirement component- Added to remove extra margins */
+.THIS .cRequirements .slds-section div.connexys-form-table,
+.THIS .cxsrecRequirements .slds-section div.connexys-form-table {
+    margin: 0;
+}
+
+.THIS .cRequirements .slds-section div.slds-section__content,
+.THIS .cxsrecRequirements .slds-section div.slds-section__content{
+    padding-top: 0;
+}
+
+.THIS .cRequirements .slds-section .connexys-form-table label.slds-form-element__label,
+.THIS .cxsrecRequirements .slds-section .connexys-form-table label.slds-form-element__label {
+    padding-left: 0;
+}
+
+.THIS .cRequirements .slds-section div.cxsButtons,
+.THIS .cxsrecRequirements .slds-section div.cxsButtons{
+    padding-left: 0;
+}
+
+.THIS .cRequirements .slds-section button.slds-button,
+.THIS .cxsrecRequirements .slds-section button.slds-button{
+    margin-left: 0;
+}
+
+.THIS .richtextWrapper.slds-has-error {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+}
+.THIS .richtextWrapper.slds-has-error input {
+    box-shadow: unset;
+}
+
+.THIS .slds-form-element__control.slds-has-divider--bottom {
+    min-height: 35px;
+    line-height: 30px;
+}
+
+.THIS .slds-form-element.cTooltip, .THIS .slds-form-element.cxsrecTooltip {
+     display: inline;
+     margin-left: 10px;
+ }

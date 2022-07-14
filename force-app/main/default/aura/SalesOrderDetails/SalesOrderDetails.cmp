@@ -1,0 +1,251 @@
+<aura:component controller="SalesOrderDetailsLChelper" access="global" extends="c:Section" >
+    
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit }"/>
+    
+
+    <aura:attribute name="soList" type="List"/>
+    <aura:attribute name="sodisplayList" type="List"/>
+    <aura:attribute name="shList" type="List"/>
+    <aura:attribute name="shdisplayList" type="List"/>
+    <aura:attribute name="siList" type="List"/>
+    <aura:attribute name="inList" type="List"/>
+    <aura:attribute name="pkList" type="List"/>
+    <aura:attribute name="pkdisplayList" type="List"/>
+    <aura:attribute name="pklList" type="List"/>
+    <aura:attribute name="pkldisplayList" type="List"/>
+    <aura:attribute name="niiList" type="List"/>
+    <aura:attribute name="niidisplayList" type="List"/>
+    <aura:attribute name="soliList" type="List"/>
+    <aura:attribute name="solidisplayList" type="List"/>
+    <aura:attribute name="soHList" type="List"/>
+    <aura:attribute name="soHdisplayList" type="List"/>
+    <aura:attribute name="iaqList" type="List"/>
+    <aura:attribute name="iaqdisplayList" type="List"/>
+    
+    <aura:attribute name="selectedOrderRecordId" type="String" description="Selected Record ID" access="public"/>
+    <aura:attribute name="doRefreshParent" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="headerTitle" type="String" description="title of page header" access="public" default="Sales Order Details"/>
+    <aura:attribute name="showHeader" type="Boolean" default="true" access="public" description="Boolean attribite to check whether we need to display the record header or not."/>
+    <aura:attribute name="iconName" type="String" description="icon of page header" access="public" default="standard:opportunity"/>
+    
+    <aura:attribute name="fieldSetsShippingItem" type="List" access="public" default="['Sales_Order_Fields']"/>
+    <aura:attribute name="ordersShippingItem" type="List" access="public" default="[{fieldName:'Name',direction: 'ORDER_ASC'}]"/>
+    <aura:attribute name="filtersShippingItem" type="Map" access="public" description="TODO" default="{'filterFields':[]}"/>
+    <aura:attribute name="dataScopeShippingItem" type="List" access="public"/>
+    <aura:attribute name="fieldsDescribeShippingItem" type="Object"  access="public"/>
+    <aura:attribute name="currentPageNumberShippingItem" type="Integer" default="1"/>
+    <aura:attribute name="totalPagesShippingItem" type="Integer" />
+    <aura:attribute name="totalNumberOfRecordsShippingItem" type="Integer"  />
+    <aura:attribute name="recordsFromToShippingItem" type="String"  />
+    <aura:attribute name="queryStructureShippingItem" type="QueryStructure" access="public"/>
+    <aura:attribute name="hasMoreRecordsShippingItem" type="Boolean" access="public"/>
+    
+    <aura:attribute name="fieldSetsPicklistItem" type="List" access="public" default="['Picklist_Fields']"/>
+    <aura:attribute name="ordersPicklistItem" type="List" access="public" default="[{fieldName:'Name',direction: 'ORDER_ASC'}]"/>
+    <aura:attribute name="filtersPicklistItem" type="Map" access="public" description="TODO" default="{'filterFields':[]}"/>
+    <aura:attribute name="dataScopePicklistItem" type="List" access="public"/>
+    <aura:attribute name="fieldsDescribePicklistItem" type="Object"  access="public"/>
+    <aura:attribute name="currentPageNumberPicklistItem" type="Integer" default="1"/>
+    <aura:attribute name="totalPagesPicklistItem" type="Integer" />
+    <aura:attribute name="totalNumberOfRecordsPicklistItem" type="Integer"  />
+    <aura:attribute name="recordsFromToPicklistItem" type="String"  />
+    <aura:attribute name="queryStructurePicklistItem" type="QueryStructure" access="public"/>
+    <aura:attribute name="hasMoreRecordsPicklistItem" type="Boolean" access="public"/>
+    
+    <aura:attribute name="fieldSetsPicklistDetailsItem" type="List" access="public" default="['Picklist_Details_Field']"/>
+    <aura:attribute name="ordersPicklistDetailsItem" type="List" access="public" default="[{fieldName:'Name',direction: 'ORDER_ASC'}]"/>
+    <aura:attribute name="filtersPicklistDetailsItem" type="Map" access="public" description="TODO" default="{'filterFields':[]}"/>
+    <aura:attribute name="dataScopePicklistDetailsItem" type="List" access="public"/>
+    <aura:attribute name="fieldsDescribePicklistDetailsItem" type="Object"  access="public"/>
+    <aura:attribute name="currentPageNumberPicklistDetailsItem" type="Integer" default="1"/>
+    <aura:attribute name="totalPagesPicklistDetailsItem" type="Integer" />
+    <aura:attribute name="totalNumberOfRecordsPicklistDetailsItem" type="Integer"  />
+    <aura:attribute name="recordsFromToPicklistDetailsItem" type="String"  />
+    <aura:attribute name="queryStructurePicklistDetailsItem" type="QueryStructure" access="public"/>
+    <aura:attribute name="hasMoreRecordsPicklistDetailsItem" type="Boolean" access="public"/>
+    
+    <aura:attribute name="isShippingItemTableLoading" type="Boolean" default="false" access="private" description="Is the data for the list loading?"/>
+    <aura:attribute name="isPicklistItemTableLoading" type="Boolean" default="false" access="private" description="Is the data for the list loading?"/>
+    <aura:attribute name="isPicklistDetailsItemTableLoading" type="Boolean" default="false" access="private" description="Is the data for the list loading?"/>
+    
+    <aura:attribute name="mycolumns1" type="List"/>
+    <aura:attribute name="mycolumns2" type="List"/>
+    <aura:attribute name="mycolumns3" type="List"/>
+    <aura:attribute name="mycolumns4" type="List"/>
+    <aura:attribute name="mycolumns5" type="List"/>
+    <aura:attribute name="mycolumns6" type="List"/>
+    <aura:attribute name="mycolumns110" type="List"/>
+    <aura:attribute name="mycolumns7" type="List"/>
+    <aura:attribute name="mycolumns8" type="List"/>
+    
+    <aura:attribute name="activeSections" type="List" default="['1']" />
+    <c:RecordDetailHeader showHeader="{!v.showHeader}" title="{!v.headerTitle}"
+                          label="{!$Label.c.Sales_Order_Details}" imageSize="medium" 
+                          iconName="{!v.iconName}"/>
+    
+    <aura:if isTrue="{!empty(v.selectedOrderRecordId)}">
+        <c:ScopedNotification severity="warning" theme="shade" 
+                              class="slds-m-bottom_small">
+            {!$Label.c.please_select_order_record}
+        </c:ScopedNotification>
+        <div class="slds-m-top_medium"></div>
+    </aura:if>
+    <aura:if isTrue="{!not(empty(v.selectedOrderRecordId))}">
+        <!--Added by Deptanshu on 7th Feb 2022-->
+        <lightning:card title="Sales Order">
+            
+            <div class="slds-m-around_x-large">
+                <aura:if isTrue="{!not(empty(v.soList))}">
+                    <lightning:accordion aura:id="accordion" 
+                                        allowMultipleSectionsOpen="false"
+                                         onsectiontoggle="{!c.handleToggleSection}"
+                                         activeSectionName="{! v.activeSections }" >
+                        <aura:iteration items="{!v.soList}" var="so">
+                            <lightning:accordionSection name="{!so.Id}" label="{!so.Name}">
+                                <aura:set attribute="body">
+                                    
+                                    <lightning:datatable data="{! v.sodisplayList }" 
+                                                         columns="{! v.mycolumns110 }" 
+                                                         keyField="id"
+                                                         hideCheckboxColumn="true"/>
+                                    
+                                    <aura:if isTrue="{!not(empty(v.soliList))}">
+                                    <lightning:card title="Sales Order Line Item">
+                                    <lightning:accordion aura:id="accordion6" activeSectionName="{!v.SOLIactive}" onsectiontoggle="{!c.handleToggleSection6}">
+                                        <aura:iteration items="{!v.soliList}" var="soli">
+                                            <lightning:accordionSection name="{!soli.Id}" label="{!soli.Name}">
+                                                <aura:set attribute="body">
+                                                    <div class="slds-m-top-medium">
+                                                        
+                                                        
+                                                        <lightning:datatable data="{! v.solidisplayList }" 
+                                                                             columns="{! v.mycolumns6 }" 
+                                                                             keyField="id"
+                                                                             hideCheckboxColumn="true"/>
+                                                        
+                                                    </div>
+                                                    <aura:if isTrue="{!not(empty(v.pklList))}">
+                                                        <lightning:card title="Pick List Details">
+                                                            <lightning:accordion aura:id="accordion7" activeSectionName="{!v.picklistdetailsactive}" onsectiontoggle="{!c.handleToggleSection7}">
+                                                            <aura:iteration items="{!v.pklList}" var="pkl">
+                                                                <lightning:accordionSection name="{!pkl.Id}" label="{!pkl.Name}">
+                                                                    <aura:set attribute="body">
+                                                                        <div class="slds-m-top-medium">  
+                                                                            <lightning:datatable data="{! v.pkldisplayList }" 
+                                                                                 columns="{! v.mycolumns3 }" 
+                                                                                 keyField="id"
+                                                                                 hideCheckboxColumn="true"/>    
+                                                                        </div>
+                                                                    </aura:set>
+                                                                </lightning:accordionSection>
+                                                            </aura:iteration>
+                                                        </lightning:accordion>
+                                                        </lightning:card>
+                                                    </aura:if>     
+                                                </aura:set>
+                                            </lightning:accordionSection>
+                                        </aura:iteration>
+                                    </lightning:accordion>
+                                    </lightning:card>
+                                    </aura:if>
+                                    
+                                    <aura:if isTrue="{!not(empty(v.shList))}">
+                                        <lightning:card title="Shipping">
+                                            <lightning:accordion aura:id="accordion2" activeSectionName="{!v.shippingactive}" onsectiontoggle="{!c.handleToggleSection2}">
+                                                <aura:iteration items="{!v.shList}" var="sh">
+                                                    
+                                                        
+                                                    
+                                                    <lightning:accordionSection name="{!sh.Id}" label="{!sh.Name}">
+                                                        <aura:set attribute="body">
+                                                            
+                                                                            <lightning:datatable data="{! v.shdisplayList }" 
+                                                                                     columns="{! v.mycolumns1 }" 
+                                                                                     keyField="id"
+                                                                                     hideCheckboxColumn="true"/>                                                    
+                                                            <br />
+                                                            <br />
+                                                            
+                                                            <aura:if isTrue="{!not(empty(v.pkList))}">
+                                                                <lightning:card title="PickList">
+                                                                    <lightning:accordion aura:id="accordion3" activeSectionName="{!v.picklistactive}" onsectiontoggle="{!c.handleToggleSection3}">
+                                                                        <aura:iteration items="{!v.pkList}" var="pk">
+                                                                            <lightning:accordionSection name="{!pk.Id}" label="{!pk.Name}">
+                                                                                <aura:set attribute="body">
+                                                                                    
+                                                                                    <lightning:datatable data="{! v.pkdisplayList }" 
+                                                                                             columns="{! v.mycolumns2 }" 
+                                                                                             keyField="id"
+                                                                                             hideCheckboxColumn="true"/>
+                                                                                    <br />
+                                                                                    <aura:if isTrue="{!not(empty(v.iaqList))}">
+                                                                                        <lightning:card title="Inventory Action Queue">
+                                                                                            <lightning:accordion aura:id="accordion9" activeSectionName="{!v.inventoryactive}" onsectiontoggle="{!c.handleToggleSection9}">
+                                                                                                <aura:iteration items="{!v.iaqList}" var="ia">
+                                                                                                    <lightning:accordionSection name="{!ia.Id}" label="{!ia.Name}">
+                                                                                                        <aura:set attribute="body">
+                                                                                                            
+                                                                                                            <lightning:datatable data="{! v.iaqdisplayList }" 
+                                                                                                                                 columns="{! v.mycolumns8 }" 
+                                                                                                                                 keyField="id"
+                                                                                                                                 hideCheckboxColumn="true"/>
+                                                                                                            
+                                                                                                            <br />
+                                                                                                            <br />
+                                                                                                            
+                                                                                                        </aura:set>
+                                                                                                    </lightning:accordionSection>
+                                                                                                </aura:iteration>
+                                                                                            </lightning:accordion>
+                                                                                        </lightning:card>
+                                                                                    </aura:if>
+                                                                                    
+                                                                                </aura:set>
+                                                                            </lightning:accordionSection>
+                                                                        </aura:iteration>
+                                                                    </lightning:accordion>
+                                                                </lightning:card>
+                                                            </aura:if>
+                                                        </aura:set>
+                                                    </lightning:accordionSection>
+                                                </aura:iteration>
+                                            </lightning:accordion>
+                                        </lightning:card>
+                                    </aura:if>
+                                    
+                                    <aura:if isTrue="{!not(empty(v.niiList))}">
+                                        <lightning:card title="Custom Item Shipment">
+                                            <lightning:accordion aura:id="accordion5" activeSectionName="{!v.nonIIactive}" onsectiontoggle="{!c.handleToggleSection5}">
+                                                <aura:iteration items="{!v.niiList}" var="nii">
+                                                    <lightning:accordionSection name="{!nii.Id}" label="{!nii.Name}">
+                                                        <aura:set attribute="body">
+                                                            <div class="slds-m-top-medium">      
+                                                                <lightning:datatable data="{! v.niidisplayList }" 
+                                                                                     columns="{! v.mycolumns5 }" 
+                                                                                     keyField="id"
+                                                                                     hideCheckboxColumn="true"/>
+                                                                
+                                                            </div>       
+                                                        </aura:set>
+                                                    </lightning:accordionSection>
+                                                </aura:iteration>
+                                            </lightning:accordion>
+                                        </lightning:card>
+                                    </aura:if>
+                                    <aura:if isTrue="{!not(empty(v.soHList))}">
+                                        <lightning:card title="Sales Order History">
+                                                <lightning:datatable data="{! v.soHdisplayList }" 
+                                                                     columns="{! v.mycolumns7 }" 
+                                                                     keyField="id"
+                                                                     hideCheckboxColumn="true"/>
+                                        </lightning:card>                                          
+                                    </aura:if>
+                                </aura:set>
+                            </lightning:accordionSection>           
+                        </aura:iteration>
+                    </lightning:accordion> 
+                </aura:if>
+            </div>
+        </lightning:card>
+    </aura:if>
+</aura:component>

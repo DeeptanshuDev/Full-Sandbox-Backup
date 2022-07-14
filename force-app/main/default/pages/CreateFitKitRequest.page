@@ -1,0 +1,310 @@
+<apex:page id="CreateFitKitRequest" standardController="Fit_Kit_Request__c"
+           extensions="CreateFitKitRequestCtrl" tabStyle="Fit_Kit_Request__c" lightningStylesheets="true">
+    
+    <apex:stylesheet value="{!URLFOR($Resource.RebelInternal, 'css/style.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.RebelInternal, 'css/pikaday.css')}" />
+    
+    <script>function setFocusOnLoad() {}</script>
+    
+    <style>
+        .rbl-form * {
+            box-sizing: border-box;
+            padding: 0;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+        
+        label {
+            font-size: 14px;
+            display: inline-block;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+    
+    .rbl-checkbox {
+        position: relative;
+        display: block;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    
+    .rbl-checkbox input[type=checkbox] {
+        position: absolute;
+        margin-left: -20px;
+    }
+    
+    input[type=checkbox] {
+        margin: 4px 0 0;
+        line-height: normal;
+    }
+    
+    .rbl-checkbox label {
+        min-height: 20px;
+        padding-left: 20px;
+        margin-bottom: 0;
+        font-weight: 400;
+        cursor: pointer;
+    }
+    
+    .rbl-form-group {
+        font-size: 14px;
+        margin-bottom: 15px;
+        width: 620px;
+    }
+    
+    .rbl-form-control {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.4;
+        color: #555;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    
+    .rbl-form-control-inline {
+        display: inline-block;
+        margin-right: 5px;
+    }
+    .rbl-form-control.rbl-date {
+        width: 100px;
+        display: inline-block;
+        margin-right: 5px;
+    }
+    
+    label small {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    label small a {
+        color: #999 !important;
+    }
+    
+    .rbl-street {
+        height: 60px;
+    }
+    .rbl-city {
+        width: 285px;
+    }
+    .rbl-state {
+        width: 200px;
+    }
+    .rbl-zip {
+        width: 100px;
+        margin-right: 0;
+    }
+    .rbl-notes {
+        height: 60px;
+    }
+    
+    .rbl-show {
+        display: block !important;
+    }
+    .rbl-hidden {
+        display: none !important;
+    }
+    .rbl-invisible {
+        visibility: hidden;
+    }
+    
+    .rbl-help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #999 !important;
+    }
+    
+    .action-column {
+        width: 30px;
+    }
+    
+    .table-heading {
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 10px;
+    }
+    
+    .faint {
+        color: #999;
+    }
+    
+    
+    </style>
+    
+    
+    <apex:sectionHeader title="Fit Kit Request Edit" subTitle="New Fit Kit Request"/>
+        
+        <apex:pageMessages />
+            
+            <div id="create-fit-kit-page" class="rbl">
+                
+                <apex:form styleClass="rbl-form">
+                    
+                    <apex:pageBlock >
+                        
+                        <div class="rbl-form-group">
+                            <apex:outputLabel >Opportunity</apex:outputLabel>
+                            <div>{!OpportunityName}</div>
+                            </div>
+                            
+                            <div class="rbl-form-group">
+                                <apex:outputLabel for="specialDateRequest">Priority</apex:outputLabel>
+                                    <apex:inputField id="specialDateRequest" value="{!Fit_Kit_Request__c.Special_Date_Request__c}"
+                                    styleClass="rbl-form-control" />
+                                    
+                                    </div>
+                                    
+                                    <div class="rbl-form-group">
+                                    <apex:outputLabel >Fitting Date</apex:outputLabel>
+                                    <div>
+                                    <apex:inputField id="fittingDate" value="{!Fit_Kit_Request__c.Scheduled_Fitting_Date__c}"
+                                    styleClass="rbl-form-control rbl-date"/>
+                                    </div>
+                                    </div>
+                                    
+                                    <div class="rbl-form-group">
+                                    <apex:outputLabel for="shippingOption" value="Shipping Option" />
+                                    <apex:selectList id="shippingOption" value="{!Fit_Kit_Request__c.Shipping_Option__c}"
+                                    styleClass="rbl-form-control" multiSelect="false" size="1">
+                                    <apex:selectOption itemValue="Ship to customer" itemLabel="Ship to customer" />
+                                    <apex:selectOption itemValue="Ship to account manager" itemLabel="Ship to account manager" />
+                                    <apex:selectOption itemValue="Pick up from Rebel Dallas" itemLabel="Pick up from Rebel Dallas" /> 
+                                    </apex:selectList>
+                                    </div>
+                                    
+                                    <div class="rbl-form-group">
+                                    <label>Shipping Address <small><a id="rbl-physical-address" href="#">Physical</a>&nbsp;&nbsp;
+                                    <a id="rbl-billing-address" href="#">Billing</a>&nbsp;&nbsp;
+                                    <a id="rbl-bulk-address" href="#">Bulk</a>&nbsp;&nbsp;
+                                    <a id="rbl-proto-address" href="#">Proto</a></small></label>
+                                    <apex:inputField id="street" value="{!Fit_Kit_Request__c.Shipping_Street__c}"
+                                    styleClass="rbl-form-control rbl-street" html-placeholder="Street"/>
+                                    </div>
+                                    
+                                    <div class="rbl-form-group">
+                                    <apex:inputField id="city" value="{!Fit_Kit_Request__c.Shipping_City__c}"
+                                    styleClass="rbl-form-control rbl-form-control-inline rbl-city" html-placeholder="City" />
+                                    <apex:inputField id="state" value="{!Fit_Kit_Request__c.Shipping_State__c}"
+                                    styleClass="rbl-form-control rbl-form-control-inline rbl-state" html-placeholder="State" />
+                                    <apex:inputField id="zip" value="{!Fit_Kit_Request__c.Shipping_Postal_Code__c}"
+                                    styleClass="rbl-form-control rbl-form-control-inline rbl-zip rbl-pull-right" html-placeholder="Zip Code" />
+                                    </div>
+                                    
+                                    <div class="rbl-checkbox">
+                                    <apex:outputLabel ><apex:inputCheckbox id="shipAsAvailable"
+                                    value="{!Fit_Kit_Request__c.Ship_As_Available__c}"/>
+                                    Ship kits separately as they become available</apex:outputLabel>
+                                    </div>
+                                    
+                                    <div class="rbl-form-group">
+                                    <apex:outputLabel >Deposit</apex:outputLabel>
+                                    <apex:selectList id="deposit" value="{!Deposit}" styleClass="rbl-form-control"
+                                    multiSelect="false" size="1">
+                                    <apex:selectOptions value="{!DepositSelectOptions}" />
+                                    </apex:selectList>
+                                    </div>
+                                    
+                                    <div id="rbl-waiver-reason-div" class="rbl-form-group rbl-hidden">
+                                    <apex:outputLabel >Waiver Reason</apex:outputLabel>
+                                    <apex:inputText value="{!Fit_Kit_Request__c.Waiver_Reason__c}" styleClass="rbl-form-control" />
+                                    </div>
+                                    
+                                    <div class="rbl-form-group">
+                                    <label>Notes and Special Instructions</label>
+                                    <apex:inputField id="notes" value="{!Fit_Kit_Request__c.Notes_and_Special_Instructions__c}"
+                                    styleClass="rbl-form-control rbl-notes" />
+                                    <span class="rbl-help-block">Do not enter credit card information or confidential information.</span>
+                                    </div>
+                                    
+                                    <label class="table-heading">Custom Items</label>
+                                    <apex:pageBlockSection columns="1" collapsible="false">
+                                    <apex:pageBlockTable value="{!ItemWrappers}" var="w" rendered="{! !ItemWrappers.empty }">
+                                    <apex:column headerValue="Use" styleClass="action-column">
+                                    <apex:inputCheckbox value="{!w.Selected }" />
+                                    </apex:column>
+                                    <apex:column value="{!w.Item.Name}" />
+                                    <apex:column value="{!w.Item.Category__c}" />
+                                    <apex:column value="{!w.Item.Collection__c}" />
+                                    <apex:column value="{!w.Item.Fabric_Options__c}" />
+                                    <apex:column value="{!w.Item.Gender__c}" />
+                                    <apex:column value="{!w.Item.Style__c}" />
+                                    <apex:column value="{!w.Item.Item_Number_Edit__c}" />
+                                    </apex:pageBlockTable>
+                                    </apex:pageBlockSection>
+                                    
+                                    <apex:outputPanel rendered="{!ItemWrappers.size = 0}" layout="block">
+                                    <span class="faint">No Custom items.</span>
+                                    </apex:outputPanel>
+                                    
+                                    <label class="table-heading">Standardized Items</label>
+                                    <apex:pageBlockSection columns="1" collapsible="false"
+                                    rendered="{!StandardizedItemWrappers.size > 0}">
+                                    <apex:pageBlockTable value="{!StandardizedItemWrappers}" var="w">
+                                    <apex:column headerValue="Use" styleClass="action-column">
+                                    <apex:inputCheckbox value="{!w.Selected }" />
+                                    </apex:column>
+                                    <apex:column value="{!w.Item.Product_Name__c}" />
+                                    <apex:column value="{!w.Item.Product_Code__c}" />
+                                    </apex:pageBlockTable>
+                                    
+                                    </apex:pageBlockSection>
+                                    
+                                    <apex:outputPanel rendered="{!StandardizedItemWrappers.size = 0}" layout="block">
+                                    <span class="faint">No standardized items.</span>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:pageBlockButtons location="bottom">
+                                    <apex:commandButton value="Create Request" action="{!createRequest}" />
+                                    <apex:commandButton value="Cancel" onClick="redirectToOpportunity(); return false;"/>
+                                    </apex:pageBlockButtons>
+                                    
+                                    </apex:pageBlock>
+                                    
+                                    </apex:form>
+                                    </div>
+                                    
+                                    <script src="{!URLFOR($Resource.RebelInternal, 'js/site.js')}"></script>
+    
+    <script>
+    var shippingInfo = {
+        billingStreet: '{!JSENCODE(Account1.BillingStreet)}',
+        billingCity: '{!JSENCODE(Account1.BillingCity)}',
+        billingState: '{!JSENCODE(Account1.BillingState)}',
+        billingZip: '{!JSENCODE(Account1.BillingPostalCode)}',
+        physicalStreet: '{!JSENCODE(Account1.ShippingStreet)}',
+        physicalCity: '{!JSENCODE(Account1.ShippingCity)}',
+        physicalState: '{!JSENCODE(Account1.ShippingState)}',
+        physicalZip: '{!JSENCODE(Account1.ShippingPostalCode)}',
+        protoStreet: '{!JSENCODE(Account1.Secondary_Shipping_Address__c)}',
+        protoCity: '{!JSENCODE(Account1.Secondary_Shipping_City__c)}',
+        protoState: '{!JSENCODE(Account1.Secondary_Shipping_State__c)}',
+        protoZip: '{!JSENCODE(Account1.Secondary_Shipping_Zip__c)}',
+        bulkStreet: '{!JSENCODE(Account1.Primary_Shipping_Street__c)}',
+        bulkCity: '{!JSENCODE(Account1.Primary_Shipping_City__c)}',
+        bulkState: '{!JSENCODE(Account1.Primary_Shipping_State__c)}',
+        bulkZip: '{!JSENCODE(Account1.Primary_Shipping_Zip__c)}',
+        ownerStreet: '{!JSENCODE(Account1.Owner.Street)}',
+        ownerCity: '{!JSENCODE(Account1.Owner.City)}',
+        ownerState: '{!JSENCODE(Account1.Owner.State)}',
+        ownerZip: '{!JSENCODE(Account1.Owner.PostalCode)}'
+        
+    }
+    
+    function redirectToOpportunity(){
+        var baseurl =  window.location.hostname;
+        var oppId =  '{!opportunityId}';
+         if( (typeof sforce != 'undefined') && (sforce != null) && (sforce.one != null) ) {
+            
+                 window.open('https://'+baseurl+'/lightning/r/Opportunity/'+oppId+'/view',"_self");    
+         } else {
+                 window.open('https://'+baseurl+'/'+oppId,"_self");
+         }
+          
+    } 
+    
+    </script>
+    
+</apex:page>

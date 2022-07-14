@@ -1,0 +1,432 @@
+<apex:page controller="UploadPictureAWSController" id="page" tabStyle="Contact" showHeader="false" 
+           sidebar="false" title="File Upload" applyHtmlTag="true" lightningStylesheets="true" 
+           applyBodyTag="true" contentType="text/html" docType="html-5.0">
+    
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+        <!-- Fine Uploader Gallery CSS file 
+        ====================================================================== -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/file-uploader/5.16.2/s3.fine-uploader/fine-uploader-gallery.min.css" integrity="sha512-h3AHiH3egxrFZ/Yhs6+g897Y4wCmiXRF5SZtuzuZC0fgDbtrQjb4G0NSVKV8Hd0VdSv5XGtJk9ORs3qVxIS9gg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
+        <!-- Fine Uploader S3 JS file
+        ====================================================================== -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/file-uploader/5.16.2/s3.fine-uploader/s3.fine-uploader.min.js" integrity="sha512-m31PIkcc4qja0ewzu73gflWD78kAxz/LF1rYLV0AIEf1cH9jhBK7VXdCUMeO900EgqhUKd1bANykURdTotUFpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+        
+        <style>
+            #fine-uploader-s3 .preview-link {
+                display: block;
+                height: 100%;
+                width: 100%;
+            }
+        </style>
+        
+        <style type="text/css">
+            body 
+            { 
+                width:894px; 
+                margin:25px auto;
+                padding:0px; 
+                font-family:Verdana, Geneva, sans-serif; 
+                margin-top:0;
+            }         
+            #fine-uploader 
+            {
+                border:1px dotted #ccc;
+                min-height:300px;
+                float:left;width:872px;
+                height:auto; padding:10px;  
+                margin-bottom:10px; 
+                background-color:#F1F1F1;
+            }
+            #fileName{
+                max-width:20em;
+                word-wrap:normal;
+                display: inline-block;
+            }
+            .rebel-centered-column {
+            text-align: center;
+            width: 70px;
+            }
+            
+            .rbl-design-wrapper {
+            margin: 10px 0 20px 0;
+            }
+            
+            .rbl-design-header {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: .25rem;
+            }
+            
+            p {
+            margin: 5px 0 !important;
+            }
+        </style>
+    
+        <title>Fine Uploader S3 Demo</title>
+    </head>
+    
+    <body>
+        <apex:form id="form">
+            
+           <!--<apex:actionFunction action="{!closeWindow}" name="closeWindow"/>-->
+            <c:BlockUI />
+            
+            <apex:actionStatus onStart="blockMe();" onstop="unBlockMe();" id="waitMsg"/>
+            
+            <!-- Action function to create AWS Document records after uploading files on amazon -->
+            <apex:actionFunction name="createS3DocRec" action="{!createS3DocRec}" rerender="fine-uploader,pagemsg">
+                <apex:param value="" name="amazonFileURL" assignTo="{!amazonFileURL}"/>
+                <apex:param value="" name="amazonFileName" assignTo="{!amazonFileName}"/>
+            </apex:actionFunction>
+            
+            <!-- Action function to delete uploaded file from "DELETE" link-->
+           <!-- <apex:actionFunction name="deleteFile" action="{!deleteSelectedFile}" rerender="fine-uploader,pagemsg" reRender="test" status="waitMsg"> 
+                <apex:param value="" name="amazonFileKey" assignTo="{!deletedKeyString}"/>
+            </apex:actionFunction>-->
+            
+            <!-- Action function to update uploaded file Description-->
+            <apex:actionFunction name="updateDescriptn" action="{!updateMediaDescription}" reRender="fine-uploader,pagemsg"  status="waitMsg"> 
+                <apex:param value="" name="amazonUpdateKey" assignTo="{!updateKeyString}"/>
+                <apex:param value="" name="description" assignTo="{!descriptionToBeUpdate}"/>
+                    <apex:param value="" name="extension" assignTo="{!extension}"/>
+            </apex:actionFunction>
+            
+            <!-- Div to show the header of the page -->
+            <div class="content">
+                <div class="backcolor" style ="background-color: #8370c2;">
+                    <apex:outputLabel value="Image Uploader" style="font-size:28px;padding:2px;text-align:center;"/><br/>
+                    
+                </div>
+                
+            <!-- Page message -->
+            <apex:pageMessages id="pagemsg"/>
+            
+            <!-- This div is showing the section header -->
+            <div class="bPageTitle">
+                <div class="ptBody secondaryPalette brandSecondaryBrd">
+                    <div class="content"><img alt="" title="" class="pageTitleIcon" src="/s.gif"/>
+                        <h1 class="pageType" id="colorId">{!objectLabel}</h1>    
+                        <span class="titleSeparatingColon">:</span>
+                        <h2 class="pageDescription" id="colorIdH2">{!JSENCODE($CurrentPage.parameters.recordName)}</h2>
+                    </div>
+                </div> 
+            </div>
+            <apex:outputPanel layout="block" rendered="{!displaySelection}">
+            <div id="selectionsection">
+               
+                    <apex:pageBlock >
+                    <apex:pageBlockSection title="Make your selection" columns="2">
+                        <div style="margin-top:3%;">
+                        <td style="padding: 4px ! important;" valign="top"><label for="MyCheckbox">Approved Proto Selection</label><apex:inputcheckbox style="margin-left:18px" value="{!protoSelection}" id="MyCheckbox"/></td>
+                        </div>
+                        <div style="margin-top:3%;">
+                        <td>Select Gender
+                        <apex:selectRadio id="genderRadio" style="float: left;" value="{!gender}" layout="pageDirectio">
+                            
+                            <apex:selectOptions value="{!items}"/>
+                            
+                        </apex:selectRadio>
+                        </td>
+                        </div>
+                          
+                        <div style="margin-top:3%;">
+                            <td>Category
+                                                   
+                            <apex:selectList size="1" multiselect="false" value="{!selectedCategory}">
+                                    <apex:selectOptions value="{!categories}"/>
+                           <apex:actionSupport event="onchange" reRender="a"/>
+                            </apex:selectList>
+                           
+                            </td>
+                            </div>
+                             <div style="margin-top:3%;">
+                            <td>Sub Category
+                            <apex:selectList size="1" value="{!dependentField}" id="a">
+                            <apex:selectOptions value="{!cities}"/>
+                            </apex:selectList>
+                            </td>
+                            </div>
+                            </apex:pageBlockSection>
+                            <div align="center" draggable="false" >
+                    <apex:CommandButton value="Proceed" action="{!hidePopup}" />
+                    <apex:CommandButton value="Cancel" action="{!closeWindow}"/>
+                </div>
+            
+            </apex:pageBlock>    
+            </div>
+            </apex:outputPanel>
+
+
+            <!--  This section is used to show the fine uploader uploading file -->
+            <apex:outputPanel layout="block" rendered="{!displayFileLoader}">
+
+            <apex:pageBlock Title="List of existing S3 Documents.">
+                
+                    <apex:pageBlockTable value="{!listWrapper}" var="doc">
+                    <apex:column headerValue="Name" value="{!doc.docName}"/>
+                    <apex:column headerValue="File Name" value="{!doc.docFileName}"/>
+                    <apex:column headerValue="File Link">
+                        <apex:outputLink value="{!doc.docFileLink}" target="_blank">Check File</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Gender" value="{!doc.docGender}"/>
+                    <apex:column headerValue="Description" value="{!doc.docDesc}"/>
+                    
+                    
+                    
+                </apex:pageBlockTable>
+                
+                
+
+                <apex:outputPanel rendered="{!showNoRecordsSection}">
+                    
+                    <div style="text-align:center" >
+                        <br/><br/>
+                        <apex:outputText styleClass="bld" value="No documents found."/>
+                        <br/><br/>
+                    </div>
+                    
+                </apex:outputPanel>
+            </apex:pageBlock> 
+                            <!-- Fine Uploader Customized Gallery template
+        ====================================================================== -->
+        <script type="text/template" id="qq-template-s3">
+        
+            <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
+                <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+                    <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+                </div>
+                <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+                    <span class="qq-upload-drop-area-text-selector"></span>
+                </div>
+                <div class="qq-upload-button-selector qq-upload-button">
+                    <div>Upload a file</div>
+                </div>
+                <input type="button" value="Close" class="qq-upload-button-selector qq-upload-button" style="display:inline-block;padding:7px 0;text-align:center;float:left;margin-left:15px;cursor:pointer;"  id="closeBt" onClick="closeWindow();">
+                <span class="qq-drop-processing-selector qq-drop-processing">
+                    <span>Processing dropped files...</span>
+                    <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+                </span>
+                <ul class="qq-upload-list-selector qq-upload-list" class= "margin-top:5px">
+                    <li>
+                        <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                        <div class="qq-progress-bar-container-selector qq-progress-bar-container">
+                            <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                        </div>
+                        <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                        <div class="qq-thumbnail-wrapper">
+                            <a class="preview-link" target="_blank">
+                                <img class="qq-thumbnail-selector" qq-max-size="120" qq-server-scale>
+                            </a>
+                        </div>
+                        <button type="button" class="qq-upload-cancel-selector qq-upload-cancel" style="color: black;">X</button>
+                        <button type="button" class="qq-upload-retry-selector qq-upload-retry">
+                            <span class="qq-btn qq-retry-icon" aria-label="Retry"></span>
+                            Retry
+                        </button>
+    
+                        <div class="qq-file-info">
+                            <div class="qq-file-name">
+                                
+                                <!--
+                                <button type="button"  class="qq-btn qq-upload-delete-selector qq-upload-delete" onclick="myFunction(this);>
+                                    <span class="qq-btn qq-delete-icon" aria-label="Delete"></span>
+                                </button>
+                                -->
+                                <span class="qq-upload-file-selector qq-upload-file"></span>
+                                <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
+                            </div>
+                            <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                            
+                            <button type="button" class="qq-btn qq-upload-pause-selector qq-upload-pause">
+                                <span class="qq-btn qq-pause-icon" aria-label="Pause"></span>
+                            </button>
+                            <button type="button" class="qq-btn qq-upload-continue-selector qq-upload-continue">
+                                <span class="qq-btn qq-continue-icon" aria-label="Continue"></span>
+                            </button>
+                        </div>
+                                                
+                        <textarea placeholder="Fill Media description here..." disabled="true" style="margin-top:-5px;resize:none;float:left;border-radius:10px;padding:5px;" onblur="updateDesc(this);" class="qq-edit-description-selector qq-edit-description" id="mediaDescription" name="mediaDescription" rows="4" cols="30"></textarea>
+                    </li>
+                </ul>
+    
+                <dialog class="qq-alert-dialog-selector">
+                    <div class="qq-dialog-message-selector"></div>
+                    <div class="qq-dialog-buttons">
+                        <button type="button" class="qq-cancel-button-selector">Close</button>
+                    </div>
+                </dialog>
+    
+                <dialog class="qq-confirm-dialog-selector">
+                    <div class="qq-dialog-message-selector"></div>
+                    <div class="qq-dialog-buttons">
+                        <button type="button" class="qq-cancel-button-selector">No</button>
+                        <button type="button" class="qq-ok-button-selector">Yes</button>
+                    </div>
+                </dialog>
+    
+                <dialog class="qq-prompt-dialog-selector">
+                    <div class="qq-dialog-message-selector"></div>
+                    <input type="text">
+                    <div class="qq-dialog-buttons">
+                        <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                        <button type="button" class="qq-ok-button-selector">Ok</button>
+                    </div>
+                </dialog>
+            </div>
+        </script>
+    
+            </apex:outputPanel>
+         </div> 
+        </apex:form> 
+        <div id="fine-uploader-s3"></div>
+    
+        <script type="text/javascript">
+            
+            var trucatedParentId = ("{!JSENCODE($CurrentPage.parameters.id)}").length > 15 ? ("{!JSENCODE($CurrentPage.parameters.id)}").substring(0, 15) : ("{!JSENCODE($CurrentPage.parameters.id)}");
+            var extension = '';
+            var s3Uploader = new qq.s3.FineUploader({
+           
+                debug: true,
+                element: document.getElementById('fine-uploader-s3'),
+                template: 'qq-template-s3',
+                
+                //Request param
+                request: 
+                {
+                    endpoint: "https://rebelathletic.s3.amazonaws.com",
+                    accessKey: "AKIAWB6KOCHFBIA5GR47",
+                },
+             objectProperties: 
+                { 
+                    acl: "public-read", 
+                    region: 'us-east-2',
+                    key: function (id) {
+                        var filename = s3Uploader.getName(id);
+                        var uuid = s3Uploader.getUuid(id);
+                        var ext = filename.substr(filename.lastIndexOf('.') + 1);
+                       extension = ext;
+                       
+                        return  '/{!objectLabel}/{!JSENCODE($CurrentPage.parameters.recordName)}/'+trucatedParentId+'/'+filename;}
+                },
+                
+                //Signature are creating from PHP file    
+                signature: {
+                    endpoint: "https://fineuploader.herokuapp.com/s3.php?publicKey=AKIAWB6KOCHFBIA5GR47&privateKey=kAekeKXVlyumeTEHbGKkrQEU1nvvE4qzxDks4b5B&bucketName=rebelathletic&region=us-east-2",
+                    version: 4,
+                },
+                
+                uploadSuccess: {
+                    endpoint: "https://fineuploader.herokuapp.com/s3.php?success=true&publicKey=AKIAWB6KOCHFBIA5GR47&privateKey=kAekeKXVlyumeTEHbGKkrQEU1nvvE4qzxDks4b5B&bucketName=rebelathletic&region=us-east-2",
+                    params: {
+                        isBrowserPreviewCapable: qq.supportedFeatures.imagePreviews
+                    }
+                },
+                
+                iframeSupport: {
+                    localBlankPagePath: "/server/success.html"
+                },
+                cors: {
+                    expected: true
+                },
+                chunking: {
+                    enabled: true
+                },
+                resume: {
+                    enabled: true
+                },
+                deleteFile: {
+                    enabled: true,
+                    method: "DELETE",
+                    endpoint: "https://fineuploader.herokuapp.com/s3.php?publicKey=AKIAWB6KOCHFBIA5GR47&privateKey=kAekeKXVlyumeTEHbGKkrQEU1nvvE4qzxDks4b5B&bucketName=rebelathletic/rebelathletic&region=us-east-2"
+                },
+                
+                validation: 
+                {
+                    itemLimit: 30,
+                    sizeLimit: 15000000,
+                    allowedExtensions: ['jpeg','png','jpg','gif','TIFF','BMP'],
+                },
+                
+                thumbnails: {
+                    placeholders: {
+                        notAvailablePath: "/server/not_available-generic.png",
+                        waitingPath: "/server/waiting-generic.png"
+                    }
+                },
+                
+                callbacks: {
+                    onComplete: function(id, name, response) {
+                        var previewLink = qq(this.getItemByFileId(id)).getByClass('preview-link')[0];
+            
+                        if (response.success) {
+                            previewLink.setAttribute("href", response.tempLink)
+                            createRecord(response.tempLink.split('?')[0], name);
+                            
+                            let textAreaInputs = document.getElementsByClassName("qq-edit-description");
+                            for(let i = 0 ; i < textAreaInputs.length ; i++) {
+                                textAreaInputs[i].disabled = false;
+                            }
+                            
+                            // overriding the fileName with exact fileName without truncate
+                            let fName = document.getElementsByClassName("qq-upload-file");
+                            // If its on Zero index
+                            if(fName.length == 1)
+                                fName[0].innerText = name;
+                            //If index is greater than 1 means more than one file is selected than get the last index
+                            if(fName.length > 1) {
+                                fName[fName.length-1].innerText = name;
+                            }
+                            
+                        }
+                    }
+                }
+            });
+        var names = '';
+        //Function to create s3 document 
+        function createRecord(amazonFileUrl, name)
+        {
+            names = name;
+            createS3DocRec(amazonFileUrl, name);    
+        }
+        
+        function updateDesc(evt){
+            
+            //var parent = evt.parentNode.childNodes[0];
+            var fName  = evt.parentNode.childNodes[13].innerText; 
+            const myArr = fName.split(" ");
+           console.log('extension12 '+names);
+            console.log(myArr+' ------- '+evt.value);
+            
+            if(evt.value != '' || evt.value != undefined || evt.value != null) {
+                updateDescriptn(fName, evt.value,extension);
+            }
+        }
+        function closeWindow(){
+        window.parent.location.href="/{!$CurrentPage.parameters.id}";
+        window.top.close();
+    }
+
+        //Fuction to get File Name   
+        function myFunction(value) 
+        {
+            console.log('javascript delete');
+            var parent = value.parentNode;
+            //var parentid = parent.getAttribute("qq-file-id");
+            //var child = parent.childNodes[10];
+            //var fileName = child.innerText;
+            var fName  = value.parentNode.childNodes[13].innerText; 
+            const myArr = fName.split(" ");
+            var fileName = myArr[0];
+            console.log('fileName :'+fileName);
+            $(value).addClass("qq-upload-delete-selector");
+            deleteFile(fileName); 
+            console.log('executed apex');
+            
+        }
+    </script>
+    </body>
+</apex:page>

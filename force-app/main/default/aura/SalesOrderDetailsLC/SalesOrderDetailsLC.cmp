@@ -1,0 +1,14 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="isUIThemeClassic" type="Boolean" default="false"/>
+
+    
+    
+    <c:SalesOrderDetails selectedOrderRecordId="{!v.recordId}" />
+    
+    <aura:if isTrue="{!v.isUIThemeClassic}">
+        <div class="slds-col slds-align_absolute-center">
+            <button class="slds-button slds-button_brand" onclick="{!c.cancelButton}">Cancel</button>
+        </div>
+    </aura:if>
+</aura:component>

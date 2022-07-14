@@ -1,0 +1,8 @@
+<!--
+ Description  : User Profile Community Navigator Lightning Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="forceCommunity:routeChange" action="{!c.reInit}"/>
+</aura:component>

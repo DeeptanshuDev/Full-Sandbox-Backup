@@ -1,0 +1,33 @@
+.THIS.slds-spinner_container {  
+  z-index: 1000;
+  position: fixed;   
+}
+.THIS .color {
+    color: blue; 
+}
+.THIS .divLeft {
+    width:auto;
+    display:block;
+    float: left;
+    height:500px;
+}
+.THIS .divRight {
+    width:auto;
+    display:block;
+    float: right;
+    height:500px;
+}
+.THIS .divShow{
+    width: 0px !important;
+    height: 0px !important;
+    max-width: 0px !important;
+    max-height: 0px !important;
+}
+.THIS .divHide {
+    visibility: hidden;
+    display: none;
+}
+.THIS .coulmnHeader{
+    width: 50px !important;
+    word-wrap: break-word !important;
+}

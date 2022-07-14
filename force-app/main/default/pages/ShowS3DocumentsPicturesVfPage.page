@@ -1,0 +1,17 @@
+<apex:page standardController="Design_Request__c" extensions="ShowS3DocumentsPicturesCtrl">
+    <apex:includeLightning />
+
+    <div id="lightning" />
+
+    <script>
+        $Lightning.use("c:ShowS3DocumentsPicturesAPP", function() {
+          $Lightning.createComponent("c:ShowS3DocumentsPictures",
+              { recordId : "{!JSENCODE(designRequestIdPage)}" },
+              "lightning",
+              function(cmp) {
+                console.log("Lightning Component is loaded");
+              }
+          );
+        });
+    </script>
+</apex:page>

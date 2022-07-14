@@ -1,0 +1,21 @@
+<aura:component controller="OppChildRelatedListCtrl" access="global" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader">
+	
+    <aura:handler name="init" action="{!c.getChildDetail}" value="{!this}" />
+    <aura:attribute name="shippingList" type="Object" />
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="pickListDetail" type="Object" />
+    <aura:attribute name="mycolumns2" type="List"/>
+    <aura:attribute name="pickList" type="Object" />
+    <aura:attribute name="mycolumns1" type="List"/>
+    
+	  <div style="height: 300px">
+          <lightning:datatable
+                               keyField="id"
+                               data="{! v.shippingList }"
+                               columns="{! v.mycolumns }"
+                               hideCheckboxColumn="true"/>
+    </div>
+    
+    
+ 	
+</aura:component>

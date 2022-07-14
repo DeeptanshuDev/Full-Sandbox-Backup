@@ -1,0 +1,12 @@
+<aura:component implements="lightning:isUrlAddressable,lightning:hasPageReference" controller="RecordTypeSelectionController">
+    <aura:attribute name="recordTypeSelection" type="Boolean" access="public"/>
+    <aura:attribute name="returnURL" type="String" access="public"/>
+    <aura:attribute name="defaults" type="Object" access="private"/>
+    <aura:attribute name="entityName" type="String" access="private"/>
+    <aura:attribute name="selectedRecordType" type="String" access="public"/>
+    <aura:attribute name="recordTypeOverlay" type="Aura.Component[]" access="public"/>
+    <aura:attribute name="recTypeId" type="String" access="private" description="It will hold the ID of record type"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.doInit}" />
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+</aura:component>

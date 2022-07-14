@@ -1,0 +1,11 @@
+.THIS .iconClass svg
+{
+    fill:#cc0000;
+    width:0.300rem;
+}
+
+.THIS .iconHideClass svg
+{
+    fill:#ffffff;
+    width:0.625rem;
+}

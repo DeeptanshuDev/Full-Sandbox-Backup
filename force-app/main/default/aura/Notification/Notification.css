@@ -1,0 +1,18 @@
+.THIS.roundedBorders 
+{
+    border-radius: token(borderRadiusMedium);
+}
+
+.THIS.allowClosing_true
+{
+    cursor:pointer;
+}
+
+.THIS .wrapMessageText
+{
+    word-break: break-word;
+}
+.THIS .textColor
+{
+     color: white;
+}

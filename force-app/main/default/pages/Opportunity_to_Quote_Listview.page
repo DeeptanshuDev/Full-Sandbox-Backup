@@ -1,0 +1,4 @@
+<apex:page standardController="Opportunity" extensions="ffirule.IntegrationRuleEngine" action="{!convert}" 
+           recordSetVar="records" lightningStylesheets="true">
+    <ffirule:IntegrationRule engine="{!engine}"/>
+</apex:page>

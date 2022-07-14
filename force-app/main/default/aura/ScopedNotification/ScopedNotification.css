@@ -1,0 +1,7 @@
+.THIS.roundedBorders {
+    border-radius: token(borderRadiusMedium);
+}
+
+.THIS.cxsAllowClosing_true {
+    cursor:pointer;
+}

@@ -1,0 +1,122 @@
+<!--
+    Purpose         :   This is used to create design record with file upload under design request.
+    
+    Created By      :   Abhinav Sharma
+    
+    Created Date    :   01/20/2020
+    
+    Current Version :   v1.0
+    
+    Revision Log    :   V_1.0 Created - Abhinav Sharma - 01/20/2020
+-->
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickActionWithoutHeader" controller="UploadDesignArtController" access="global" >
+    
+    <!--To hold details of design to going to be create.-->
+    <aura:attribute name="showLoadingSpinner" type="Boolean" default="false" description = "To block UI till load data"/>
+    <aura:attribute name="recordId" type="String" description="This is used to hold record id of design request record."/>
+    <aura:attribute name="sObjectName" type="String" description="This is used to hold object api name of design request object."/>
+    <aura:attribute name="designObjApiName" type="String" default="" description="To hold object api name of design object."/>
+    <aura:attribute name="fieldSetForDesignObj" type = "String" default="" description="To hold field set api name for design object."/>
+    <aura:attribute name="designScreenHeader" type = "String" default="Records" description="To hold header of design screen."/>
+    <aura:attribute name="infoMessage" type="List" default="" access="private"/>
+    <aura:attribute name="isFileAvailable" type="Boolean"/>
+    <aura:attribute name="disableButton" type="Boolean" default="false"/>
+    <aura:attribute name="buttonDisabled" type="Boolean" default="true"/>
+    <aura:attribute name="activeScroll" type="Boolean" default="false"/>
+    <aura:attribute name="coulmnsForDesign" type="List" />
+    <aura:attribute name="allDetailsOfDesign" type="Object[]"/>
+    <aura:attribute name="alreadyAvailableDetailsOfDesign" type="Object[]"/>
+    <aura:attribute name="allFiles" type="List" default="[]"/>
+    <aura:attribute name="documentIds" type="List" default="[]"/>
+    <aura:attribute name="allDetailsOfDesignRound" type="Object[]" />
+    <aura:attribute name="selectedCustomItems" type="List" default="[]"/>
+      
+    <aura:registerEvent name="passDesignAttributes" type="c:PassDesignAttributes"/>
+    <aura:registerEvent name="passAllErrorOnMainComponent" type="c:PassAllErrorOnMainComponent"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="resetFiles" type="Aura.Action"/>
+    
+    <aura:if isTrue="{!v.showLoadingSpinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading...</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    
+    <!--To draw design object record screen to create records.-->
+    <div class="slds-m-left--medium">
+        <div class="slds-grid slds-wrap">
+           
+            <div class="slds-col slds-size_12-of-12">
+                <aura:if isTrue="{!v.isFileAvailable}">
+                    
+                    <p class="slds-text-heading_small"><b>{!v.designScreenHeader}</b></p>
+                    <br/>
+                    <div class="slds">
+                        <table class="slds-table slds-table--bordered">
+                            <thead>
+                                <tr>
+                                    <th><div class="slds-align_absolute-center">Artwork</div></th>
+                                    <aura:iteration items="{!v.coulmnsForDesign}" var="field">
+                                        <th><div class="coulmnHeader slds-align_absolute-center">{!field.label}</div></th>
+                                    </aura:iteration>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <aura:iteration items="{!v.allDetailsOfDesign}" var="design" indexVar="index">
+                                    <tr>
+                                        <aura:iteration items="{!design}" var="dsgn" indexVar="key">
+                                            <aura:if isTrue="{!dsgn.key == 'DocumentId'}">
+                                                
+                                                <td><lightning:fileCard fileId="{!dsgn.value}" description=""/></td>
+                                            </aura:if>
+                                            <aura:if isTrue="{!and(dsgn.key != 'DocumentId',dsgn.key == 'Option_Number__c')}">
+                                                <td>
+                                                    <div style="width: 100px;" class="slds-m-left--x-large">
+                                                        <div style="float: left;width: 80px;"> <lightning:input type="number" name="{!design[0].value + ';' + dsgn.key}" value="{!dsgn.value}" onchange="{!c.optionNumberChange}"/></div>
+                                                        <div style="float: left;width: 20px;margin-top:20px;"><lightning:helptext
+                                                                                                                                  content="Enter option no between 1 to 6."
+                                                                                                                                  /></div>
+                                                    </div>
+                                                </td>
+                                            </aura:if>
+                                            <aura:if isTrue="{!and(dsgn.key != 'DocumentId',dsgn.key == 'Needs_Pricing__c')}">
+                                                <td><div class="slds-m-left--large"><center><lightning:input type="checkbox"  name="{!design[0].value + ';' + dsgn.key}" checked="{!dsgn.value}" onchange="{!c.needsPricingChange}"/></center></div></td>
+                                            </aura:if>
+                                            <aura:if isTrue="{!and(dsgn.key != 'DocumentId',dsgn.key == 'Notes__c')}">
+                                                <td><div class="slds-m-left--large"><lightning:textarea name="{!design[0].value + ';' + dsgn.key}" value="{!dsgn.value}" onchange="{!c.notesChange}"/></div></td>
+                                            </aura:if>
+                                        </aura:iteration>
+                                        <td><lightning:button variant="brand" name="{!index+1}" label="Delete" title="Delete" onclick="{! c.handleDelete }" /></td>
+                                    </tr> 
+                                    <br/>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                   
+                    <aura:if isTrue="{!v.selectedCustomItems.length > 0}">
+                        <p class="slds-box slds-box_x-small slds-text-align_center slds-m-around_x-large">
+                            
+                            Select at least one item from below table  .
+                            <lightning:button variant="brand" label="Save" title="Save" onclick="{! c.handleSave }" disabled="false"/>
+                        </p>
+                    </aura:if>
+                    <aura:if isTrue="{!v.selectedCustomItems.length == 0}">
+                        <p class="slds-box slds-box_x-small slds-text-align_center slds-m-around_x-large">
+                            
+                            Select at least one item from below table  .
+                            <lightning:button variant="brand" label="Save" title="Save" onclick="{! c.handleSave }" disabled="true"/>
+                        </p>
+                    </aura:if>
+                    
+                </aura:if>
+            </div>
+        </div>
+    </div>
+</aura:component>

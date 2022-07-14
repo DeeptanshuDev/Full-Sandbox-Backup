@@ -1,0 +1,58 @@
+<!--
+	Description  : Multi Lookup Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="Multilookup" extensible="true" controller="LookupController">
+    
+    <!--Static Resource -->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+
+    <!-- External Atrributes -->
+    <aura:attribute name="value" type="String" description="Comma seperated list of Id values of the lookup" default="" access="public"/>
+    <aura:attribute name="oldValue" type="Id" description="Comma seperated list of the previous Id values of the lookup"/>
+    <aura:attribute name="referencedObjectName" type="String" description="API Name of the Object the lookup references" required="true" access="public"/>
+    <aura:attribute name="referencedObjectLabel" type="String" description="Label of the Object the lookup references" default="" access="public"/>
+    <aura:attribute name="error" type="String" description="Field error, currently not used" access="public"/>
+    <aura:attribute name="extraResultFields" type="List" description="List of fieldnames to show under the results" access="public"/>
+    <aura:attribute name="namePointingList" type="List" description="List of objects, each object contains a salesforce object that this field can refer to." access="public"/>
+    <aura:attribute name="lookupApiName" type="String" description="Lookup Field Api Name" access="public"/>
+    <aura:attribute name="state" type="String" description="Read or Edit" access="public"/>
+    <aura:attribute name="eventReference" type="String" description="A reference value so that it is known when an event is thrown, what attribute it is for" access="public"/>
+    
+    <!-- Internal Atrributes -->
+    <aura:attribute name="objectList" type="List" description="List of value/display value pairs" default="[]" access="public"/>
+    <aura:attribute name="lookupDisplay" type="String" description="Inner lookup display value" default="" access="public"/>
+    <aura:attribute name="lookupValue" type="String" description="Inner lookup value" default="" access="public"/>
+    
+    <!--Event Handlers-->
+    <aura:handler name="change" value="{!v.lookupValue}" action="{! c.LookupChanged }"/>
+    <aura:handler name="change" value="{!v.objectList}" action="{! c.objectListChanged }"/>
+    
+    <!--Aura Methods-->
+    <aura:method name="setLookupValueAction" action="{! c.setLookupValueAction }" access="public">
+        <aura:attribute name="data" type="Object" description="Id value of the lookup" default=""/>
+    </aura:method>
+    
+    <!--Component Markup-->
+    <aura:if isTrue="{!v.state == 'edit'}">
+        <c:Lookup value="{!v.lookupValue}" autoSelectExactName="false" displayValue="{!v.lookupDisplay}" referencedObjectName="{!v.referencedObjectName}" referencedObjectLabel="{!v.referencedObjectLabel}" namePointingList="{#v.namePointingList}" extraResultFields="{#v.extraResultFields}" lookupApiName="{!v.lookupApiName}"/>
+        <aura:if isTrue="{!v.objectList.length > 0}">
+            <div class="slds-pill_container slds-pill_container--bare slds-grid slds-wrap">
+                <aura:iteration items="{!v.objectList}" var="val">
+                    <span class="slds-pill slds-col">
+                        <span class="slds-pill__label slds-truncate" title="{!val.displayValue}">{!val.displayValue}</span>
+                        <button class="slds-button slds-button--icon slds-pill__remove" data-index="{!val.value}" onmousedown="{!c.removeSelected}" title="Remove">
+                            <lightning:icon iconName="utility:close" size="x-small" class="slds-button__icon" alternativeText="Remove"/>
+                        </button>
+                    </span>
+                </aura:iteration>
+            </div>
+        </aura:if>
+        <aura:set attribute="else">
+            &nbsp;
+            <aura:iteration items="{!v.objectList}" var="val">
+                <a class="textUnderline slds-truncate" href="{!'#/sObject/'+val.value+'/view'}">{!val.displayValue}</a>&nbsp;
+            </aura:iteration>
+        </aura:set>
+    </aura:if>
+</aura:component>

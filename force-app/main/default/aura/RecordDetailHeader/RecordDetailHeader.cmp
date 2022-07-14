@@ -1,0 +1,47 @@
+<!--
+ Description  : Record Details Header Lightning Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component access="global">
+    
+    <!--Static Resource-->
+    <ltng:require styles="{!$Resource.FontIcons + '/custom-icon.css'}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="showHeader" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="title" type="String" default="" access="public"/>
+    <aura:attribute name="label" type="String" default="" access="public"/>
+    <aura:attribute name="imageSize" type="String" access="public" 
+                    description="Size of the icon: large, medium, small, x-small, xx-small"
+                    default="small"/>
+    <aura:attribute name="customIconName" type="String" default="" access="public" description="The name of a custom icon from the icon font, use this one, or iconName."/>
+    <aura:attribute name="iconName" type="String" default="" access="public" description="The icon show in the header, as passed to the lightning:icon component inside the notification, use this one, or customIconName."/>
+    <aura:attribute name="className" type="String" default="" access="public" description="Class name to be applied to page header."/>
+    
+    <aura:if isTrue="{!v.showHeader}">
+        <div class="{!'slds-page-header ' + v.className}" role="banner">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container">
+                        <span class="slds-icon_container">
+                            <aura:if isTrue="{!v.customIconName != ''}">
+                                <i class="{!'icon-custom-'+v.customIconName}"/>
+                            </aura:if>
+                            <aura:if isTrue="{!v.iconName != ''}">
+                                <lightning:icon iconName="{!v.iconName}" size="{!v.imageSize}" class="slds-icon"/>
+                            </aura:if>
+                        </span>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <p class="slds-text-body_small slds-line-height_reset" title="{!v.label}">{!v.label}</p>
+                    <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="{!v.title}">{!v.title}</h1>
+                </div>
+            </div>
+        </div>
+        {!v.body}
+        <aura:set attribute="else">
+            {!v.body}
+        </aura:set>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,36 @@
+<!--
+* @Created By 	: Abhinav Sharma
+* @Created Date	: 02/17/2020
+* @description	: Notification Component
+-->
+<template>
+    <div class={borderClassName} role="alert" onclick={closeMessage}>
+        <div class="slds-media__figure">
+            <lightning-icon icon-name={messageIconName}
+                            size={size}
+                            variant={messageIconNameClass}>
+            </lightning-icon>
+        </div>
+        <div class="slds-size_10-of-12">
+            <template if:true={messages}>
+                <template if:true={messageTitle}>
+                    <div class="error-title slds-p-left_x-small">
+                        <lightning-formatted-rich-text value={messageTitle}></lightning-formatted-rich-text>
+                    </div>
+                </template>
+                <ul class={classNameForUl}>
+                    <template for:each={messages} for:item="message">
+                        <li key={message}>
+                            <lightning-formatted-rich-text value={message}></lightning-formatted-rich-text>
+                        </li> 
+                    </template>
+                </ul>
+            </template>
+        </div>
+        <div class="iconAlignment">
+            <template if:true={allowClosing}> 
+                <lightning-icon icon-name="utility:close" size={size} variant={allowCloseClassName}></lightning-icon>    
+            </template>
+        </div>
+    </div>
+</template>

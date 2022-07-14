@@ -1,0 +1,150 @@
+<!--
+ Description  : My Orders Lightning Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component description="Filter" controller="DataServiceFilterController">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!join(',',$Resource.FilterField,$Resource.Baseutility)}" afterScriptsLoaded="{!c.doInit }"/>
+    
+    <!-- Public attributes -->
+    <aura:attribute name="defaultFilters" type="Map" access="public" description="The full QueryStructure.Filter object, we use this to get the default set filters from it for this specific filter" /><!-- TYpe: QueryStructure.Filter -->
+    <aura:attribute name="filterField" type="Map" access="public" /><!-- Type: QueryStructure.FilterField -->
+    <aura:attribute name="fieldDescribe" type="Field" access="public" required="true" />
+    <aura:attribute name="queryStructure" type="String" access="public" />
+    <aura:attribute name="fullWidth" type="Boolean" default="{! false }" access="public" />
+    <aura:attribute name="hidden" type="Boolean" default="{! false }" access="public" />
+    <aura:attribute name="class" type="String" access="public" />
+    
+    <!-- Public methods -->
+    <aura:method name="setFilterValues" action="{! c.setValues }" access="public" description="">
+        <aura:attribute name="values" type="List" access="public" />
+    </aura:method>
+    <aura:method name="getFilterValues" action="{! c.getValues }" access="public"/>
+    <aura:method name="clear" action="{! c.clear }" access="public" description="Clears the currently selected values in the filter" />
+    <aura:method name="close" action="{! c.close }" access="public" description="Closes the filter modal" />
+    <aura:method name="setDropdownPosition" action="{! c.setDropdownPosition }" access="public" description="Sets the dropdown position so it doesn't appear offscreen" />
+    
+    <!-- Public events -->
+    <aura:registerEvent name="onChange" type="c:genericComponentEvent" />
+    <aura:registerEvent name="onOpen" type="c:genericComponentEvent" />
+    <aura:registerEvent name="onRender" type="c:genericComponentEvent" />
+    
+    <!-- Private attributes -->
+    <aura:attribute name="showSpinner" type="Boolean" default="{! false }" access="private" />
+    <aura:attribute name="isOpened" type="Boolean" default="{! false }" access="private" />
+    <aura:attribute name="filterValues" type="List" access="private" />
+    <aura:attribute name="hasMoreResults" type="Boolean" default="{! false }" access="private" />
+    <aura:attribute name="term" type="String" access="private" />
+    <aura:attribute name="geoTerm" type="String" access="private" />
+    <aura:attribute name="geoContext" type="Object" access="private" />
+    <aura:attribute name="appliedGeoValue" type="Object" access="private" />
+    <aura:attribute name="localSelectedValues" type="List" access="private" default="[]" />
+    <aura:attribute name="amountSelected" type="Integer" access="private" default="0" />
+    <aura:attribute name="amountSelectedVisible" type="Integer" default="0" access="private" description="" />
+    <aura:attribute name="dropdownClass" type="String" access="private" default="slds-dropdown_right" />
+    
+    <!-- Private event handlers -->
+    <aura:handler name="change" value="{! v.term }" action="{! c.onTermChange }" />
+    
+    <!-- COMPONENT MARKUP -->
+    <c:Dropdown aura:id="dropdown"
+                buttonLabel="{! v.amountSelected > 0 ? v.fieldDescribe.label + ': ' + v.amountSelected + ' ' + $Label.c.Selected_lowercase : v.fieldDescribe.label }"
+                size="{! v.fullWidth ? 'full' : 'small'}"
+                onOpen="{! c.onFilterOpen }"
+                onClose="{! c.onFilterClose }"
+                class="{! v.class + (v.hidden ? ' slds-hide' : '')}"
+                buttonClass="{! 'filter-btn ' + (v.amountSelected > 0 ? 'slds-button--neutral' : '')}"
+                dropdownClass="slds-p-bottom--xx-large"
+		>
+        
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner size="medium" alternativeText="{!$Label.c.Loading}"/>
+        </aura:if>
+        
+        <div class="slds-grid slds-p-left--small slds-p-right--small slds-p-bottom--small">
+            <div class="slds-dropdown__header slds-truncate slds-p-left--xx-small slds-p-bottom--none">
+                <span class="slds-text-title--caps" title="{! $Label.c.Filter_on + ': ' + v.fieldDescribe.label }">
+                    {! $Label.c.Filter_on + ': ' + v.fieldDescribe.label }
+                </span>
+            </div>
+        </div>
+        
+        <div class="slds-grid slds-p-left--small slds-p-right--small slds-p-bottom--small no-label">
+            <div class="slds-size--1-of-1">
+                <!--DEFAULT SEARCH-->
+                <lightning:input aura:id="search-input" type="search" label="default" variant="label-hidden" name="search" value="{! v.term }" placeholder="{! $Label.c.Search_results }" />
+            </div>
+        </div>
+        
+        <aura:if isTrue="{! not(v.fieldDescribe.hasGeolocationSearch) }">
+            
+            <aura:if isTrue="{! v.filterValues.length > 0 }">
+                <ul class="slds-dropdown__list filter-values-container">
+                    <aura:iteration items="{! v.filterValues }" var="filterValue" indexVar="i">
+                        <li class="{! 'slds-dropdown__item ' + (and(v.amountSelectedVisible > 0, v.amountSelectedVisible == i + 1) ? 'slds-border--bottom' : '') }">
+                            <a class="slds-grid" onclick="{! c.toggleFilterValue }" data-value="{! filterValue.value }" data-label="{! filterValue.label }">
+                                <div class="slds-col slds-size--1-of-8">
+                                    <aura:if isTrue="{! filterValue.selected }">
+                                        <div class="slds-text-align--center">
+                                            <lightning:icon iconName="utility:check" size="xx-small" class="filter-selected-icon" />
+                                        </div>
+                                    </aura:if>
+                                </div>
+                                <div class="slds-col slds-size--5-of-8">
+                                    <div class="slds-truncate" title="{! filterValue.label }">
+                                        <aura:if isTrue="{! empty(filterValue.value) }">
+                                            
+                                            <em class="slds-text-color_weak">{! filterValue.label }</em>
+                                            
+                                            <aura:set attribute="else">
+                                                {! filterValue.label }
+                                            </aura:set>
+                                        </aura:if>
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size--2-of-8">
+                                    <div class="slds-text-align--center text-color-brand">({! filterValue.amount })</div>
+                                </div>
+                            </a>
+                        </li>
+                    </aura:iteration>
+                </ul>
+                
+                <aura:set attribute="else">
+                    <aura:if isTrue="{! not(v.showSpinner )}">
+                        <div class="slds-m-around--x-small slds-align--absolute-center">
+                            {! $Label.c.No_results_found_table }
+                        </div>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+            
+            <aura:if isTrue="{! and(v.hasMoreResults, not(v.showSpinner)) }">
+                <div class="slds-p-around--small slds-p-right--medium slds-m-bottom--medium slds-text-align--right">
+                    <a onclick="{! c.findAllFilterValues }">{! $Label.c.Show_all_options }</a>
+                </div>
+                
+                <aura:set attribute="else">
+                    <div class="slds-p-around--x-small"></div>
+                </aura:set>
+            </aura:if>
+            
+        </aura:if>
+        
+        
+        <aura:if isTrue="{! v.filterField.values.length > 0 || v.filterValues.length > 0 || v.appliedGeoValue.resultsAmount > 0 || v.geoContext.resultsAmount > 0}">
+            <div class="slds-docked-form-footer footerPosition">
+                <aura:if isTrue="{! v.amountSelected > 0 || v.appliedGeoValue.resultsAmount > 0 }">
+                    <lightning:button label="{! $Label.c.Clear_filter }" variant="base" class="slds-float_left slds-m-right--x-small slds-text-color--error" onclick="{! c.clear }" />
+                </aura:if>
+                <aura:if isTrue="{! v.filterValues.length > 0 || v.localSelectedValues.length > 0 }">
+                    <lightning:button label="{! $Label.c.Apply_filter_button }" variant="neutral" class="slds-float_right" onclick="{! c.applyFilter }" disabled="{!and(v.fieldDescribe.hasGeolocationSearch, empty(v.geoContext.resultsAmount))}"/>
+                </aura:if>
+            </div>
+        </aura:if>
+        
+    </c:Dropdown>
+</aura:component>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ConnexysIcons</title>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,800,700,300);
+        @import url(https://fonts.googleapis.com/css?family=Squada+One);
+        body {
+            padding: 20px 80px;
+            background: #eee url(https://subtlepatterns.com/patterns/extra_clean_paper.png);
+        }
+        #logo {
+            font-family: 'Open Sans', sans-serif;
+            color: #777;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 75px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            line-height: 1;
+            position: relative;
+            display: block;
+            flex: 1;
+            text-align: center;
+        }
+        #logo:after {
+            content:"Connexys Icons";
+            position: absolute;
+            text-align: center;
+            display: block;
+            width: 100%;
+            margin-left: 4px;
+            top: 4px;
+        }
+        #logo:after {
+            /*background: url(https://subtlepatterns.com/patterns/crossed_stripes.png) repeat;*/
+            background-image: -webkit-linear-gradient(left top, transparent 0%, transparent 25%, #fff 25%, #fff 50%, transparent 50%, transparent 75%, #fff 75%);
+            background-size: 4px 4px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            z-index: -5;
+            display: block;
+            text-shadow: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            color: #222;
+            display: flex;
+            flex-flow: column;
+            width: 100vw;
+            height: 100vh;
+            font-family: "Helvetica Nueue", Arial, sans-serif;
+        }
+
+        
+        header {
+            position: relative;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        header:before {
+            position: absolute;
+            right: 0;
+            top: 0;
+            content: '';
+            display: block;
+            height: 150px;
+            width: 100%;
+            background: #e47f3e;
+            opacity: 0.85;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 80px, 0% 100%);
+            z-index: -11;
+        }
+
+        header:after {
+            position: absolute;
+            content: '';
+            display: block;
+            height: 150px;
+            width: 100%;
+            background: #d36e2d;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 80px);
+            z-index: -12;
+            left: 0;
+            top: 0;
+        }
+        
+        .search {
+            background-color: #fff;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+            padding: 10px 20px;
+        }
+        
+        input[type="search"]{
+              color: #434343;
+              font-size: 20px;
+              margin-left: 16px;
+              padding: 8px 0;
+              width: 100%;
+              font: inherit;
+              margin: 0;
+              background-color: transparent;
+              border: 0;
+              outline: none;
+        }
+        
+        h1 {
+            margin: 0 0 20px;
+            font-size: 32px;
+            font-weight: normal;
+        }
+        
+        .container {
+			flex: 1;
+			padding: 10px 20px;
+            overflow-y: scroll;
+        }
+        .icons {
+            margin-bottom: 40px;
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+        }
+        
+        .preview {
+            width: 100px;
+            display: inline-block;
+            margin: 10px;
+        }
+        .preview .inner {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background: #f5f5f5;
+            -webkit-border-radius: 3px 3px 0 0;
+            -moz-border-radius: 3px 3px 0 0;
+            border-radius: 3px 3px 0 0;
+        }
+        .preview .inner i {
+            pointer-events: none;
+            line-height: 85px;
+            font-size: 40px;
+            color: #333;
+        }
+        .label {
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 10px;
+            font-family: Monaco, monospace;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: #ddd;
+            -webkit-border-radius: 0 0 3px 3px;
+            -moz-border-radius: 0 0 3px 3px;
+            border-radius: 0 0 3px 3px;
+            color: #666;
+        }
+        footer {
+            display: inline-flex;
+            position: absolute;
+            top: 100%;
+            font-size: 14px;
+            color: #345;
+            background-color: #f4f4f4;
+            width: 100%;
+            align-self: center;
+            transition: all 150ms ease-out;
+            box-shadow: 0 -5px 5px -5px rgba(0,0,0,.25);
+        }
+        .show {
+            transform: translateY(-50px);
+        }
+        footer > div {
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+        }
+        footer > div > i {
+            padding: 2px;
+        }
+        
+        .hidden {
+            display:none;
+        }
+     
+        @media only screen and (max-width: 700px) {
+            #logo {
+                font-size: 50px;
+            }
+            #logo:after {
+                margin-left: 2px;
+                top: 2px;
+            }
+        }
+        @media only screen and (max-width: 480px) {
+            #logo {
+                font-size: 36px;
+            }
+            #logo:after {
+                margin-left: 2px;
+                top: 2px;
+            }
+        }
+        @media only screen and (max-width: 320px) {
+            #logo {
+                font-size: 28px;
+            }
+            #logo:after {
+                margin-left: 2px;
+                top: 2px;
+            }
+        }
+        
+        @font-face {
+    font-family: "ConnexysIcons";
+    src: url("./ConnexysIcons.eot?2acb3d3bdfec0a3422feecc94eeaecda?#iefix") format("embedded-opentype"),
+url("./ConnexysIcons.woff2?2acb3d3bdfec0a3422feecc94eeaecda") format("woff2"),
+url("./ConnexysIcons.woff?2acb3d3bdfec0a3422feecc94eeaecda") format("woff"),
+url("./ConnexysIcons.ttf?2acb3d3bdfec0a3422feecc94eeaecda") format("truetype"),
+url("./ConnexysIcons.svg?2acb3d3bdfec0a3422feecc94eeaecda#ConnexysIcons") format("svg");
+}
+
+i {
+    line-height: 1;
+}
+
+i[class*="icon-"]:before {
+    font-family: ConnexysIcons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    vertical-align: middle;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+.icon-custom-infoPanel:before {
+    content: "\f101";
+}
+.icon-object-browse:before {
+    content: "\f102";
+}
+.icon-object-campusEvents:before {
+    content: "\f103";
+}
+.icon-object-candidate:before {
+    content: "\f104";
+}
+.icon-object-candidateSearch:before {
+    content: "\f105";
+}
+.icon-object-compare:before {
+    content: "\f106";
+}
+.icon-object-contact:before {
+    content: "\f107";
+}
+.icon-object-generalList:before {
+    content: "\f108";
+}
+.icon-object-jobApplications:before {
+    content: "\f109";
+}
+.icon-object-jobSearch:before {
+    content: "\f10a";
+}
+.icon-object-jobs:before {
+    content: "\f10b";
+}
+.icon-object-proposals:before {
+    content: "\f10c";
+}
+.icon-object-talentpools:before {
+    content: "\f10d";
+}
+.icon-object-workflow:before {
+    content: "\f10e";
+}
+.icon-step-answerShare:before {
+    content: "\f10f";
+}
+.icon-step-application:before {
+    content: "\f110";
+}
+.icon-step-calendar:before {
+    content: "\f111";
+}
+.icon-step-candidateAccept:before {
+    content: "\f112";
+}
+.icon-step-candidateDecline:before {
+    content: "\f113";
+}
+.icon-step-candidateInfo:before {
+    content: "\f114";
+}
+.icon-step-candidateNoshow:before {
+    content: "\f115";
+}
+.icon-step-candidateUpdateRequest:before {
+    content: "\f116";
+}
+.icon-step-candidateWithdraw:before {
+    content: "\f117";
+}
+.icon-step-email:before {
+    content: "\f118";
+}
+.icon-step-extraDoc:before {
+    content: "\f119";
+}
+.icon-step-flibbase:before {
+    content: "\f11a";
+}
+.icon-step-generateCV:before {
+    content: "\f11b";
+}
+.icon-step-jobOffer:before {
+    content: "\f11c";
+}
+.icon-step-jobOfferAccept:before {
+    content: "\f11d";
+}
+.icon-step-jobOfferDecline:before {
+    content: "\f11e";
+}
+.icon-step-notes:before {
+    content: "\f11f";
+}
+.icon-step-questionnaire:before {
+    content: "\f120";
+}
+.icon-step-reject:before {
+    content: "\f121";
+}
+.icon-step-review:before {
+    content: "\f122";
+}
+.icon-step-share:before {
+    content: "\f123";
+}
+.icon-step-step:before {
+    content: "\f124";
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="/" id="logo">Connexys Icons</a>
+    </header>
+    <div class="search">
+        <i class="bhi-search"></i>
+        <input id="search" placeholder="Search" type="search" />
+    </div>
+
+    <div class="container">
+        <div class="icons" id="icons">
+            <div class="preview" data-name="custom-infoPanel">
+                <span class="inner">
+                    <i class="icon-custom-infoPanel"></i>
+                </span>
+                <br>
+                <span class='label'>custom-infoPanel</span>
+            </div>
+            <div class="preview" data-name="object-browse">
+                <span class="inner">
+                    <i class="icon-object-browse"></i>
+                </span>
+                <br>
+                <span class='label'>object-browse</span>
+            </div>
+            <div class="preview" data-name="object-campusEvents">
+                <span class="inner">
+                    <i class="icon-object-campusEvents"></i>
+                </span>
+                <br>
+                <span class='label'>object-campusEvents</span>
+            </div>
+            <div class="preview" data-name="object-candidate">
+                <span class="inner">
+                    <i class="icon-object-candidate"></i>
+                </span>
+                <br>
+                <span class='label'>object-candidate</span>
+            </div>
+            <div class="preview" data-name="object-candidateSearch">
+                <span class="inner">
+                    <i class="icon-object-candidateSearch"></i>
+                </span>
+                <br>
+                <span class='label'>object-candidateSearch</span>
+            </div>
+            <div class="preview" data-name="object-compare">
+                <span class="inner">
+                    <i class="icon-object-compare"></i>
+                </span>
+                <br>
+                <span class='label'>object-compare</span>
+            </div>
+            <div class="preview" data-name="object-contact">
+                <span class="inner">
+                    <i class="icon-object-contact"></i>
+                </span>
+                <br>
+                <span class='label'>object-contact</span>
+            </div>
+            <div class="preview" data-name="object-generalList">
+                <span class="inner">
+                    <i class="icon-object-generalList"></i>
+                </span>
+                <br>
+                <span class='label'>object-generalList</span>
+            </div>
+            <div class="preview" data-name="object-jobApplications">
+                <span class="inner">
+                    <i class="icon-object-jobApplications"></i>
+                </span>
+                <br>
+                <span class='label'>object-jobApplications</span>
+            </div>
+            <div class="preview" data-name="object-jobSearch">
+                <span class="inner">
+                    <i class="icon-object-jobSearch"></i>
+                </span>
+                <br>
+                <span class='label'>object-jobSearch</span>
+            </div>
+            <div class="preview" data-name="object-jobs">
+                <span class="inner">
+                    <i class="icon-object-jobs"></i>
+                </span>
+                <br>
+                <span class='label'>object-jobs</span>
+            </div>
+            <div class="preview" data-name="object-proposals">
+                <span class="inner">
+                    <i class="icon-object-proposals"></i>
+                </span>
+                <br>
+                <span class='label'>object-proposals</span>
+            </div>
+            <div class="preview" data-name="object-talentpools">
+                <span class="inner">
+                    <i class="icon-object-talentpools"></i>
+                </span>
+                <br>
+                <span class='label'>object-talentpools</span>
+            </div>
+            <div class="preview" data-name="object-workflow">
+                <span class="inner">
+                    <i class="icon-object-workflow"></i>
+                </span>
+                <br>
+                <span class='label'>object-workflow</span>
+            </div>
+            <div class="preview" data-name="step-answerShare">
+                <span class="inner">
+                    <i class="icon-step-answerShare"></i>
+                </span>
+                <br>
+                <span class='label'>step-answerShare</span>
+            </div>
+            <div class="preview" data-name="step-application">
+                <span class="inner">
+                    <i class="icon-step-application"></i>
+                </span>
+                <br>
+                <span class='label'>step-application</span>
+            </div>
+            <div class="preview" data-name="step-calendar">
+                <span class="inner">
+                    <i class="icon-step-calendar"></i>
+                </span>
+                <br>
+                <span class='label'>step-calendar</span>
+            </div>
+            <div class="preview" data-name="step-candidateAccept">
+                <span class="inner">
+                    <i class="icon-step-candidateAccept"></i>
+                </span>
+                <br>
+                <span class='label'>step-candidateAccept</span>
+            </div>
+            <div class="preview" data-name="step-candidateDecline">
+                <span class="inner">
+                    <i class="icon-step-candidateDecline"></i>
+                </span>
+                <br>
+                <span class='label'>step-candidateDecline</span>
+            </div>
+            <div class="preview" data-name="step-candidateInfo">
+                <span class="inner">
+                    <i class="icon-step-candidateInfo"></i>
+                </span>
+                <br>
+                <span class='label'>step-candidateInfo</span>
+            </div>
+            <div class="preview" data-name="step-candidateNoshow">
+                <span class="inner">
+                    <i class="icon-step-candidateNoshow"></i>
+                </span>
+                <br>
+                <span class='label'>step-candidateNoshow</span>
+            </div>
+            <div class="preview" data-name="step-candidateUpdateRequest">
+                <span class="inner">
+                    <i class="icon-step-candidateUpdateRequest"></i>
+                </span>
+                <br>
+                <span class='label'>step-candidateUpdateRequest</span>
+            </div>
+            <div class="preview" data-name="step-candidateWithdraw">
+                <span class="inner">
+                    <i class="icon-step-candidateWithdraw"></i>
+                </span>
+                <br>
+                <span class='label'>step-candidateWithdraw</span>
+            </div>
+            <div class="preview" data-name="step-email">
+                <span class="inner">
+                    <i class="icon-step-email"></i>
+                </span>
+                <br>
+                <span class='label'>step-email</span>
+            </div>
+            <div class="preview" data-name="step-extraDoc">
+                <span class="inner">
+                    <i class="icon-step-extraDoc"></i>
+                </span>
+                <br>
+                <span class='label'>step-extraDoc</span>
+            </div>
+            <div class="preview" data-name="step-flibbase">
+                <span class="inner">
+                    <i class="icon-step-flibbase"></i>
+                </span>
+                <br>
+                <span class='label'>step-flibbase</span>
+            </div>
+            <div class="preview" data-name="step-generateCV">
+                <span class="inner">
+                    <i class="icon-step-generateCV"></i>
+                </span>
+                <br>
+                <span class='label'>step-generateCV</span>
+            </div>
+            <div class="preview" data-name="step-jobOffer">
+                <span class="inner">
+                    <i class="icon-step-jobOffer"></i>
+                </span>
+                <br>
+                <span class='label'>step-jobOffer</span>
+            </div>
+            <div class="preview" data-name="step-jobOfferAccept">
+                <span class="inner">
+                    <i class="icon-step-jobOfferAccept"></i>
+                </span>
+                <br>
+                <span class='label'>step-jobOfferAccept</span>
+            </div>
+            <div class="preview" data-name="step-jobOfferDecline">
+                <span class="inner">
+                    <i class="icon-step-jobOfferDecline"></i>
+                </span>
+                <br>
+                <span class='label'>step-jobOfferDecline</span>
+            </div>
+            <div class="preview" data-name="step-notes">
+                <span class="inner">
+                    <i class="icon-step-notes"></i>
+                </span>
+                <br>
+                <span class='label'>step-notes</span>
+            </div>
+            <div class="preview" data-name="step-questionnaire">
+                <span class="inner">
+                    <i class="icon-step-questionnaire"></i>
+                </span>
+                <br>
+                <span class='label'>step-questionnaire</span>
+            </div>
+            <div class="preview" data-name="step-reject">
+                <span class="inner">
+                    <i class="icon-step-reject"></i>
+                </span>
+                <br>
+                <span class='label'>step-reject</span>
+            </div>
+            <div class="preview" data-name="step-review">
+                <span class="inner">
+                    <i class="icon-step-review"></i>
+                </span>
+                <br>
+                <span class='label'>step-review</span>
+            </div>
+            <div class="preview" data-name="step-share">
+                <span class="inner">
+                    <i class="icon-step-share"></i>
+                </span>
+                <br>
+                <span class='label'>step-share</span>
+            </div>
+            <div class="preview" data-name="step-step">
+                <span class="inner">
+                    <i class="icon-step-step"></i>
+                </span>
+                <br>
+                <span class='label'>step-step</span>
+            </div>
+        </div>
+        <section>Part of the <a href="https://platform.bullhorn.com">Bullhorn SDK</a></section>
+    </div>
+    <footer class="hidden">
+        <div>
+            <i style="color:#000"></i>
+            <i style="color:#fff"></i>
+            <i style="color:#345"></i>
+            <i style="color:#999"></i>
+            <i style="color:#39D"></i>
+            <i style="color:#C23"></i>
+            <i style="color:#F93"></i>
+        </div>
+        <div>
+            <i style="font-size:x-small"></i>
+            <i style="font-size:small"></i>
+            <i style="font-size:medium"></i>
+            <i style="font-size:large"></i>
+            <i style="font-size:x-large"></i>
+            <i style="font-size:xx-large"></i>
+        </div>
+        <pre>Basic Usage: <code>&lt;i class=&quot;<span id="name">name</span>&quot;&gt;&lt;/i&gt;</code></pre>
+    </footer>
+
+    <script>
+        (function () {
+            document.getElementById('icons').onclick = function (e) {
+                e = e || window.event;
+                var name = e.target.getAttribute('data-name') || e.target.parentNode.getAttribute('data-name');
+                document.getElementById('name').innerHTML = "icon-" + name;
+                
+                if( !name ) {
+                    document.querySelector("footer").className = "";    
+                } else {
+                    var matches = document.querySelectorAll("footer i");
+                    for( var i in matches ){
+                        matches[i].className = "icon-" + name;
+                    }
+                    document.querySelector("footer").className = "show";    
+                }
+                e.stopImmediatePropagation();
+            }
+            
+            document.body.onclick = function (e) {
+                document.querySelector("footer").className = "";
+            }
+        })();
+
+        (function () {
+            document.getElementById('search').addEventListener('keyup', function (e) {
+                var matches = document.querySelectorAll(".preview");
+                for( var i in matches ){
+                    var el = matches[i],
+                        name = el.getAttribute('data-name'),
+                        val = document.getElementById('search').value;
+                    if( !val || !val.length ) {
+                        el.className = el.className.replace(/\shidden\b/gi,'');
+                    } else if( name.indexOf(val) >= 0 ) {
+                        el.className = el.className.replace(/\shidden\b/gi,'');
+                    } else {
+                        el.className += ' hidden';
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

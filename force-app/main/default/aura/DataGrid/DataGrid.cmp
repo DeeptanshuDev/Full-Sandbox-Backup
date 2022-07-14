@@ -1,0 +1,41 @@
+<!--
+	Description  : Data Grid Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="The data grid is the holder of all data grid views, which can be switched using the DataGridSelector component" extends="c:AbstractListView">
+    
+    <!--Public Attributes-->
+    <aura:attribute name="view" type="String" description="Either table, kanban, tiles or groupedTiles" default="table" access="public"/>
+    <aura:attribute name="infoDialogTitle" type="String"  access="public"/>
+    <aura:attribute name="maxFields" type="Integer" description="Tiles Maximum Number Of Fields"  access="global"/>
+    
+    <!--Register event-->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <div class="{!'scroll-position-' + globalId}" aura:Id="scroll-position-id"></div>
+    
+    <!--Table view Generic Lightning Component-->
+    <aura:if isTrue="{!v.view == 'table'}">
+        
+        <c:Table aura:id="tableView" data="{!v.data}" columns="{!v.columns}" 
+                 selectable="{!v.selectable}" selectAllEnable="{v.selectAllEnable}" orders="{!v.orders}"
+                 isCommunityUser="{!v.isCommunityUser}"
+                 navigationType="{!v.navigationType}"
+                 actionComponents="{!v.actionComponents}" currentSelectedItems="{!v.currentSelectedItems}" 
+                 generateReferenceLinks="{!v.generateReferenceLinks}" isLoading="{!v.isLoading}"
+                 truncateFields="{!v.truncateFields}"
+                 isInitialData="{!v.isInitialData}"
+                 mobileShrinkFields="{!v.mobileShrinkFields}"/>
+    </aura:if>
+    
+    <!--Kanban view Generic Lightning Component-->
+    <aura:if isTrue="{!v.view == 'kanban'}">
+        TODO: kanban
+    </aura:if>
+
+    <!--Tiles View Generic Lightning Component-->
+    <aura:if isTrue="{!v.view == 'tiles'}">
+    	TODO: Tile
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,107 @@
+<!--
+     Description : Feedback Component
+     Created By  : Abhinav Sharma
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" 
+                access="global" >
+    
+    <!--Static Resource to have Base Utility methods and associated logics-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="overlay" type="Aura.Component[]"/>
+    
+    <!--Component Markup-->
+    <lightning:layout>
+        <lightning:layoutItem size="12">
+            <article class="slds-card__body slds-card__body_inner">
+                
+                <h1 class="slds-card__header-title" style="font-size: 30px">
+                    <span>{!$Label.c.Feedback}</span>
+                </h1>
+                
+                <div class="slds-grid slds-m-top_medium" style="overflow: auto;">
+                    <div style="float: left;">
+                        <button aura:id="likeButton" class="slds-button slds-button_outline-brand" style="min-width: 132px;" onclick="{!c.onClickLikeButton}">
+                            <lightning:layout>
+                                <lightning:layoutItem size="12">
+                                    <div class="slds-p-top_small slds-p-left_small slds-p-right_small slds-p-bottom_xx-small">
+                                        <div class="slds-avatar">
+                                            <img src="{!$Resource.resource_container + '/images/smile.png'}"/>
+                                        </div>
+                                        <div class="slds-text-body_small slds-text-align_center">
+                                            <p style="line-height: 1.5;">{!$Label.c.Send_a}<br/>{!$Label.c.Smile}</p>
+                                        </div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </button>
+                    </div>
+                    <div class="slds-m-left_small">
+                        <div class="slds-m-top_medium" >
+                            <h3 class="slds-text-heading_small">{!$Label.c.I_Like_Something}</h3>
+                            <p>{!$Label.c.Feedback_Like_Message}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commented on - 06/17/2019 - As per Jeff side UAT testing suggestion -->
+                <!-- 
+                <div class="slds-grid slds-m-top_medium" style="overflow: auto;">
+                    <div style="float: left;">
+                        <button aura:id="dislikeButton" class="slds-button slds-button_outline-brand" style="min-width: 132px;" onclick="{!c.onClickDislikeButton}">
+                            <lightning:layout>
+                                <lightning:layoutItem size="12">
+                                    <div class="slds-p-top_small slds-p-left_small slds-p-right_small slds-p-bottom_xx-small">
+                                        <div class="slds-avatar">
+                                            <img src="{!$Resource.resource_container + '/images/sad.png'}"/>
+                                        </div>
+                                        <div class="slds-text-body_small slds-text-align_center">
+                                            <p style="line-height: 1.5;">{!$Label.c.Send_a}<br/>{!$Label.c.Frown}</p>
+                                        </div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </button>
+                    </div>
+                    <div class="slds-m-left_small">
+                        <div class="slds-m-top_medium" >
+                            <h3 class="slds-text-heading_small">{!$Label.c.I_Don_t_Like_Something}</h3>
+                            <p>{!$Label.c.Feedback_dislike_Message}</p>
+                        </div>
+                    </div>
+                </div>
+				-->
+                
+                <div class="slds-grid slds-m-top_medium" style="overflow: auto;">
+                    <div style="float: left;">
+                        <button aura:id="suggestionsButton" class="slds-button slds-button_outline-brand" style="min-width: 132px;" onclick="{!c.onClickSuggestionButton}">
+                            <lightning:layout>
+                                <lightning:layoutItem size="12">
+                                    <div class="slds-p-top_small slds-p-left_small slds-p-right_small slds-p-bottom_xx-small">
+                                        <div class="slds-avatar">
+                                            <img src="{!$Resource.resource_container + '/images/suggestions.png'}"/>
+                                        </div>
+                                        <div class="slds-text-body_small slds-text-align_center">
+                                            <p style="line-height: 1.5;">{!$Label.c.Send_a}<br/>{!$Label.c.Suggestion}</p>
+                                        </div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </button>
+                    </div>
+                    <div class="slds-m-left_small">
+                        <div class="slds-m-top_medium" >
+                            <h3 class="slds-text-heading_small">{!$Label.c.I_Have_a_Suggestion}</h3>
+                            <p>{!$Label.c.Feedback_Suggestion_Message}</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <!--Lightning Overlay-->
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    
+</aura:component>

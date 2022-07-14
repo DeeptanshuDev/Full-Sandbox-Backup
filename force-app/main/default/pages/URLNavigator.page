@@ -1,0 +1,91 @@
+<!--
+    Description   :   Vf page to act redirect point for various button with pre-population logic
+    Created By    :   Abhinav Sharma
+    Created Date  :   07/09/2018
+    Version       :   V1.0 Created
+-->
+<apex:page controller="URLNavigatorController" lightningstylesheets="true">
+    <apex:variable var="classic" value="{! $User.UIThemeDisplayed == 'Theme2' || $User.UIThemeDisplayed == 'Theme3' }"/>
+    <apex:form >
+        <apex:actionFunction name="NavigateForClassic" action="{!redirect}"/>
+    </apex:form>
+    <script>
+        let isClassic = '{!classic}';
+        window.onload = function() 
+        {
+            if(isClassic == 'true') 
+            {
+                NavigateForClassic();
+            }
+            else
+            {
+                var mapOfParameters = JSON.parse('{!JSENCODE(JsonMap)}');
+                var operationType = mapOfParameters['operationtype'];
+                if(operationType.toUpperCase() == 'BACK') 
+                {
+                    sforce.one.back(mapOfParameters['refresh']);
+                }
+                else if(operationType.toUpperCase() == 'NAVIGATETOSOBJECT') 
+                {
+                    sforce.one.navigateToSObject(mapOfParameters['recordId'],mapOfParameters['view']);
+                }
+                else if(operationType.toUpperCase() == 'NAVIGATETOURL') 
+                {
+                    sforce.one.navigateToURL(decodeURIComponent(mapOfParameters['url']),mapOfParameters['isredirect']);
+                }
+                else if(operationType.toUpperCase() == 'NAVIGATETOFEED') 
+                {
+                    sforce.one.navigateToFeed(mapOfParameters['subjectId'],mapOfParameters['type']);
+                }
+                else if(operationType.toUpperCase() == 'NAVIGATETOFEEDITEMDETAIL') 
+                {
+                    sforce.one.navigateToFeedItemDetail(mapOfParameters['feedItemId']);
+                }
+                else if(operationType.toUpperCase() == 'NAVIGATETORELATEDLIST') 
+                {
+                    sforce.one.navigateToRelatedList(mapOfParameters['relatedListId'],mapOfParameters['parentRecordId']);
+                }
+                else if(operationType.toUpperCase() == 'NAVIGATETOLIST') 
+                {
+                    sforce.one.navigateToList(mapOfParameters['listViewId'],mapOfParameters['listViewName'],mapOfParameters['scope']);
+                }
+                else if(operationType.toUpperCase() == 'CREATERECORD') 
+                {
+                    var fields = mapOfParameters['fields'];
+                    var fieldsList = fields.split('@~@');
+                    var values = mapOfParameters['defaults'];
+                    var valuesList = values.split('@~@');
+                    var defaults = {};
+                    if(fieldsList.length > 0 && valuesList.length > 0) 
+                    {
+                        for(var key in fieldsList) 
+                        {
+                            if(fieldsList[key] != null && fieldsList[key] != '' )
+                            {
+                                if(valuesList[key] != null && valuesList[key] != '' && valuesList[key] != 'null' )
+                                {
+                                    defaults[fieldsList[key]] = decodeURIComponent(valuesList[key]);
+                                }
+                            }
+                        }
+                    }
+                    
+                    if(mapOfParameters.hasOwnProperty('recordTypeSelection') && mapOfParameters['recordTypeSelection'] == 'true') 
+                    {
+                        sforce.one.navigateToURL('/lightning/cmp/c__RecordTypeSelection?c__recordTypeSelection='+mapOfParameters['recordTypeSelection']+'&c__entityName='+mapOfParameters['entityName']+'&c__defaults='+encodeURIComponent(JSON.stringify(defaults))+'&c__returnURL='+mapOfParameters['returnURL'],true);
+                    }
+                    else 
+                    {  
+                        var recordIdVal = mapOfParameters.hasOwnProperty('recordTypeId')?mapOfParameters['recordTypeId']:'';
+                        sforce.one.navigateToURL('/lightning/cmp/c__RecordTypeSelection?c__recordTypeSelection='+mapOfParameters['recordTypeSelection']+'&c__entityName='+mapOfParameters['entityName']+'&c__recTypeId='+recordIdVal+'&c__defaults='+encodeURIComponent(JSON.stringify(defaults))+'&c__returnURL='+mapOfParameters['returnURL'],false);
+                        //sforce.one.createRecord(mapOfParameters['entityName'],mapOfParameters['recordTypeId'],defaults);
+                    } 
+                }
+                else if(operationType.toUpperCase() == 'EDITRECORD') 
+                {
+                    sforce.one.editRecord(mapOfParameters['recordId']);
+                }
+            }
+        }
+    </script>
+</apex:page>

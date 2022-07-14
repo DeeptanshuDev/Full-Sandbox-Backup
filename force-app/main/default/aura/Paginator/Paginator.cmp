@@ -1,0 +1,40 @@
+<!--
+     Description  : Data Grid Lightning Component
+     Created By   : Abhinav Sharma
+-->
+<aura:component description="Paginator">
+    
+    <!--Public Attributes-->
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" access="public"/>
+    <aura:attribute name="totalPages" type="Integer"  access="public"/>
+    <aura:attribute name="recordsFromTo" type="String" access="public"/>
+    <aura:attribute name="hasMoreRecords" type="Boolean" access="public" default="false"/>
+    
+    <!--Events Registers-->
+    <aura:registerEvent name="pagePrevious" type="c:genericComponentEvent"/>
+    <aura:registerEvent name="pageNext" type="c:genericComponentEvent" />
+    
+    <!--Component Markup-->
+    <aura:if isTrue="{!v.totalPages > 0}">
+        <lightning:layout horizontalAlign="center">
+            <lightning:layoutItem padding="around-small">
+                <lightning:buttonIcon iconName="utility:left" variant="border" onclick="{! c.previousPage }" alternativeText="Previous page" disabled="{! v.currentPageNumber == 1 }" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" class="slds-align_absolute-center">
+                
+                <aura:if isTrue="{!v.hasMoreRecords == true}" >
+                    <span title="{!$Label.c.Explain_pagination_limit_message}">
+                        {!v.recordsFromTo}
+                    </span>
+                    <aura:set attribute="else">
+                        {!v.recordsFromTo}
+                    </aura:set>
+                </aura:if>
+                
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small">
+                <lightning:buttonIcon iconName="utility:right" variant="border" onclick="{!c.nextPage}" alternativeText="Next page" disabled="{! v.currentPageNumber == v.totalPages }"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </aura:if>
+</aura:component>

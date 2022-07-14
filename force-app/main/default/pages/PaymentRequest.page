@@ -1,0 +1,173 @@
+<apex:page showHeader="false" standardStylesheets="true" id="page" lightningstylesheets="true">
+
+    <!-- Use this CSS style for the page -->
+    <style type="text/css">
+        .customstyle {
+            background-color: white;
+        }
+    </style>
+
+    <apex:outputPanel id="header" layout="block">
+        <!-- This is a Header block. Paste your APEX or HTML code here. -->
+
+        <!-- APEX image example: -->
+        <apex:image value="{!URLFOR($Resource.RebelLogo1)}" style="display: block; margin: 0 auto; margin-bottom: 20px;"/> <!-- height="100px" width="410px"  -->
+
+
+        <!-- HTML image example: -->
+        <!-- <img src="{!URLFOR($Resource.ChargentBase__ChargentStyling, 'img/Chargent.png')}" height="100px" width="410px" style="display: block; margin: 0 auto;"/> -->
+
+        <!-- You may use <style> tag for your styles. -->
+        <!-- CSS style example: -->
+
+        <!-- <style type="text/css">
+            .header {
+                background-color: lightgray;
+                text-align: center;
+                color: black;
+                font-size: 20px;
+                height: 100px;
+                /*margin-bottom: 20px;*/
+            }
+            .headertext {
+                line-height: 100px;
+            }
+        </style>  -->
+
+
+        <!-- Simple APEX header example: -->
+
+        <!-- <apex:outputPanel layout="block" styleClass="header">
+            <apex:outputText value="Simple Header" styleClass="headertext"/>
+        </apex:outputPanel>
+        -->
+
+
+        <!-- Simple HTML header example: -->
+        <!--
+        <div class="header">
+            <span class="headertext">Simple Header</span>
+        </div>
+        -->
+    </apex:outputPanel>
+
+    <apex:outputPanel id="content" layout="block" styleClass="customstyle">
+        <!-- You may use some parameters with SitePaymentComponent: -->
+        <!-- 1. showAddress - Boolean value to render the billing address section -->
+        <!-- 2. cancel - Cancel page URL -->
+        <!-- 3. success - Success page URL -->
+        <!-- 4. fail - Fail page URL -->
+
+        <!-- Component use example: -->
+        <ChargentOrders:SitePaymentComponent showAddress="true" cancel="{!URLFOR($Page.Cancel)}" success="{!URLFOR($Page.Success)}" fail="{!URLFOR($Page.Fail)}"/>
+
+    </apex:outputPanel>
+
+    <apex:outputPanel id="footer" layout="block">
+        <!-- This is a Footer block. Paste your APEX or HTML code here. -->
+
+        <!-- APEX image example: -->
+        <!-- <apex:image value="{!URLFOR($Resource.ChargentBase__ChargentStyling, 'img/Chargent.png')}" height="100px" width="100%"/> -->
+
+        <!-- HTML image example: -->
+        <!-- <img src="{!URLFOR($Resource.ChargentBase__ChargentStyling, 'img/Chargent.png')}" height="100px" width="100%"/> -->
+
+        <!-- You may use <style> tag for your styles. -->
+        <!-- CSS style example: -->
+
+        <style type="text/css">
+            .footer {
+                background-color: whitesmoke;
+                text-align: center;
+                color: black;
+                font-size: 14px;
+                height: 130px;
+                /*margin-top: 20px;*/
+                position: absolute;
+                bottom:0;
+                width: 100%;
+                border-top: 1px solid purple;
+            }
+            .footertext {
+                line-height: 50px;
+            }
+
+            .maillink, .maillink:hover {
+                color: red;
+                text-decoration: none;
+            }
+            .band {
+                height: 80px;
+                background-color: purple;
+            }
+        </style>
+
+
+        <!-- APEX footer example: -->
+
+        <apex:outputPanel layout="block" styleClass="footer">
+            <apex:outputText value="Rebel Athletic Inc.  | 2554 Tarpley Road, Suite 110  |  Carrollton, Texas  |  USA  |  " styleClass="footertext"/>
+            <apex:outputLink value="https://www.rebelathletic.com" >www.rebelathletic.com</apex:outputLink>
+            <apex:outputText value="  |  " styleClass="footertext"/>
+            <apex:outputLink value="mailto:ap@rebelathletic.com" styleClass="maillink">ap@rebelathletic.com</apex:outputLink>
+            <apex:outputPanel layout="block" styleClass="band" />
+        </apex:outputPanel>
+
+
+        <!-- Simple HTML footer example: -->
+        <!--
+        <div class="footer">
+            <span class="footertext">Simple Footer</span>
+        </div>
+        -->
+    </apex:outputPanel>
+
+    <!-- OVVERIDE CSS
+    <style type="text/css">
+        .content {
+            width: 34em;
+            min-width: 372px;
+            font-family: 'Source Sans Pro','Helvtica','Arial', 'san-serif';
+            background-color: green;
+            padding-top: 10px;
+            padding-bottom: 300px;
+            border-radius: 100px;
+            top: 5%;
+            left: 50%;
+            border: 5px solid #666;
+        }
+    </style>-->
+
+    <script type="text/javascript">
+        window.onload = function() {
+            resize();
+
+            var target = document.getElementById('page:content');
+            var config = { attributes: true, childList: true, characterData: true, subtree: true }
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    resize();
+                });
+            });
+            observer.observe(target, config);
+        }
+
+        window.onresize = function(event) {
+            resize();
+        };
+
+        function resize() {
+            footer = document.getElementsByClassName("footer")[0];
+            body = document.body;
+
+            if (window.innerHeight < body.scrollHeight + footer.scrollHeight) {
+                footer.style.position = "relative";
+            }
+            if (window.innerHeight >= body.scrollHeight) {
+                footer.style.position = "absolute";
+            }
+        }
+
+    </script>
+
+</apex:page>

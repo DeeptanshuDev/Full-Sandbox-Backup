@@ -1,0 +1,120 @@
+<!--
+    Purpose         :   This is used to create design and design item record under design request.
+    
+    Created By      :   Abhinav Sharma
+    
+    Created Date    :   01/20/2020
+    
+    Current Version :   v1.0
+    
+    Revision Log    :   V_1.0 Created - Abhinav Sharma - 01/20/2020
+-->
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickAction,c:sObjectsPropertiesInterface" controller="UploadDesignArtController" 
+                access="global" >
+    
+    <!--To hold details of design/design item to going to be create.-->
+    <aura:attribute name="designObjApiName" type="String" default="Design__c" access="public"
+                    description="To hold object api name of design object."/>
+    <aura:attribute name="fieldSetForDesignObj" type ="String" access="public"
+                    default="Design_Field_For_Upload_Design_Art" description="To hold field set api name for design object."/>
+    <aura:attribute name="designScreenHeader" type = "String" default="Records" access="public"
+                    description="To hold header of design screen."/>
+    <aura:attribute name="isFileAvailable" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="multiple" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="alreadyAvailableDetailsOfDesign" type="Object[]"/>
+    <aura:attribute name="allDetailsOfDesign" type="Object[]"/>
+    <aura:attribute name="allDetailsOfDesignRound" type="Object[]" access="public"/>
+    <aura:attribute name="alreadyUploadedFiles" type="List" access="public"/>
+    <aura:attribute name="selectedCustomItems" type="List" default="[]" access="public"/>
+    <aura:attribute name="customItemColumns" type="List" default="" access="public"/>
+    <aura:attribute name="customItems" type="List" default="" access="public"/>
+    <aura:attribute name="allFiles" type="List" default="[]" access="public"/>
+    <aura:attribute name="documentIds" type="List" default="[]" access="public"/>
+    
+    <aura:attribute name="infoMessage" type="List" default="" access="private"/> 
+    <aura:attribute name="fileMessage" type="List" 
+                    default="['You can drag and drop files upto 10 at a time.','File upload is supported for all file types but image preview cannot be shown for some file types like mp3, mp4 files.']" 
+                    access="private"/> 
+    
+    <!--Handler-->
+    <aura:handler name="passDesignAttributes" event="c:PassDesignAttributes" 
+                  action="{!c.handlePassDesignAttributes}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <!--File upload screen-->
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_12-of-12">
+            <c:Section sectionHeader="Upload Designs" sectionOpen="true">
+                <div class="slds-p-left_small slds-p-right_small">
+                    <aura:if isTrue="{!not(empty(v.infoMessage))}">
+                        <div aura:id="defaultMessage" class="slds-p-left_small slds-p-right_small">
+                            <!--To draw markup for notification/Custom error handling-->
+                            <c:Notification allowClosing="true" severity="info" 
+                                            messages="{!v.infoMessage}" inverse="true"/>
+                        </div> 
+                    </aura:if> 
+                    
+                    <p class="slds-text-align_center slds-m-around_x-large">
+                        <label class="uploadfilelabel" for="inputFile">
+                            <div class="fileuploadare">
+                                Drag &amp; drop files or click image to choose file
+                            </div>        
+                            <lightning:fileUpload class="fileupload" 
+                                                  style="position: absolute;left: 0;
+                                                         opacity: 0;top: 0;bottom: 0;width: 100%;" 
+                                                  label="Add attachment" 
+                                                  multiple="{!v.multiple}" 
+                                                  recordId="{!v.recordId}" 
+                                                  onuploadfinished="{!c.handleUploadFinished}" />
+                        </label>
+                    </p>
+                </div>
+            </c:Section>
+        </div>
+    </div>
+    <div class="slds-grid slds-wrap">
+        
+        <!--To create design object record with file upload functionality.-->
+        <div class="slds-col slds-size_12-of-12">
+            <aura:if isTrue="{!v.isFileAvailable}">
+                <c:Section sectionHeader="Designs Details" sectionOpen="true">
+                    <div class="slds-p-left_small slds-p-right_small">
+                        <p class="slds-p-horizontal_small">                    
+                            <c:DesignCreationWithFileComponent aura:id ="lightningTableComId" 
+                                                               recordId = "{!v.recordId}"
+                                                               sObjectName="{!v.sObjectName}" 
+                                                               isFileAvailable="{!v.isFileAvailable}"
+                                                               allFiles="{!v.allFiles}" 
+                                                               documentIds ="{!v.documentIds}" 
+                                                               designScreenHeader="{!v.designScreenHeader}"
+                                                               designObjApiName="{!v.designObjApiName}"
+                                                               fieldSetForDesignObj = "{!v.fieldSetForDesignObj}" 
+                                                               allDetailsOfDesign = "{!v.allDetailsOfDesign}"
+                                                               alreadyAvailableDetailsOfDesign = "{!v.alreadyAvailableDetailsOfDesign}"
+                                                               allDetailsOfDesignRound = "{!v.allDetailsOfDesignRound}"
+                                                               selectedCustomItems ="{!v.selectedCustomItems}"
+                                                               ></c:DesignCreationWithFileComponent>
+                        </p>
+                    </div>
+                </c:Section>
+                <aura:set attribute="else">
+                    No designs yet.
+                </aura:set>
+            </aura:if> 
+        </div>
+    </div>
+    
+    <!--To draw existing custom item/standard item under design request.-->
+    <c:Section sectionHeader="Items" sectionOpen="true">
+        <div class="slds-p-left_small slds-p-right_small">
+            <lightning:datatable
+                                 keyField="Id"
+                                 data="{! v.customItems }"
+                                 columns="{! v.customItemColumns }"
+                                 hideCheckboxColumn="false"
+                                 onrowselection="{! c.onCustomItemSelection }"             
+                                 
+                                 />
+        </div>
+    </c:Section>
+</aura:component>

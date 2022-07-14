@@ -1,0 +1,3 @@
+<design:component label="Custom Links">
+    <design:attribute name="homePageComponentName" datasource="apex://HomePageComponentsPicklist"/>
+</design:component>

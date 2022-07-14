@@ -1,0 +1,33 @@
+<aura:component description="Orders List View Switcher Component">
+    
+    <!-- Event handler -->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit }"/>
+
+    <aura:attribute name="view" type="String" description="Either all orders, open orders or closed orders" default="allOrders" access="public"/>
+    <aura:attribute name="views" type="String[]" description="All options in the select, for options see 'view'." default="allOrders,openOrders,closeOrders" access="public"/>
+    <aura:attribute name="position" type="String" description="Position of the dropdown, left or right" default="left" access="public" />
+
+    <aura:attribute name="viewInfo" type="Object" description="The selected view, prepared for rendering" access="private"/>
+    <aura:attribute name="viewInfos" type="List" description="All views, prepared for rendering" access="private"/>
+
+    <c:Dropdown buttonIconName="{! v.viewInfo.icon }" buttonLabel="{! v.viewInfo.labelDisplay }" aura:id="dropdown" disabled="false">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__header">
+                <span class="slds-text-title--caps">
+                    {! $Label.c.Display_as }
+                </span>
+            </li>
+            <aura:iteration items="{! v.viewInfos }" var="viewInfo">
+                <li class="{! viewInfo.cssClass +' slds-dropdown__item ' + (v.view == viewInfo.view ? 'slds-is-selected' : '') }" role="presentation">
+                    <a role="menuitem" onclick="{! c.switchView }" id="{! viewInfo.view }" aria-checked="true">
+                        <span class="slds-truncate slds-p-right--small" title="{! viewInfo.labelOption }">
+                            <lightning:icon iconName="utility:check" size="x-small" class="slds-icon--selected slds-p-right--x-small" />
+                            {! viewInfo.labelOption }
+                        </span>
+                        <lightning:icon iconName="{! viewInfo.icon }" size="x-small"/>
+                    </a>
+                </li>
+            </aura:iteration>
+        </ul>
+    </c:Dropdown>
+</aura:component>

@@ -1,0 +1,23 @@
+<!--
+	Description  : Matching lightning component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="It used for progress bar.">
+    
+    <!--Public Attributes-->
+    <aura:attribute name="value" type="Integer" default="0" required="true" access="public"/>
+    <aura:attribute name="variant" required="false" type="String" 
+                    description="The variant of the progress bar. Valid values are base and circular." default="circular" access="public"/>
+	<aura:attribute name="size" required="false" type="String" 
+                    description="The size of the progress bar. Valid values are x-small, small, medium, and large." default="medium" access="public"/>
+    
+    <!--Component Markup-->
+    <lightning:progressBar value="{!v.value}" variant="{!v.variant}" size="{!v.size}" 
+                           class="{! (lessthanorequal(v.value,40) ? 'progresslow progressBar' : lessthanorequal(v.value,70) ? 'progressmedium progressBar' : 'progresshigh progressBar')}" aura:id="progressColor"/>
+    <aura:if isTrue="{!v.value !=null}">
+        <span class="progressValue"> {!v.value}%</span>
+        <aura:set attribute="else">
+            <span class="progressValue">0%</span>
+        </aura:set>
+    </aura:if>
+</aura:component>

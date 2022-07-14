@@ -1,0 +1,102 @@
+<!--
+
+@OutputEvent
+type:           genericComponentEvent
+description:    When the form has been saved successfully
+eventdata:      {
+    state: SAVED,
+    data: the result object from the apex call
+}
+
+@OutputEvent
+type:           genericComponentEvent
+description:    When the user cancels the operation
+eventdata:      {
+    state: CANCELLED
+}
+
+-->
+<aura:component extensible="true" description="Form super component" access="global" extends="c:Section">
+
+    <!--Static Resource to have Base Utility methods and associated logics-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+
+    <!--Public Attributes-->
+    <aura:attribute name="headerTitle" type="String" access="Global"/>
+    <aura:attribute name="sectionStatus" default="Open" type="String" access="Global"/>
+    <aura:attribute name="state" type="String" default="Read" access="Global"/>
+    <aura:attribute name="formType" type="String" default="stacked" access="Global"/>
+
+    <aura:attribute name="errorMessages" type="List"/>
+    <aura:attribute name="fieldList" type="List"/>
+    <aura:attribute name="serverFieldErrors" type="Object[]"/>
+
+    <aura:attribute name="embeddedHelper" type="Object"/>
+    <aura:attribute name="fieldOverrides" type="Object" access="public" description="A map of fieldnames and the attributes you want to override"/> <!-- example: {"OwnerId":{"value":"myOwnerId","displayValue":"Pietje"},"special":{"value":"hoi"}} -->
+
+    <aura:attribute name="editmodeAllowed" default="true" type="Boolean" description="Is the user allowed to set the form into edit mode"/>
+    <aura:attribute name="callerComponent" type="Object" description="The caller Component."/>
+    <aura:attribute name="callerHelper" type="Object" description="The caller Helper."/>
+    <aura:attribute name="saveButtonMethod" type="Object" description="The (component) method to call when the save button is clicked. Use the SectionHelper.privateEnableButtons to set this one."/>
+    <aura:attribute name="buttonsVisible" type="Boolean" default="false" description="Whether or not the save (and optional cancel) buttons are visible. Set directly or use the SectionHelper.privateEnableButtons to set this one."/>
+    <aura:attribute name="cancelButtonMethod" type="Object" description="The (component) method to call when the cancel button is clicked. Use the SectionHelper.privateEnableButtons to set this one."/>
+
+    <aura:attribute name="showToast" type="Boolean" default="true" access="public" description="Shows error or success message in a toast" />
+
+    <aura:attribute name="additionalDataSaveMap" type="List" access="public" default="[]" description="contains data of hidden fields to be saved which are not part of field-set"/>
+
+    <!--Aura Methods-->
+    <aura:method name="save" access="public" action="{! c.saveButtonClick }" />
+
+    <aura:method name="getAllDataAction" action="{! c.getAllDataAction }" access="public" description="returns data from fieldset">
+        <aura:attribute name="includeEmptyFields" type="Boolean" default="false" description="optional parameter if set as true, it returns all the field"/>
+    </aura:method>
+
+    <aura:method name="getSaveDataAction" action="{! c.getSaveDataAction }" access="public" description="returns the changed data from fieldset"/>
+
+    <aura:method name="setOverrideDataAction" action="{! c.setOverrideDataAction }" access="public" description="accepts JSON object, use this to replace properties of fieldset's field">
+        <aura:attribute name="data" type="Object" description="field data"/>
+    </aura:method>
+
+    <aura:method name="setPreviousDataAction" action="{! c.setPreviousDataAction }" access="public" description="sets the input to previous value">
+        <aura:attribute name="data" type="Object" description="field data"/>
+    </aura:method>
+
+    <aura:method name="setDatabaseValueAction" action="{! c.setDatabaseValueAction }" access="public" description="sets the input to database value">
+        <aura:attribute name="data" type="Object" description="field data"/>
+    </aura:method>
+
+    <aura:method name="setDatabaseValueWithPreviousAction" action="{! c.setDatabaseValueWithPreviousAction }" access="public" description="sets the input to database value">
+        <aura:attribute name="data" type="Object" description="field data"/>
+    </aura:method>
+
+    <aura:method name="clearAllDataAction" action="{! c.clearAllDataAction }" access="public" description="reloads the fieldset"/>
+
+    <aura:method name="initFieldList" action="{! c.initFieldList }" access="public" description="Initialise a manually added fieldlist">
+        <aura:attribute name="newFieldList" type="List"/>
+    </aura:method>
+
+    <aura:method name="checkFieldErrors" action="{! c.checkFieldErrors }" access="public" description="Check all fields for possible errors"/>
+    
+    <!--Event Handlers-->
+    <aura:handler name="change" value="{!v.serverFieldErrors}" action="{!c.setServerErrors}"/>
+	<aura:handler name="genericComponentEvent" event="c:genericComponentEvent" action="{! c.onGenericComponentEvent }" />
+
+    <!-- Events Registers -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!--Component Markup-->
+    <div>
+        <div class="{!v.state == 'Edit' ? 'slds-form_'+v.formType : ''}">
+            {!v.body}
+        </div>
+    </div>
+    <aura:if isTrue="{!and(v.buttonsVisible == true, v.state == 'Edit')}">
+        <div class="slds-form-element cxsButtons">
+            <aura:if isTrue="{!v.cancelButtonMethod != null}">
+                <lightning:button variant="neutral" label="Cancel" onclick="{!c.cancelButtonClick}" />
+            </aura:if>
+            <lightning:button variant="brand" label="Save" onclick="{!c.saveButtonClick}" />
+        </div>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,26 @@
+<!--
+	Description  : Lightning component to open a modal pop up when someone click on table hyperlink type cell.
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="TableLinkModal" >
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!--Public Attribute-->
+    <aura:attribute name="text" type="String" description="The input text to parse for links."/>
+    <aura:attribute name="class" type="String" description="Class of the cell"/>
+    <aura:attribute name="links" type="List" default="[]" description="List of links to show"/>
+    <aura:attribute name="sObjectName" type="String" description="Name of SObject"/>
+    
+    <!--Component Markup-->
+    <div role="gridcell" class="{!v.class}" style="min-width:25px">
+        <aura:iteration items="{!v.links}" var="link">
+            <a href="javascript:void;" onclick="{! c.openLink}" data-index="{!link.num}"><aura:unescapedHtml value="{!link.txt}"/></a>
+        </aura:iteration>
+    </div>
+    
+    <!--Overlay-->
+    <lightning:overlayLibrary aura:id="tableLinkModalDialog"/>
+    
+</aura:component>

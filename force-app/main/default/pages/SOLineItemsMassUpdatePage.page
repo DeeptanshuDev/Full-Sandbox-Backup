@@ -1,0 +1,172 @@
+<!--
+     Description  : VF Page to mass update SO Line Items under Sales Order
+     Created By   : Abhinav Sharma
+     Created Date : 10/14/2019
+     Revision Log : v1.0
+-->
+<apex:page id="page" standardController="SCMC__Sales_Order__c" lightningStylesheets="true" extensions="SOLineItemsMassUpdateController" docType="html-5.0">
+    <style>
+        .rbl-status-column {width: 50%;}
+        .rbl-control-box {margin-bottom: 10px;}
+        .rbl-button-box {margin-bottom: 10px;text-align: center;}
+        .rbl-button-box > * {margin-right: 5px !important;}
+        .outputText {color: #000;font-size: .9em;font-weight: bold;margin-right: 0.5%;}
+        .marginRight {padding-right: 20px;}
+        .customTextArea {padding: 6px 6px;margin: 5px 0;box-sizing: border-box;width: 50%;}
+    </style>    
+    <apex:includeScript value="{!$Resource.jQuery}"/>
+    <c:Overlay />
+    <apex:sectionHeader title="Mass Update Sales Order Line Items" subtitle="{!salesOrder.Name}"/>
+    <apex:form id="frm">
+        <apex:pageBlock title="Sales Order Line Items">
+            <div style="float: left;width: 100%;">
+                <apex:pageMessages escape="false"/>
+            </div>     
+            <apex:variable var="nameVar" value="{!SCMC__Sales_Order__c.Name}" />
+            
+            <div class="rbl-control-box">
+                <apex:outputLabel title="Scope" value="Scope" styleClass="outputText" /> 
+                <apex:selectList id="updateItemScopeSelector" size="1" label="Scope" >
+                    <apex:selectOptions value="{!updatableItemsScopeOptions}" />
+                </apex:selectList>
+            </div>
+            <div class="rbl-control-box">
+                <span class="marginRight">
+                    <apex:outputLabel title="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount_Reason__c.Label}" 
+                                      value="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount_Reason__c.Label}" 
+                                      styleClass="outputText" /> 
+                    <apex:selectList id="discountReasonSelector" size="1" 
+                                     label="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount_Reason__c.Label}" >
+                        <apex:selectOptions value="{!lineItemDiscountReasonOptions}" />
+                    </apex:selectList>
+                </span>
+                <span class="marginRight">
+                    <apex:outputLabel title="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount__c.Label}" 
+                                      value="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount__c.Label}" 
+                                      styleClass="outputText" /> 
+                    <apex:input value="{!discountValue}" id="discountNumber" type="number"/>
+                </span>
+            </div>
+            <div class="rbl-control-box">
+                <apex:outputLabel title="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount_Notes__c.Label}" 
+                                  value="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount_Notes__c.Label}" 
+                                  styleClass="outputText" /> 
+                <apex:input value="{!discountNote}" id="discountNote" type="text" styleClass="customTextArea"/>    
+            </div>    
+            <apex:pageBlockTable value="{!listOfSalesOrderLineItemsWrapper}" var="w" width="100%">
+                <apex:column width="3%" headerValue="Row #">
+                    <apex:outputText value="{!w.srNo}" html-data-srno=""/>
+                </apex:column>
+                <apex:column width="3%">
+                    <apex:facet name="header">
+                        <c:CheckAllOrNone />
+                    </apex:facet>
+                    <apex:inputCheckbox value="{!w.selected}" html-data-chkbox=""/>
+                </apex:column>
+                <apex:column value="{!w.Item.Item__c}" width="20%"></apex:column>
+                <apex:column headerValue="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.SCMC__Status__c.Label}" width="15%">
+                    <apex:inputField value="{!w.Item.SCMC__Status__c}" html-data-status="" style="width:90%" styleclass="statustext"/>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount_Reason__c.Label}" width="15%">
+                    <apex:inputField value="{!w.Item.Discount_Reason__c}" html-data-discount-reason="" style="width:90%" styleclass="discountReason"/>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.SCMC__Line_Type__c.Label}" width="10%">  
+                    <apex:outputPanel style="width:90%">
+                        <apex:outputText value="{!w.Item.RecordType.Name}" rendered="{!NOT(w.isUpdatableLineType)}" />
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputPanel rendered="{!w.isUpdatableLineType}" >
+                            <apex:selectList size="1" value="{!w.Item.RecordTypeId}" style="width:90%">
+                                <apex:selectOptions value="{!lineItemLineTypeOptions}"/>
+                            </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:outputPanel>        
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount__c.Label}" width="10%">
+                    <apex:inputField value="{!w.Item.Discount__c}" html-data-discount="" styleclass="discountText"/>
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.SCMC__Sales_Order_Line_Item__c.Fields.Discount_Notes__c.Label}" width="24%">
+                    <apex:inputField value="{!w.Item.Discount_Notes__c}" html-data-discount-notes="" style="width:90%" styleclass="discountNotesText"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            <div class="rbl-button-box">
+                <apex:commandButton value="Save" action="{!doSave}" reRender="frm" status="loadStatus"/>
+                <apex:commandButton value="Cancel" action="{!cancel}" immediate="true" status="loadStatus"/>
+            </div>
+        </apex:pageBlock>   
+    </apex:form>
+    <script>
+    startLoading(); //Start Loading
+    $(function($) {
+        $('[id$=discountReasonSelector]').change(function(evt) {
+            var masterEl = evt.target;
+            if($('[id$=updateItemScopeSelector]').val() == 'ALL') 
+            {
+                $('[data-discount-reason]').each(function(idx, el) {
+                    $(el).find('option[value="'+$(masterEl).val()+'"]').prop('selected', true);
+                });
+                masterEl.selectedIndex = 0;
+            }            
+            var c =0;
+            if($('[id$=updateItemScopeSelector]').val() == 'SELECTED') 
+            {
+                $('[data-chkbox]').each(function(idx, el) {
+                    if(this.checked) {
+                        var elx = document.querySelectorAll(".discountReason")[c];
+                        elx.value = $(masterEl).val();
+                    }
+                    c++;
+                });
+                masterEl.selectedIndex = 0;    
+            }    
+        });
+        $('[id$=discountNumber]').bind('keyup input', function(evt) {
+            var masterEl2 = evt.target;
+            if($('[id$=updateItemScopeSelector]').val() == 'ALL') 
+            {
+                $('[data-discount]').each(function(idx, el) {
+                    el.value = $(masterEl2).val();
+                });
+                masterEl2.selectedIndex = 0;
+            }  
+            var c2 =0;
+            if($('[id$=updateItemScopeSelector]').val() == 'SELECTED') 
+            {
+                $('[data-chkbox]').each(function(idx, el) {
+                    if(this.checked) {
+                        var elx2 = document.querySelectorAll(".discountText")[c2];
+                        elx2.value = $(masterEl2).val();
+                    }
+                    c2++;
+                });
+                masterEl.selectedIndex = 0;    
+            } 
+        });   
+        $('[id$=discountNote]').bind('keyup input', function(evt) {
+            var masterEl3 = evt.target;
+            if($('[id$=updateItemScopeSelector]').val() == 'ALL') 
+            {
+                $('[data-discount-notes]').each(function(idx, el) {
+                    el.value = $(masterEl3).val();
+                });
+                masterEl3.selectedIndex = 0;
+            } 
+            var c3 =0;
+            if($('[id$=updateItemScopeSelector]').val() == 'SELECTED') 
+            {
+                $('[data-chkbox]').each(function(idx, el) {
+                    if(this.checked) {
+                        var elx3 = document.querySelectorAll(".discountNotesText")[c3];
+                        elx3.value = $(masterEl3).val();
+                    }
+                    c3++;
+                });
+                masterEl3.selectedIndex = 0;    
+            }
+            
+        });
+    });
+    $.noConflict();
+    stopLoading() ; //Stop Loading
+    </script>
+</apex:page>

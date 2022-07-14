@@ -1,0 +1,21 @@
+<!--
+	Description  : Tooltip Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="Tooltip">
+    
+    <!--Public Attributes-->
+    <aura:attribute name="content" default="" type="String" description="tooltip content text"/>
+    <aura:attribute name="boxsize" default="250" type="Integer" description="tooltip width in pixels"/>
+    <aura:attribute name="position"	default="bottom-left" type="String" description="Position of the icon relative to the tooltip: bottom-left, top-left, bottom-right, top-right"/>
+    
+    <!--Component Markup-->
+    <div class="slds-form-element">
+        <div class="slds-form-element__icon slds-align-middle cxsTooltip">
+            <lightning:icon iconName="utility:info" size="x-small"/>
+            <div class="{!'cxsToolPop slds-popover slds-popover--tooltip slds-nubbin--'+v.position}" role="tooltip" style="{!'width:'+v.boxsize+'px;'}">
+                <div class="slds-popover__body">{!v.content}</div>
+            </div>
+        </div>
+    </div>   
+</aura:component>

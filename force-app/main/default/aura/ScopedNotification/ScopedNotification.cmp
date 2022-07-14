@@ -1,0 +1,62 @@
+<!--
+	Description  : Scoped Notification Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="ScopedNotification">
+    
+    <aura:attribute name="severity" type="String"
+                    description="Severity of the notification: info, error, warning, success" default="info"/>
+    <aura:attribute name="size" type="String" description="Size of the icon: large, medium, small, x-small, xx-small"
+                    default="small"/>
+    <aura:attribute name="theme" type="String" description="Theme of the scoped notification"
+                    default="{!v.inverse ? v.severity : 'default'}"/>
+    <aura:attribute name="inverse" type="Boolean" description="Set button variant to invert" default="false"/>
+    <aura:attribute name="class" type="String" description="Extra classes" default="" access="public"/>
+    <aura:attribute name="border" type="Boolean" description="Adds a border to the notification" default="false"/>
+    <aura:attribute name="messageTitle" type="String" default="" description="The title above the messages"/>
+    <aura:attribute name="messages" type="String[]" description="One or more message to show to the users, is automatically shown when a communication error occurs. You can use messages attribute or v.body"/>
+    <aura:attribute name="messageIconName" type="String" default="" description="The icon show in the notification, as passed to the lightning:icon component inside the notification."/>
+    <aura:attribute name="divider" type="Boolean" default="{! false }" access="public" description="When set to true, a vertical divider is shown between the icon and message(s)" />
+    <aura:attribute name="roundedBorders" type="Boolean" description="Adds a border radius" default="false" access="public"/>
+    <aura:attribute name="allowClosing" type="Boolean" description="Allow users to close the message by clicking it." default="false" access="public"/>
+    
+    <aura:handler name="change" value="{! v.messages }" action="{! c.showMessage }" />
+    <aura:handler name="change" value="{! v.messageTitle }" action="{! c.showMessage }" />
+    
+    <aura:method name="setNotificationData" action="{!c.setMessage}">
+        <aura:attribute name="data" type="Object" required="true" description="format {severity:,messages:[]}"/>
+    </aura:method>
+    
+    <div aura:id="container" class="{!(v.border ? 'slds-box ' : '') + 'slds-scoped-notification slds-media slds-media_center cxsAllowClosing_'+v.allowClosing+' slds-theme_' + v.theme+' '+v.class+' '+(v.roundedBorders ? ' roundedBorders ' : '')}"
+         role="status" onclick="{!c.closeMessage}">
+        <div class="slds-media__figure">
+            <lightning:icon iconName="{! v.messageIconName.length > 0 ? v.messageIconName : 'utility:' + v.severity}" size="{!v.size}"
+                            variant="{!v.inverse ? 'inverse' : v.severity == 'info' ? '' : v.severity}"/>
+        </div>
+
+        <div class="{! 'slds-col ' + (v.divider ? 'slds-border--left slds-p-left--medium' : '') }">
+            <aura:if isTrue="{!v.messages.length > 0}">
+                <aura:if isTrue="{!not(empty(v.messageTitle))}">
+                    <div class="error-title slds-p-left--x-small"><aura:unescapedHtml value="{!v.messageTitle}" /></div>
+                </aura:if>
+                <ul class="slds-list--dotted slds-p-left--medium">
+                    <aura:iteration items="{!v.messages}" var="message">
+                        <li><aura:unescapedHtml value="{!message}" /></li>
+                    </aura:iteration>
+                </ul>
+            <aura:set attribute="else">
+                    <aura:if isTrue="{!not(empty(v.messageTitle))}">
+                        <div class="error-title slds-p-left--x-small"><aura:unescapedHtml value="{!v.messageTitle}" /></div>
+                    </aura:if>
+                    <div class="slds-media__body">
+                        <p>{!v.body}</p>
+                    </div>
+            </aura:set>
+            </aura:if>
+        </div>
+        <aura:if isTrue="{! and(or(v.messages.length > 0,not(empty(v.messageTitle))),v.allowClosing)}">
+            <lightning:icon iconName="utility:close" size="{!v.size}" variant="{!v.inverse ? 'inverse' : ''}"/>
+        </aura:if>
+    </div>
+    
+</aura:component>

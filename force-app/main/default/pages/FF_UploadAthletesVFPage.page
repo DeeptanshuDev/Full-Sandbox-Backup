@@ -1,0 +1,57 @@
+<!--
+    Description   :   
+    Created By    :   Abhinav Sharma
+    Created Date  :   
+    Version       :   V1.0 Created
+-->
+<apex:page standardController="Account" extensions="UploadAthletesController" tabStyle="Account"
+        lightningStylesheets="true" sidebar="false" docType="html-5.0">
+    <head>
+        <apex:slds />
+        <style>
+            .sectionheadercustom 
+            {
+            display: flex;
+            }
+        </style>
+    </head>
+    <apex:form id="frm">
+        <div class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <apex:pagemessages />
+            <div align="center" draggable="false" style=" font-size: 30px;">
+                <span class="slds-icon_container slds-icon-standard-account" >
+                    <svg aria-hidden="true" class="slds-icon">
+                        <use 
+                             xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#contact">
+                        </use>
+                    </svg>
+                    <span class="slds-assistive-text">Athlete</span>
+                </span>
+                <br/>
+                Upload Athletes
+            </div>
+            <apex:pageBlock >
+                <apex:pageBlockSection columns="4"> 
+                    <div style="text-align: center">
+                       <apex:inputFile style="padding-left: 50%" value="{!csvFileBody}"  filename="{!csvAsString}"/>
+                        
+                    </div>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageBlock >
+                <apex:pageblocktable value="{!existingAthletes}" var="athlete">
+                    <apex:column value="{!athlete.FirstName}" />
+                    <apex:column value="{!athlete.LastName}" />
+                    <apex:column value="{!athlete.Email}" /> 
+                    <apex:column value="{!athlete.Contact_Type__c}" />
+                    <apex:column value="{!athlete.Preferred_Phone__c}" />   
+                </apex:pageblocktable>
+            </apex:pageBlock>
+            <div style="text-align: center">
+                <apex:commandButton value="Import Athletes" action="{!importCSVFile}"/>
+                
+                <apex:commandButton value="Back" action="{!Back}" style="width:90px"/>
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

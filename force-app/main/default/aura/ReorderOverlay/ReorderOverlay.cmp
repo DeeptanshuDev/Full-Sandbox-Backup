@@ -1,0 +1,201 @@
+<aura:component access="global" extends="c:Section" controller="CloneOpportunityController">
+	
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit }"/>
+    
+    <!--Common Public Attributes-->
+    <aura:attribute name="isEmbedded" type="Boolean" default="false" access="public" description="Boolean attribute to check whether component is embedded or not"/>
+    <aura:attribute name="isCommunityUser" type="Boolean" default="false" access="public" description="Is logged in user is a community user"/>
+    <aura:attribute name="navigationType" type="String" description="Navigation type value" access="public" default="CommunityPage"/>
+    <aura:attribute name="successMessage" type="String" access="private" description="String to hold error message"/>
+    
+    <!--Record Header Public Attributes-->
+    <aura:attribute name="showHeader" type="Boolean" default="true" access="public" description="Boolean attribite to check whether we need to display the record header or not."/>
+    <aura:attribute name="headerTitle" type="String" description="title of page header" access="public" default="My Order Items"/>
+    <aura:attribute name="iconName" type="String" description="icon of page header" access="public" default="standard:opportunity"/>
+    <aura:attribute name="selectedOrderRecordId" type="String" description="Selected Record ID" access="public"/>
+    
+    <!--Private Attributes-->
+    <aura:attribute name="hasUtilityBar" type="Boolean" default="false" access="private" description="Boolean attribute to check whether utilityBar exists or not"/>
+    <aura:attribute name="errorMessage" type="String" access="private" description="String to hold error message"/>
+    <aura:attribute name="isTableLoading" type="Boolean" default="false" access="private" description="Is the data for the list loading?"/>
+    <aura:attribute name="isCustomItemTableLoading" type="Boolean" default="false" access="private" description="Is the data for the list loading?"/>
+    <aura:attribute name="isStandardItemTableLoading" type="Boolean" default="false" access="private" description="Is the data for the list loading?"/>
+    <aura:attribute name="isDesignTableLoading" type="Boolean" default="false" access="private" description="Is the data for the list loading?"/>
+    <aura:attribute name="initDone" default="false" type="Boolean" access="private" description="Boolean attribute to check whether init logic have been loaded/executed successfully or not"/>
+    <aura:attribute name="showReorderSpinner" type="Boolean" access="private" default="false"/>
+    
+    <!-- public attributes for opportunity -->
+    <aura:attribute name="fieldSetsDetails" type="List" access="public" description="List of objects to hold the detail page related details" default="[]"/>
+    <aura:attribute name="fieldSetsOpp" type="List" access="public" default="['My_Orders_Items_Reorder']"/>
+    <aura:attribute name="ordersOpp" type="List" access="public" default="[{fieldName:'Name',direction: 'ORDER_ASC'}]"/>
+    <aura:attribute name="filtersOpp" type="Map" access="public" description="TODO" default="{'filterFields':[]}"/>
+    <aura:attribute name="dataScopeOpp" type="List" access="public"/>
+    <aura:attribute name="fieldsDescribeOpp" type="Object"  access="public"/>
+    <aura:attribute name="currentPageNumberOpp" type="Integer" default="1"/>
+    <aura:attribute name="totalPagesOpp" type="Integer" />
+    <aura:attribute name="totalNumberOfRecordsOpp" type="Integer"  />
+    <aura:attribute name="recordsFromToOpp" type="String"  />
+    <aura:attribute name="queryStructureOpp" type="QueryStructure" access="public"/>
+    <aura:attribute name="hasMoreRecordsOpp" type="Boolean" access="public"/>
+    <aura:attribute name="doRefreshParent" type="Boolean" access="public" default="false"/>
+    
+    <!-- public attributes for CustomItems -->
+    <aura:attribute name="fieldSetsCustomItem" type="List" access="public" default="['Reorder_Custom_Items']"/>
+    <aura:attribute name="ordersCustomItem" type="List" access="public" default="[{fieldName:'Name',direction: 'ORDER_ASC'}]"/>
+    <aura:attribute name="filtersCustomItem" type="Map" access="public" description="TODO" default="{'filterFields':[]}"/>
+    <aura:attribute name="dataScopeCustomItem" type="List" access="public"/>
+    <aura:attribute name="fieldsDescribeCustomItem" type="Object"  access="public"/>
+    <aura:attribute name="currentPageNumberCustomItem" type="Integer" default="1"/>
+    <aura:attribute name="totalPagesCustomItem" type="Integer" />
+    <aura:attribute name="totalNumberOfRecordsCustomItem" type="Integer"  />
+    <aura:attribute name="recordsFromToCustomItem" type="String"  />
+    <aura:attribute name="queryStructureCustomItem" type="QueryStructure" access="public"/>
+    <aura:attribute name="hasMoreRecordsCustomItem" type="Boolean" access="public"/>
+    <aura:attribute name="selectedCustomItems" type="List" access="public" default="[]"/>
+    <aura:attribute name="isInitialCustomData" type="Boolean" access="public" default="false"/>
+    
+    <!--Register Event-->
+    <aura:registerEvent name="closeReorderOverlay" type="c:genericComponentEvent" />
+    
+    <!--Methods-->
+    <aura:method name="processReorder" action="{!c.doDataClone}"/>
+    
+    <!--Utility Bar-->
+    <lightning:utilityBarAPI aura:id="utilitybar" />
+    
+     <!--Overlay Library-->
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <aura:attribute name="overlay" type="Aura.Component[]"/>
+    
+    <aura:html tag="style">
+        @media (min-width: 48em) {
+            .slds-modal_large .slds-modal__container {
+                width: 95%;
+                max-width: none;
+                min-width: 40rem;
+            }
+        }
+    </aura:html>
+    
+    <aura:if isTrue="{!v.successMessage}">
+        <c:ScopedNotification severity="success" inverse="true" theme="success" class="slds-m-bottom--small" roundedBorders="true" messageTitle="{!v.successMessage}" allowClosing="true"/>
+        <div class="slds-m-top_medium"></div>
+    </aura:if>
+    
+    <div class="slds-is-relative">
+        <aura:if isTrue="{!v.showReorderSpinner}">
+            <lightning:spinner alternativeText="Loading" size="medium"/>
+        </aura:if>
+        <c:TabHeader showHeader="{!v.showHeader}" title="{!v.headerTitle}"
+                     label="{!$Label.c.Order_Items}" imageSize="medium" 
+                     iconName="{!v.iconName}">
+            <div class="slds-clearfix">
+            </div>
+        </c:TabHeader>
+        
+        <div class="slds-m-top_medium"></div>
+        
+        <div class="{!if(and(v.hasUtilityBar == true,v.isEmbedded == false),'utilityBarAdjustments','')}">
+            <div>
+                
+                <aura:if isTrue="{!v.initDone}">
+                    
+                    <c:Section sectionHeader="{!$Label.c.Selected_Order}" isEmbedded="true">
+                        
+                        <div class="slds-is-relative">
+                            <c:DataService aura:id="oppFields"
+                                           sObjectName="Opportunity"
+                                           dataScope="{!v.dataScopeOpp}"
+                                           fieldSets="{!v.fieldSetsOpp}"
+                                           filters="{!v.filtersOpp}"
+                                           orders="{!v.ordersOpp}"
+                                           isStorable="false"
+                                           queryStructure="{!v.queryStructureOpp}"
+                                           fieldsDescribe="{!v.fieldsDescribeOpp}"
+                                           isLoading="{!v.isTableLoading}"
+                                           pageSize="5"
+                                           currentPageNumber="{!v.currentPageNumberOpp}"
+                                           totalPages="{!v.totalPagesOpp}"
+                                           recordsFromTo="{!v.recordsFromToOpp}"
+                                           isCommunityUser="{!v.isCommunityUser}"
+                                           />
+                            
+                            <!--Margins-->
+                            <div class="slds-m-bottom_medium"></div>
+                            
+                            <!--Page Layout Sections Markup-->
+                            <aura:iteration items="{!v.fieldSetsDetails}" var="fieldset">
+                                <c:FieldSet aura:id="oopFieldset"
+                                            sectionDescription="{!fieldset.sectionDescription}"
+                                            sectionOpen="{!fieldset.sectionOpen}"
+                                            fieldsetName="{!fieldset.fieldsetName}"
+                                            fieldList="{!fieldset.detailFields}"
+                                            fieldsToBlock="{!fieldset.fieldsToBlock}"
+                                            sObjectName="{!fieldset.sObjectName}"
+                                            recordId="{!v.selectedOrderRecordId}"
+                                            recordTypeId="{!fieldset.selectedRecordRecordTypeId}"
+                                            state="Edit"
+                                            isEmbedded="{!fieldset.isEmbedded}"
+                                            buttonsVisible="{!fieldset.buttonsVisible}"
+                                            overruleSpinner="true"
+                                            showToast="{!fieldset.showToast}"
+                                            columns="{!fieldset.columns}"
+                                            showSpinner="{!v.showSpinner}"/> 
+                            </aura:iteration>
+                        </div>    
+                    </c:Section>
+                    
+                    <div class="slds-m-top_medium"></div>
+                    
+                    <c:Section sectionHeader="{!$Label.c.Custom_Items}" isEmbedded="true">
+                        
+                        <div class="slds-is-relative">
+                            
+                            <c:DataService aura:id="customItemDataService"
+                                           orders="{!v.ordersCustomItem}"
+                                           fieldSets="{!v.fieldSetsCustomItem}"
+                                           sObjectName="Custom_Item__c"
+                                           pageSize="5"
+                                           currentPageNumber="{!v.currentPageNumberCustomItem}"
+                                           totalPages="{!v.totalPagesCustomItem}"
+                                           recordsFromTo="{!v.recordsFromToCustomItem}"
+                                           fieldsDescribe="{!v.fieldsDescribeCustomItem}"
+                                           dataScope="{!v.dataScopeCustomItem}"
+                                           queryStructure="{!v.queryStructureCustomItem}"
+                                           filters="{!v.filtersCustomItem}"
+                                           isStorable="false"
+                                           isCommunityUser="{!v.isCommunityUser}"
+                                           isInitialData="{!v.isInitialCustomData}"
+                                           />
+                            
+                            
+                            <c:DataGrid aura:id="customItemTable"
+                                        orders="{!v.ordersCustomItem}" 
+                                        columns="{!v.fieldsDescribeCustomItem}" 
+                                        data="{!v.dataScopeCustomItem}" 
+                                        selectable="true"
+                                        selectAllEnable="true"
+                                        navigationType=""
+                                        isLoading="{!v.isCustomItemTableLoading}"
+                                        isCommunityUser="{!v.isCommunityUser}"
+                                        currentSelectedItems="{!v.selectedCustomItems}"
+                                        isInitialData="{!v.isInitialCustomData}"
+                                        />
+                            
+                            <div class="slds-grid slds-m-top_small slds-grid_align-center">
+                                <aura:if isTrue="{!v.totalPagesCustomItem > 1}">
+                                    <c:Paginator currentPageNumber="{!v.currentPageNumberCustomItem}" totalPages="{!v.totalPagesCustomItem}"
+                                                 pagePrevious="{!c.doPreviousCustomItem}" pageNext="{!c.doNextCustomItem}" 
+                                                 recordsFromTo='{!v.recordsFromToCustomItem}' 
+                                                 hasMoreRecords ='{!v.hasMoreRecordsCustomItem}'/>
+                                </aura:if>
+                            </div>
+                        </div>
+                        
+                    </c:Section>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+</aura:component>

@@ -1,0 +1,17 @@
+<!--
+    Description   :   VF page for making "Check Process SOLI" button on standardized item object compatible in LEX view.
+    Created By    :   Abhinav Sharma
+    Created Date  :   12/16/2019
+    Version       :   V1.0 Created
+-->
+<apex:page standardController="Standardized_Item__c" extensions="CheckProcessSOLIOnStandardizedController" 
+           recordSetVar="test" action="{!redirectBackToDetailPage}" lightningStylesheets="true">
+    <apex:form id="frm">
+        <apex:pageblock >
+            <apex:pageMessages />
+        </apex:pageblock>
+        <div style="text-align: center">
+            <apex:commandButton value="Back" action="{!Back}" style="width:90px" rerender="frm"/>
+        </div>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,4 @@
+<apex:page standardController="SCMC__AP_Voucher_Credit__c" extensions="ffirule.IntegrationRuleEngine" action="{!convert}" 
+           lightningStylesheets="true">
+    <ffirule:IntegrationRule engine="{!engine}"/>
+</apex:page>

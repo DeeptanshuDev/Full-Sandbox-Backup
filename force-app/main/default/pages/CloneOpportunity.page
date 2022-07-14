@@ -1,0 +1,67 @@
+<!-- VF page to perform the cloning of custom and standard item from opportunity and create new record -->
+<apex:page showHeader="true" sidebar="true" standardController="Opportunity"
+           extensions="CloneOpportunityCtrl" lightningStylesheets="true">
+    
+    <apex:form id="frm">
+        <apex:pageMessages escape="false" id="msgId"/>
+        <c:Overlay />
+        <apex:sectionHeader title="Clone Opportunity" subtitle="{!Opportunity.Name}" />
+        <apex:pageBlock title="Opportunity Details">
+            
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Clone" action="{!doClone}" reRender="frm" status="loadStatus" rendered="{!IF(customItemList.size > 0 || StandardizedItemList.size > 0 ,true,false)}"/>
+                <apex:commandButton value="Cancel" action="{!URLFOR($Action.Opportunity.View, Opportunity.Id)}" immediate="true" />
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection columns="3">
+                <apex:inputField value="{!Opportunity.Primary_Contact__c }"/>
+                <apex:inputField value="{!Opportunity.Factory_Ship_To__c}" />
+                <apex:inputField value="{!Opportunity.CloseDate}" />
+            </apex:pageBlockSection>
+      
+            <apex:pageBlockSection title="Custom Items" columns="1" rendered="{!customItemList.size > 0}">
+                <apex:facet name="body">
+                    <apex:pageBlockTable value="{!customItemList}" var="item" rendered="{!customItemList.size > 0}">
+                        
+                        <apex:column headerValue="Clone" style="text-align: center;">
+                            <apex:inputCheckbox value="{!item.Selected}" />
+                        </apex:column>
+                        <apex:column headerValue="Quantity">
+                            <apex:inputText value="{!item.customItem.Quantity__c}" size="3" style="text-align: right;" />
+                        </apex:column>
+                        <apex:column value="{!item.customItem.Name}" />
+                        <apex:column value="{!item.customItem.Category__c}" />
+                        <apex:column value="{!item.customItem.Collection__c}" />
+                        <apex:column value="{!item.customItem.Gender__c}" />
+                        <apex:column value="{!item.customItem.Fabric_Options__c}" />
+                        <apex:column value="{!item.customItem.Price_per_item__c}" />
+                        <apex:column value="{!item.customItem.Style__c}" />
+                        
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:pageBlockSection>
+    
+            <apex:pageBlockSection title="Standardized Items" columns="1" rendered="{!StandardizedItemList.size > 0}">
+                <apex:facet name="body">
+                    <apex:pageBlockTable value="{!StandardizedItemList}" var="stnditem" rendered="{!StandardizedItemList.size > 0}">
+                        
+                        <apex:column headerValue="Clone" style="text-align: center;">
+                            <apex:inputCheckbox value="{!stnditem.Selected}" />
+                        </apex:column>
+                        <apex:column headerValue="Quantity">
+                            <apex:inputText value="{!stnditem.standardItem.Quantity__c}" size="3" style="text-align: right;" />
+                        </apex:column>
+                        <apex:column value="{!stnditem.standardItem.Name}" />
+                        <apex:column value="{!stnditem.standardItem.Stage__c}" />
+                        <apex:column value="{!stnditem.standardItem.Product__c}" />
+                        <apex:column value="{!stnditem.standardItem.Product_Code__c}" />
+                        <apex:column value="{!stnditem.standardItem.Product_Description__c}" />
+                        <apex:column value="{!stnditem.standardItem.Stock_Item__c}" />
+                        <apex:column value="{!stnditem.standardItem.Fulfillment_Type__c}" />
+                        
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

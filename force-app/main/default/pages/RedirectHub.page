@@ -1,0 +1,62 @@
+<!--
+Desription      :   VF page acting as redirect center for multiple javascript type buttons
+Created By      :   Abhinav Sharma
+Created Date    :   01/07/2020
+Revision Logs   :   v1 - Created
+-->
+<apex:page controller="RedirectHubContoller"  showHeader="false" sidebar="false" action="{!evaluate}" lightningStylesheets="true">
+    <apex:form >
+        <apex:pageMessages />
+        <apex:actionFunction name="evaluate"  rerender="errorPanel" onComplete="checkPoint();" />
+        <apex:actionFunction name="env" action="{!setupEnv}" rerender="op" onComplete="navigateToDestination();" >
+            <apex:param name="envId" value="" assignTo="{!JsonMap}" />
+        </apex:actionFunction>
+        <apex:includeScript value="/soap/ajax/46.0/connection.js"/>
+        <apex:outputPanel id="op">
+            <script>
+                evaluate();
+                function checkPoint() 
+                {
+                    var env = '{!visibleEnv}';
+                    if(env == 'true')
+                    {  
+                        refreshSandbox();
+                    }
+                    else
+                    {
+                        navigateToDestination();
+                    }
+                }
+            
+                function refreshSandbox()
+                {
+                    var mapOfParameters ='{!JsonMap}';
+                    if (confirm("Click OK if you would like to change this Sandbox to Deleted and create a new sandbox instance.")) 
+                    {
+                        env(mapOfParameters);                  
+                    }
+                    else
+                    {
+                        navigateToDestination();
+                    }
+                }
+            
+                function navigateToDestination(){
+                    var hasError = '{!hasError}';
+                    if (hasError == 'false') 
+                    {
+                        var urlToNavigate = '{!navigateURL}';
+                        if(sforce && sforce.one) 
+                        {
+                            sforce.one.navigateToURL(urlToNavigate,true);
+                        }
+                        else
+                        {
+                            window.location.href=urlToNavigate;
+                        }
+                    }
+                }
+            </script>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

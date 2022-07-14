@@ -1,0 +1,352 @@
+<!--<apex:page showHeader="false" sidebar="false" standardStylesheets="false"
+           controller="ElectronicProtoApprovalPdfCtrl"
+           applyBodyTag="false" applyHtmlTag="false" renderAs="pdf" lightningStylesheets="false">-->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" standardController="Design_Round__c" extensions="ElectronicProtoApprovalPdfCtrl" renderAs="pdf" lightningStylesheets="false">
+
+    <html>
+        <head>
+            <style type="text/css">
+                @page{
+                size: A4 Portrait;
+                border : 1.5px solid black;
+                padding-top : 130px;
+                }
+                @page {
+                @top-center {
+                content: element(header);
+                }
+                }
+                div.header {
+                padding:60px 10px 10px 10px;
+                position: running(header);
+                }
+                
+                .header-clearfix{
+                width: 100%;
+                }
+                
+                .header-left {
+                float: left;
+                width:45%;
+                }
+                
+                .header-center {
+                float: left;
+                width: 35%;
+                }
+                
+                .header-right {
+                float:right;
+                width: 32%;
+                }
+                
+                #header-table{
+                width: 100%;
+                }
+                
+                #header-table th{
+                font-family: Arial, Helvetica, sans-serif;
+                font-size : 12px;
+                margin:0px;
+                line-height:normal;
+                }
+                
+                .headingLogo{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                }
+                
+                .agreement-Header{
+                clear: both;
+                width: 100%;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+                margin-top:0;
+                }
+                
+                #artApprovalAgreement{
+                text-align: center; 
+                font-size : 30px;
+                color : #cb4478;
+                font-family: Arial, Helvetica, sans-serif;
+                font-style: oblique;
+                width: 100%;
+                display: block;
+                margin-top:0;
+                margin-left: auto;
+                margin-right: auto;
+                }
+                .greeting-Header{
+                margin-top:0;
+                width: 100%;
+                }
+                
+                #greeting{
+                text-align: center; 
+                font-size : 18px;
+                font-family: Arial, Helvetica, sans-serif;
+                margin:0px;
+                }
+                
+                .itemTableDiv{
+                width: 100%;
+                margin-top:18px;
+                
+                }
+                
+                .item-table{
+                width: 98%;
+                margin: auto;
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                }
+                
+                .item-table, .item-table th, .item-table td{
+                border: 1px solid #ccc;
+                } 
+                
+                .item-table th, .item-table td {
+                padding: 4px;
+                font-size:10px;
+                }
+                
+                .item-table th {
+                border-bottom : 2px solid black;
+                
+                }
+                
+                .item-table td {
+                border-bottom: 1px solid #ccc;
+                }
+                
+                .has-text-right {
+                text-align: right;
+                }
+                
+                .first-content{
+                width : 100%;
+                margin-top: 15px;
+                margin-left: 10px;
+                margin-right: 10px;
+                }
+                .termsAndconditions{
+                width : 100%;
+                margin-top: 0;
+                margin-left: 10px;
+                margin-right: 10px;
+                }
+                .lastConfirmations {
+                width : 100%;
+                margin-top: 0;
+                margin-left: 10px;
+                margin-right: 10px;
+                }
+                
+                .first-content p, .termsAndconditions p, .lastConfirmations p{
+                width : 98%;
+                font-family: Arial, Helvetica, sans-serif;
+                text-align : justify;
+                font-size : 12px;
+                margin:5px 0 0 0;
+                }
+                
+                .pricingAndFees, .protoType, .artWork, .termsAndconditions{
+                width : 100%;
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-top: 10px;
+                }
+                
+                .pricingAndFees h4, .protoType h4, .artWork h4{
+                font-family: Arial, Helvetica, sans-serif;
+                font-size : 14px;
+                margin:5px 0 5px 0;
+                }
+                
+                .pricing-para{
+                margin-top: 0px;
+                }
+                
+                .protoType p, .artWork p, .pricingAndFees p {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size : 12px;
+                width : 98%;
+                text-align:justify;  
+                margin:5px 0 0 0;
+                }
+                
+                .option-page-center-column{
+                width: 100%;
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-bottom: 10px;
+                }
+                
+                .designImages{
+                width : 98%;
+                }
+                  .page_break_before{
+                	page-break-before: always;
+                }
+                 #textsize{
+                text-align: left; 
+                font-size : 11.5px;
+                font-family: Arial, Helvetica, sans-serif;
+                margin:0px;
+                }
+            </style>
+        </head>
+        
+    <body>
+            <div class="header">
+                <div class="header-clearfix">
+                    <div class="header-left">
+                        <table id="header-table">
+                            <tr>
+                                <th align="left">Customer: {!Customer}</th>
+                            </tr>
+                            <tr>
+                                <th align="left" >Opportunity: {!OpportunityName} </th>
+                            </tr>
+                            <tr>
+                                <th align="left" >Custom Items: {!customNum} </th>
+                            </tr>
+                            <tr>
+                                <th align="left"> {!DR} </th>
+                            </tr>
+                            <tr>
+                                <th align="left">Rep: {!OwnerName}</th>
+                            </tr>
+                            <tr>
+                                <th align="left">Approved Version: {!Version} ,Options {!OptionNumbers}</th>
+                            </tr>
+							
+                        </table>   
+                    </div>
+                    <div class="header-right">
+                        <table id="header-table">
+                            <tr>
+                                <th align="right">Approval Date: {!Today} </th>
+                                <br></br>
+                         		<br></br>
+                            </tr>                                     	                                                            
+                        </table>
+                         
+                        	<table id="header-table">                                                      
+                        		<tr>
+                                	<th align="right"><b>Approved from:  </b></th>
+                                    <apex:image styleClass="headingLogo" value="/img/checkbox_checked.gif" width="10%"/> 
+                                    <apex:image styleClass="headingLogo" value="/img/checkbox_unchecked.gif" width="10%" />
+                                    <apex:image styleClass="headingLogo" value="/img/checkbox_unchecked.gif" width="10%" />
+                           	 	</tr>                                   
+                        	</table>    	                       
+                    </div>                    
+				</div>    
+			</div>
+        	<div >
+				<apex:image styleClass="headingLogo" value="{!URLFOR($Resource.RebelAthleticLogo3)}" width="50%" />
+            </div>
+        	<div class="agreement-Header">
+                <h1 id="artApprovalAgreement"><i>{!$Label.ProtoApprovalPdf_Label1}</i></h1>  
+            </div>
+        	<div class="greeting-Header">
+                <h1 id="greeting"><b>{!$Label.ProtoApprovalPdf_Label2}</b></h1>  
+            </div>
+       
+        	<div class="Fees">
+                <h4>Fees :</h4>
+                <p class="pricing-para" id="textsize" >{!$Label.ProtoApprovalPdf_Label3}</p><br></br>
+                <p id="textsize">{!$Label.ProtoApprovalPdf_Label4}</p><br></br>
+                <p id="textsize">{!$Label.ProtoApprovalPdf_Label5}<br></br><i>See further Terms and Conditions below.</i></p>  
+         	</div>
+    
+    		<div class="Approved from ">
+                <h4>Prototype/PP Pictures/Strike Off Approval:</h4>
+                <p class="pricing-para" id="textsize" >{!$Label.ProtoApprovalPdf_Label6}</p><br></br>
+                <p id="textsize">{!$Label.ProtoApprovalPdf_Label7}</p><br></br>
+                <p id="textsize">{!$Label.ProtoApprovalPdf_Label8}</p><br></br>
+				<p id="textsize">{!$Label.ProtoApprovalPdf_Label9}</p><br></br>
+				<p id="textsize">{!$Label.ProtoApprovalPdf_Label10}</p>
+         	</div>
+
+			<div class="Revisions: ">
+                <h4>Revisions:</h4>
+                <p class="pricing-para" id="textsize" >{!$Label.ProtoApprovalPdf_Label11}</p><br></br>
+                <p id="textsize">{!$Label.ProtoApprovalPdf_Label12}</p><br></br>
+                <p id="textsize">{!$Label.ProtoApprovalPdf_Label13}</p><br></br>
+				<p id="textsize">{!$Label.ProtoApprovalPdf_Label14}</p><br></br>				
+         	</div>
+			<div class="first-content">
+                <p><b>{!$Label.ArtApprovalPdf_Label13}</b></p>    
+            </div>
+<br></br> 
+            <div class="header">
+                <div class="header-clearfix">
+                    <div class="header-left">
+                        <table id="header-table">
+                            	<tr>
+                                <th align="left">Customer: {!Customer}</th>
+                            </tr>
+                            <tr>
+                                <th align="left" >Opportunity: {!OpportunityName} </th>
+                            </tr>
+                            <tr>
+                                <th align="left" >Custom Items:  {!customNum} </th>
+                            </tr>
+                            <tr>
+                                <th align="left">{!DR} </th>
+                            </tr>
+                            <tr>
+                                <th align="left">Rep: {!OwnerName}</th>
+                            </tr>
+                            <tr>
+                                <th align="left">Approved Version: {!Version} ,Options {!OptionNumbers}</th>
+                            </tr>
+							
+                        </table>   
+                    </div>
+                    <div class="header-right">
+                        <table id="header-table">
+                            <tr>
+                                <th align="right">Approval Date: {!Today}  </th>
+                            </tr>                     
+                        </table>
+                    </div>                    
+				</div>    
+			</div>
+        	<div >
+				<apex:image styleClass="headingLogo" value="{!URLFOR($Resource.RebelAthleticLogo3)}" width="50%" />
+            </div>
+        	<div class="agreement-Header">
+                <h1 id="artApprovalAgreement"><i>{!$Label.ProtoApprovalPdf_Label1}</i></h1>  
+            </div>
+			<div class="greeting-Header">
+                <h1 id="greeting"><b>{!$Label.ProtoApprovalPdf_Label2}</b></h1>  
+            </div>
+
+			<div >
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td>                            
+                            <apex:repeat value="{!Designs}" var="d">
+                                <div class="option-page-center-column">
+                                    <apex:image styleClass="designImages" value="/sfc/servlet.shepherd/version/download/{!d.Content_Version_Id__c}" />
+                                </div>                      
+                            </apex:repeat>      
+                        </td>
+                    </tr>
+                </table>
+            </div>
+			
+			<div class="agreement-Header">
+                <p><b>{!$Label.ProtoApprovalPdf_Label15}{!Version} Options {!OptionNumbers}</b></p>
+            </div>
+		
+
+					
+    	</body>
+    </html> 
+</apex:page>

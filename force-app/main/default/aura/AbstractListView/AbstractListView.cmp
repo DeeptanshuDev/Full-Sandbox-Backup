@@ -1,0 +1,64 @@
+<!--
+	Description  : Abstract List View Lightning Component.
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="The base object for all the data grid classes (table, tiles, etc)" 
+                extensible="true">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="data" type="Object" description="All data to show in this grid" access="public"/>
+    <aura:attribute name="columns" type="List" description="Information for all columns (fields)" access="public"/>
+	<aura:attribute name="hasOverflow" type="Boolean" default="true" description="Whether or not this list has any hidden elements because of size constrains." access="public"/>
+    <aura:attribute name="actionComponents" type="List" description="A list of all components which have to be rendered as actions" default="[]" access="public"/>
+	<aura:attribute name="isHideInfoIcon" type="Boolean" description="Boolean to decide whether info column will be displayed or not" default="false" access="public"/>
+    <aura:attribute name="selectable" type="Boolean" description="Should table have a select column" default="false" access="public" />
+    <aura:attribute name="selectAllEnable" type="Boolean" description="Attribute to show or hide select all checkbox" access="public" default="true"/>
+    
+    <aura:attribute name="selectAll" type="Boolean" description="Attribute is used for selecting and deselecting all records" default="false" access="public" />
+    <aura:attribute name="currentSelectedItems" type="List" description="List of selected records" default="[]" access="public" />
+
+    <aura:attribute name="orders" type="List" description="An array of the fields on which to sort on by (field)'name' and 'direction'" access="public"/>
+	<aura:attribute name="objectAccess" type="Object" access="public" description="Object to hold the object CRUD access details for the current logged in user"/>
+    <aura:attribute name="actionFields" type="Integer" default="0" access="public" description="How many of the fields (taken from the left) are actual action fields, of which the title is hidden in a table and placed next to the action in the tile view."/>
+    
+    <aura:attribute name="generateReferenceLinks" type="Boolean" default="true" access="public" description="attribute will determine if name field needs to be generated as a link. default it will"/>
+    
+    <aura:attribute name="isLoading" type="Boolean" default="false" access="public" description="Is the data for the list view loading?"/>
+	<aura:attribute name="isCommunityUser" type="Boolean" default="false" access="public" description="Is logged in user is a community user"/>
+    <aura:attribute name="navigationType" type="String" description="Navigation type value" access="public"/>
+    <aura:attribute name="truncateFields" type="List" default="[]" description="set max width to headers of table" access="public"/>
+    <aura:attribute name="isInitialData" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="mobileShrinkFields" type="Integer" default="0" description="Total number of fields to be shrink to fit mobile devices"  access="public"/>
+    
+    <!-- Register event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+
+    <!--Event Handlers-->
+    <aura:handler name="change" value="{!v.data}" action="{!c.dataChanged}"/>
+
+    <!-- Aura Method -->
+    <aura:method name="setDataAction" description="Method sets the data" action="{!c.setData}" access="public">
+        <aura:attribute name="rowData" type="Object" description="Input data for the table"/>
+    </aura:method>
+    <aura:method name="setColumnsAction" description="Method sets the columns" action="{!c.setColumns}" access="public">
+        <aura:attribute name="columnData" type="Object" description="Column data for the table"/>
+    </aura:method>
+    <aura:method name="selectItemsAction" description="Method for selecting items" action="{!c.selectItems}" access="public">
+        <aura:attribute name="selectedItems" type="List" description="A list of records that need to be selected"/>
+    </aura:method>
+    <aura:method name="deselectItemsAction" description="Method for deselecting items" action="{!c.deselectItems}" access="public">
+        <aura:attribute name="deselectedItems" type="List" description="A list of records that need to be deselected"/>
+    </aura:method>
+    <aura:method name="selectAllItemsAction" description="Method for selecting items" action="{!c.selectItems}" access="public">
+        <aura:attribute name="selectedItems" type="List" description="A list of records that need to be selected"/>
+    </aura:method>
+    <aura:method name="deselectAllItemsAction" description="Method for deselecting items" action="{!c.deselectItems}" access="public">
+        <aura:attribute name="deselectedItems" type="List" description="A list of records that need to be deselected"/>
+    </aura:method>
+    <aura:method name="focusAction" description="Method for handling action previous or next button is clicked" action="{!c.focusAction}" access="public"/>
+
+    {!v.body}
+</aura:component>

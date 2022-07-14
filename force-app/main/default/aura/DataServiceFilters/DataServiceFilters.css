@@ -1,0 +1,23 @@
+.THIS.cxs-loading {
+    width: 100%;
+    overflow-x:hidden;
+}
+
+.THIS .slds-dropdown-trigger_click.cxs-is-open > .slds-dropdown {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+.THIS .cxs-nowrap {
+    white-space: nowrap;
+}
+
+.THIS .sosl-search .slds-form-element__control {
+    float: right;
+    width: calc(100% - 10px);
+}
+
+.THIS .slds-button_icon-border {
+    bottom: 1px;
+}

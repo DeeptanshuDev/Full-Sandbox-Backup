@@ -1,0 +1,73 @@
+<!--
+	Description  : Input Location Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component controller="InputLocation" description="Used to display location autocomplete for Job Wizard">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="value" type="String" description="Text location" default="" access="public"/>
+    <aura:attribute name="error" type="String" description="Field error" access="public"/>
+    
+    <aura:attribute name="latitude" type="Decimal" description="latitude location" default="" access="private"/>
+    <aura:attribute name="longitude" type="Decimal" description="longitude location" default="" access="private"/>
+    <aura:attribute name="predictions" type="List" default="[]" access="private"/>
+    <aura:attribute name="isLocationModified" type="Boolean" default="false" access="private"/>
+    <aura:attribute name="showSearchSpinner" type="Boolean" description="Show or hide the result list" default="false" access="private"/>
+    <aura:attribute name="noResultsFound" type="Boolean" description="Show or hide the result list" default="false" access="private"/>
+    <aura:attribute name="showResults" type="Boolean" description="Show or hide the result list" access="private"/>
+    <aura:attribute name="isCallingPlacesApi" type="Boolean" description="Holds when to add timeout on clicking outside" access="private"/>
+    <aura:attribute name="sessionToken" type="String" description="maintain session with google maps places API, same token would be used to search until user selects a location from dropdown" access="private"/>
+
+	<!--Register Events-->    
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+    
+    <!--Aura Methods-->
+    <aura:method name="focus" />
+    
+    <!--Component Markup-->
+    <div class="{!'slds-lookup ' + if(v.showResults, 'slds-is-open', '')}">
+        
+        <div class="slds-input-has-icon slds-input-has-icon_left-right">
+            
+            <lightning:icon iconName="utility:search" size="x-small" class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"/>
+            
+            <div aura:id="searchInput">
+                <ui:inputText aura:id="search-input"
+                              value="{!v.value}"
+                              keydown="{!c.onKeyDown}"
+                              keyup="{!c.onKeyUp}"
+                              updateOn="keyup"
+                              class="slds-input cxsSearchInput"
+                              placeholder="Location" />
+                <div id="search-location-input" tabindex="-1"/>
+            </div>
+            <button type="button" class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" onclick="{!c.clearField}">
+                <lightning:icon iconName="utility:clear" size="xx-small" class="slds-button__icon cxsClearIcon"/>
+            </button>
+        </div>
+        
+        <div class="slds-lookup__menu slds-p-top--none slds-p-bottom--none" style="z-index: 9000">
+            <ul aura:id="cxsLookupOptionsContainer" class="slds-lookup__list">
+                <aura:iteration items="{!v.predictions}" var="option" indexVar="index">
+                    <li aura:id="cxsLookupOption" data-index="{!index}" data-placeid="{!option.prediction.place_id}" data-description="{!option.prediction.description}" onclick="{!c.clickResult}"
+                        class="{! 'slds-listbox__item slds-lookup__item-action slds-truncate '}">
+                        <span class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta">
+                            <span class="slds-media__body">
+                                <span class="slds-listbox__option-text slds-listbox__option-text_entity slds-truncate"><aura:unescapedHtml value="{!option.formattedLabel}"/></span>
+                            </span>
+                        </span>
+                    </li>
+                </aura:iteration>
+            </ul>
+            
+            <div  class="{!v.showSearchSpinner ? 'slds-is-relative slds-m-bottom_medium' : 'slds-hide'}">
+                <lightning:spinner aura:id="SearchSpinner" size="small"/>
+            </div>
+            <div class="{!v.noResultsFound ? 'slds-m-around_small':'slds-hide'}">No results found</div>
+        </div>
+        
+    </div>
+</aura:component>

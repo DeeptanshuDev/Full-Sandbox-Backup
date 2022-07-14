@@ -1,0 +1,359 @@
+<!--
+	Description  : Field Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component extensible="true" description="Field">
+
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{! c.doInit }"/>
+
+    <!--Public Attributes-->
+    <aura:attribute name="recordId" type="Id" access="public" description="The Id of the record, use null for creation"/>
+    <aura:attribute name="fieldData" default="" type="Object" description="object of field attributes"/>
+    <aura:attribute name="sObjectName" type="String" access="public" description="The system name of the object used"/>
+    <aura:attribute name="fieldList" type="List" description="List to hold the fields wrapper" access="public"/>
+    <aura:attribute name="state" default="Read" type="String" description="field state: Read, Edit"/>
+    <aura:attribute name="editAllowed" default="false" type="Boolean" description="Show edit pencil after field"/>
+    <aura:attribute name="fileUploadObjectName" type="String" description="Object where uploaded files will be saved, value filled by doInit method." />
+    <aura:attribute name="createOpenAttachment" default="true" type="Boolean" description="Whether an Open Attachment record should be created or not via the DropFile component" />
+    <aura:attribute name="validity" type="Object" description="validity object that will hold the errors for lightning:input fields"/>
+    <aura:attribute name="isOverrideField" type="Boolean" default="false" access="private" description="Boolean to restrict user from adding override fields on fieldSet"/>
+    <aura:attribute name="scopedNotification" type="Object" access="private" description="properties of notification to be shown as ScopedNotification"/>
+
+    <!--Aura Handlers-->
+    <aura:handler name="change" value="{!v.fieldData.options}" action="{!c.optionsChange}"/>
+    <aura:handler name="change" value="{!v.state}" action="{!c.stateChange}"/>
+
+    <!--Register Events-->
+    <aura:registerEvent name="formulaFieldChange" type="c:formulaFieldChange"/>
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+
+    <!--Aura Methods-->
+    <aura:method name="isChangedAction" action="{!c.isChanged}" access="public" />
+    <aura:method name="getValueAction" action="{!c.getValue}" access="public" />
+    <aura:method name="getFieldData" action="{!c.getData}" access="public"/>
+    <aura:method name="showScopedNotification" action="{!c.showScopedNotification}" access="public">
+        <aura:attribute name="params" type="Object" access="public"/>
+    </aura:method>
+
+    <aura:method name="callComponentMethod" action="{!c.callComponentMethod}" description="Calls component's aura method">
+        <aura:attribute name="data" type="Object" description="Format of data should be data = {componentId:'',auraMethodName:'',auraMethodData:'',isReturnData:true/false}"/>
+    </aura:method>
+
+    <!-- make field viewable based on FLS -->
+    <aura:if isTrue="{!and(v.fieldData.viewable == true, not(v.fieldData.hiddenField))}">
+        <div class="{! 'cxsField_'+v.fieldData.type+' slds-form-element ' + if(and(v.fieldData.error != null, v.fieldData.error !=''),'slds-has-error','') + if(and(v.fieldData.updated != null, v.fieldData.updated !=''),' form_warning','')}">
+
+            <aura:if isTrue="{!or(or(v.fieldData.isStandaloneComponent != true, v.state == 'Read'),v.fieldData.readOnly)}">
+            <span class="slds-form-element__label" >
+                <span><aura:if isTrue="{!and(v.state == 'Edit', v.fieldData.required == true)}">
+                    <span class="slds-required" title="Required">*</span>
+                </aura:if></span>
+                    {!v.fieldData.label}
+                <span class="tooltipHolder"><aura:if isTrue="{!v.fieldData.help != ''}">
+                    <c:Tooltip content="{!v.fieldData.help}"/>
+                </aura:if></span>
+            </span>
+            </aura:if>
+            <div class="{! 'slds-form-element__control ' +if(v.state == 'Read', 'slds-has-divider--bottom slds-truncate','')}">
+            <span>
+                <aura:if isTrue="{!v.state == 'Read' || v.fieldData.readOnly == true}">
+                    <span>
+                        <aura:if isTrue="{!v.fieldData.type == 'STRING'}">
+                            <aura:if isTrue="{!v.fieldData.isCalculated == true}">
+                                    <lightning:formattedRichText  value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                <aura:set attribute="else">
+                                    <ui:outputText value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}" title="{! v.fieldData.value }" />
+                                </aura:set>
+                            </aura:if>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.fieldData.type == 'PICKLIST'|| v.fieldData.type == 'MULTIPICKLIST' || v.fieldData.type == 'COMBOBOX' || v.fieldData.type == 'CHECKBOX' || v.fieldData.type == 'LOCATION'}">
+                                    <ui:outputText value="{!v.fieldData.displayValue}" class="{!v.fieldData.styleClass}" title="{! v.fieldData.displayValue }"/>
+                                    <aura:set attribute="else">
+                                        <aura:if isTrue="{!v.fieldData.type == 'DATE'}">
+                                            <ui:outputDate value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                            <aura:set attribute="else">
+                                                <aura:if isTrue="{!v.fieldData.type == 'DATETIME'}">
+                                                    <ui:outputDateTime value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                                    <aura:set attribute="else">
+                                                        <aura:if isTrue="{!v.fieldData.type == 'REFERENCE'}">
+                                                            <aura:if isTrue="{! !v.isOverrideField}">
+                                                                <a class="textUnderline slds-truncate" onclick="{!c.navigateToReference}">{!v.fieldData.displayValue}</a>
+                                                                <aura:set attribute="else">
+                                                                    <c:ScopedNotification severity="warning">
+                                                                            Overriden field added in fieldset
+                                                                    </c:ScopedNotification>
+                                                                </aura:set>
+                                                            </aura:if>
+                                                            <aura:set attribute="else">
+                                                                <aura:if isTrue="{!v.fieldData.type == 'DOUBLE' || v.fieldData.type == 'INTEGER'}">
+                                                                    <ui:outputNumber value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                                                    <aura:set attribute="else">
+                                                                        <aura:if isTrue="{!v.fieldData.type == 'PERCENT'}">
+                                                                            <ui:outputNumber value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>%
+                                                                        </aura:if>
+                                                                        <aura:if isTrue="{!v.fieldData.type == 'MATCHING'}">
+                                                                            <c:Matching value="{!v.fieldData.value}"/>
+                                                                            <aura:set attribute="else">
+                                                                                <aura:if isTrue="{!v.fieldData.type == 'PHONE'}">
+                                                                                    <ui:outputPhone value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                                                                    <aura:set attribute="else">
+                                                                                        <aura:if isTrue="{!v.fieldData.type == 'RICHTEXT' || v.fieldData.type == 'REQUIREMENTS'}">
+                                                                                            <ui:outputRichText value="{!v.fieldData.value}" class="{!v.fieldData.styleClass + 'slds-text-longform'}"/>
+                                                                                            <aura:set attribute="else">
+                                                                                                <aura:if isTrue="{!v.fieldData.type == 'BOOLEAN'}">
+                                                                                                    <ui:outputCheckbox value="{!v.fieldData.value==true || v.fieldData.value=='true'}" class="{!v.fieldData.styleClass}"/>
+                                                                                                    <aura:set attribute="else">
+                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'CURRENCY'}">
+                                                                                                            <ui:outputCurrency value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                                                                                            <aura:set attribute="else">
+                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'TEXTAREA'}">
+                                                                                                                    <ui:outputTextArea value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                                                                                                    <aura:set attribute="else">
+                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'URL'}">
+                                                                                                                            <ui:outputURL value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}" label="{!v.fieldData.value}"/>
+                                                                                                                            <aura:set attribute="else">
+                                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'EMAIL'}">
+                                                                                                                                    <ui:outputEmail value="{!v.fieldData.value}" class="{!v.fieldData.styleClass}"/>
+                                                                                                                                     <aura:set attribute="else">
+                                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'MULTIREFERENCE'}">
+                                                                                                                                            <c:MultiLookup state="read" value="{!v.fieldData.value}" error="{!v.fieldData.error}" referencedObjectName="{!v.fieldData.referencedObjectName}" referencedObjectLabel="{!v.fieldData.referencedObjectLabel}" namePointingList="{#v.fieldData.namePointingList}" extraResultFields="{#v.fieldData.extraResultFields}" lookupApiName="{!v.fieldData.name}"/>
+                                                                                                                                            <aura:set attribute="else">
+                                                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'REQUIREMENT_ASSESSMENT'}">
+                                                                                                                                                    <!--<c:JobRequirements recordId="{!v.recordId}" embedded="true" aura:id="requirement_assessment" />-->
+                                                                                                                                                    <aura:set attribute="else">
+                                                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'RATING'}">
+                                                                                                                                                            <!--<c:TableCellRating id="{!v.recordId}" value="{!v.fieldData.value}" />-->
+                                                                                                                                                        </aura:if>
+                                                                                                                                                    </aura:set>
+                                                                                                                                                </aura:if>
+                                                                                                                                            </aura:set>
+                                                                                                                                        </aura:if>
+                                                                                                                                     </aura:set>
+                                                                                                                                </aura:if>
+                                                                                                                            </aura:set>
+                                                                                                                        </aura:if>
+                                                                                                                    </aura:set>
+                                                                                                                </aura:if>
+                                                                                                            </aura:set>
+                                                                                                        </aura:if>
+                                                                                                    </aura:set>
+                                                                                                </aura:if>
+                                                                                            </aura:set>
+                                                                                        </aura:if>
+                                                                                    </aura:set>
+                                                                                </aura:if>
+                                                                            </aura:set>
+                                                                        </aura:if>
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                            </aura:set>
+                                                        </aura:if>
+                                                    </aura:set>
+                                                </aura:if>
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                    </span>
+                    <span>
+                        <aura:if isTrue="{!v.editAllowed == true &amp;&amp; v.fieldData.readOnly == false &amp;&amp; v.isOverrideField == false}">
+                            <span onclick="{!c.changeStateToEdit}">
+                                <lightning:icon iconName="utility:edit" size="xx-small" class="slds-float--right cxsEditMode"/>
+                            </span>
+                        </aura:if>
+                    </span>
+                </aura:if>
+            </span>
+                <span>
+                <aura:if isTrue="{!and(v.state == 'Edit', v.fieldData.readOnly == false)}">
+                    <span>
+                        <aura:if isTrue="{!v.fieldData.type == 'STRING'}">
+                            <ui:inputText value="{!v.fieldData.value}" maxlength="{!v.fieldData.maxLength}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}" updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!v.fieldData.type == 'CHECKBOX'}">
+                                    <aura:iteration items="{!v.fieldData.options}" var="optionData">
+                                        <ui:inputCheckbox value="{!optionData.value}" label="{!optionData.label}" name="{!v.fieldData.name}" class="{!'slds-input'+v.fieldData.styleClass}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'click':'change'}"/>
+                                    </aura:iteration>
+                                    <aura:set attribute="else">
+                                        <aura:if isTrue="{!v.fieldData.type == 'PICKLIST' || v.fieldData.type == 'COMBOBOX'}">
+                                            <ui:inputSelect value="{!v.fieldData.value}" class="{!'slds-input'+v.fieldData.styleClass}" change="{!c.change}" keyup="{!c.keyup}" updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}" disabled="{!and(v.fieldData.type == 'PICKLIST', empty(v.fieldData.options))}">
+                                                <ui:inputSelectOption text="" label="{! '--- '+Pick+ ' ---'}" />
+                                                <aura:iteration items="{!v.fieldData.options}" var="optionData">
+                                                    <ui:inputSelectOption text="{!optionData.value}" label="{!optionData.label}" disabled="{!optionData.disabled}"/>
+                                                </aura:iteration>
+                                            </ui:inputSelect>
+                                            <aura:set attribute="else">
+                                                <aura:if isTrue="{!v.fieldData.type == 'DATE'}">
+                                                   <!--
+                                                    <lightning:input type="date" value="{!v.fieldData.value}" onchange="{!c.change}" class="{!v.fieldData.styleClass + ' cxs-date'}" messageWhenBadInput="Invalid Date" validity="{!v.validity}" variant="label-hidden"/>
+                                                   -->
+                                                    <ui:inputDate value="{!v.fieldData.value}" displayDatePicker="true" class="{!'slds-input'+v.fieldData.styleClass}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                    <aura:set attribute="else">
+                                                        <aura:if isTrue="{!v.fieldData.type == 'DATETIME'}">
+                                                          <!--
+                                                           <lightning:input type="datetime-local" value="{!v.fieldData.value}" onchange="{!c.change}" class="{!v.fieldData.styleClass + ' cxs-date'}" messageWhenBadInput="Invalid DateTime" validity="{!v.validity}" variant="label-hidden"/>
+                                                           -->
+                                                            <ui:inputDateTime value="{!v.fieldData.value}" displayDatePicker="true" class="{!'slds-input'+v.fieldData.styleClass}" change="{!c.change}" keyup="{!c.keyup}" blur="{!c.change}" updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                            <aura:set attribute="else">
+                                                                <aura:if isTrue="{!v.fieldData.type == 'REFERENCE'}">
+                                                                    <aura:if isTrue="{! !v.isOverrideField}">
+                                                                        <c:Lookup value="{!v.fieldData.value}" sObjectName="{!v.sObjectName}" fieldName = "{!v.fieldData.name}" fieldList ="{!v.fieldList}" recordId="{!v.recordId}" error="{!v.fieldData.error}" displayValue="{!v.fieldData.displayValue}" referencedObjectName="{!v.fieldData.referencedObjectName}" referencedObjectLabel="{!v.fieldData.referencedObjectLabel}" namePointingList="{#v.fieldData.namePointingList}" extraResultFields="{#v.fieldData.extraResultFields}" lookupApiName="{!v.fieldData.name}" whereField="{!v.fieldData.whereField}" whereValue="{!v.fieldData.whereValue}"/>
+                                                                        <aura:set attribute="else">
+                                                                            <c:ScopedNotification severity="warning">
+                                                                                    Overriden field in fieldset
+                                                                            </c:ScopedNotification>
+                                                                        </aura:set>
+                                                                    </aura:if>
+                                                                        <aura:set attribute="else">
+                                                                        <aura:if isTrue="{!v.fieldData.type == 'INTEGER'}">
+                                                                            <ui:inputNumber value="{!v.fieldData.value}" maxlength="{!v.fieldData.maxLength}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                            <aura:set attribute="else">
+                                                                                <aura:if isTrue="{!v.fieldData.type == 'DOUBLE'}">
+                                                                                    <ui:inputNumber value="{!v.fieldData.value}" maxlength="{!v.fieldData.maxLength}" format="{!v.fieldData.format}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                                    <aura:set attribute="else">
+                                                                                        <aura:if isTrue="{!(v.fieldData.type == 'PERCENT' || v.fieldData.type == 'MATCHING' )}">
+                                                                                            <ui:inputNumber value="{!v.fieldData.value}" maxlength="{!v.fieldData.maxLength}" format="{!v.fieldData.format}" class="{!'cxsInputPercentage slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>%
+                                                                                            <aura:set attribute="else">
+                                                                                                <aura:if isTrue="{!v.fieldData.type == 'PHONE'}">
+                                                                                                    <ui:inputPhone value="{!v.fieldData.value}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}" updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                                                    <aura:set attribute="else">
+                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'REQUIREMENTS'}">
+                                                                                                            <!--<c:Requirements aura:id="requirementsCmp"  sObjectName="{!v.fieldData.sObjectName}" recordId="{!v.fieldData.recordId}" requirements="{!v.fieldData.requirements}" state="{!v.state}" editmodeAllowed="{!v.editAllowed}" isEmbedded="true" allowFieldSave="true" isRequired = "{!v.fieldData.required}"/>-->
+                                                                                                            <aura:set attribute="else">
+                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'RICHTEXT'}">
+                                                                                                            <div class="{!'richtextWrapper ' + (v.fieldData.error ? 'slds-has-error':'') }">
+                                                                                                                <lightning:inputRichText value="{!v.fieldData.value}" placeholder="{!v.fieldData.placeholder}" onblur="{!c.change}"/>
+                                                                                                            </div>
+                                                                                                            <aura:set attribute="else">
+                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'BOOLEAN'}">
+                                                                                                                    <ui:inputCheckbox value="{!v.fieldData.value}" class="{!'slds-input'+v.fieldData.styleClass}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                                                                    <aura:set attribute="else">
+                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'CURRENCY'}">
+                                                                                                                            <ui:inputCurrency value="{!v.fieldData.value}" maxlength="{!v.fieldData.maxLength}" format="{!v.fieldData.format}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                                                                            <aura:set attribute="else">
+                                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'TEXTAREA'}">
+                                                                                                                                    <ui:inputTextArea value="{!v.fieldData.value}" maxlength="{!v.fieldData.maxLength}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}" updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                                                                                    <aura:set attribute="else">
+                                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'URL'}">
+                                                                                                                                            <ui:inputURL value="{!v.fieldData.value}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                                                                                            <aura:set attribute="else">
+                                                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'EMAIL'}">
+                                                                                                                                                    <ui:inputEmail value="{!v.fieldData.value}" class="{!'slds-input'+v.fieldData.styleClass}" placeholder="{!v.fieldData.placeholder}" change="{!c.change}" keyup="{!c.keyup}" updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}"/>
+                                                                                                                                                    <aura:set attribute="else">
+                                                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'MULTIPICKLIST'}">
+                                                                                                                                                            <ui:inputSelect value="{!v.fieldData.value}" multiple="true"  class="{!'slds-input'+v.fieldData.styleClass}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}" disabled="{!empty(v.fieldData.options)}">
+                                                                                                                                                                <aura:iteration items="{!v.fieldData.options}" var="optionData">
+                                                                                                                                                                    <ui:inputSelectOption text="{!optionData.value}" label="{!optionData.label}"/>
+                                                                                                                                                                </aura:iteration>
+                                                                                                                                                            </ui:inputSelect>
+                                                                                                                                                            <aura:set attribute="else">
+                                                                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'FILEUPLOAD'}">
+                                                                                                                                                                    <aura:if isTrue="{!v.fieldData.options.length > 0}">
+                                                                                                                                                                        <ui:inputSelect value="{!v.fieldData.value}" class="{!'slds-input'+v.fieldData.styleClass}" change="{!c.change}" keyup="{!c.keyup}"  updateOn="{!v.fieldData.fireFieldKeyUpEvent?'keyup':'change'}">
+                                                                                                                                                                            <ui:inputSelectOption text="" label="{! '--- Upload New File ---'}"/>
+                                                                                                                                                                            <aura:iteration items="{!v.fieldData.options}" var="optionData">
+                                                                                                                                                                                <ui:inputSelectOption text="{!optionData.value}" label="{!optionData.label}"/>
+                                                                                                                                                                            </aura:iteration>
+                                                                                                                                                                        </ui:inputSelect>
+                                                                                                                                                                    </aura:if>
+
+                                                                                                                                                                    <aura:if isTrue="{!v.fieldData.showDropFile}">
+                                                                                                                                                                        <div class="connexys-file-upload">
+                                                                                                                                                                            <!--<c:DropFile sObjectName="{!v.fileUploadObjectName}" height="90" fireRefreshEvent="false" createOpenAttachment="{!v.createOpenAttachment}" cxsAttachmentType="{!v.fieldData.format}" attachmentFieldName="{!v.fieldData.name}" onlyOneFileInList="true" showDeleteOption="true"/>-->
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </aura:if>
+                                                                                                                                                                    <aura:set attribute="else">
+                                                                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'MULTIREFERENCE'}">
+                                                                                                                                                                            <c:MultiLookup state="edit" value="{!v.fieldData.value}" error="{!v.fieldData.error}" referencedObjectName="{!v.fieldData.referencedObjectName}" referencedObjectLabel="{!v.fieldData.referencedObjectLabel}" namePointingList="{#v.fieldData.namePointingList}" extraResultFields="{#v.fieldData.extraResultFields}" lookupApiName="{!v.fieldData.name}"/>
+                                                                                                                                                                            <aura:set attribute="else">
+                                                                                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'LOCATION'}">
+                                                                                                                                                                                    <c:InputLocation value="{!v.fieldData.value}" error="{!v.fieldData.error}"/>
+                                                                                                                                                                                    <aura:set attribute="else">
+                                                                                                                                                                                        <aura:if isTrue="{!v.fieldData.type == 'REQUIREMENT_ASSESSMENT'}">
+                                                                                                                                                                                            <!--<c:JobRequirements recordId="{!v.recordId}" embedded="true" aura:id="requirement_assessment" />-->
+                                                                                                                                                                                            <aura:set attribute="else">
+                                                                                                                                                                                                <aura:if isTrue="{!v.fieldData.type == 'RATING'}">
+                                                                                                                                                                                                    <!--<c:TableCellRating id="{!v.recordId}" value="{!v.fieldData.value}" />-->
+                                                                                                                                                                                                </aura:if>
+                                                                                                                                                                                            </aura:set>
+                                                                                                                                                                                        </aura:if>
+                                                                                                                                                                                    </aura:set>
+                                                                                                                                                                                </aura:if>
+                                                                                                                                                                            </aura:set>
+                                                                                                                                                                        </aura:if>
+                                                                                                                                                                    </aura:set>
+                                                                                                                                                                </aura:if>
+                                                                                                                                                            </aura:set>
+                                                                                                                                                        </aura:if>
+                                                                                                                                                    </aura:set>
+                                                                                                                                                </aura:if>
+                                                                                                                                            </aura:set>
+                                                                                                                                        </aura:if>
+                                                                                                                                    </aura:set>
+                                                                                                                                </aura:if>
+                                                                                                                            </aura:set>
+                                                                                                                        </aura:if>
+                                                                                                                    </aura:set>
+                                                                                                                </aura:if>
+                                                                                                            </aura:set>
+                                                                                                        </aura:if>
+                                                                                                            </aura:set>
+                                                                                                        </aura:if>
+                                                                                                    </aura:set>
+                                                                                                </aura:if>
+                                                                                            </aura:set>
+                                                                                        </aura:if>
+                                                                                    </aura:set>
+                                                                                </aura:if>
+                                                                            </aura:set>
+                                                                        </aura:if>
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                            </aura:set>
+                                                        </aura:if>
+                                                    </aura:set>
+                                                </aura:if>
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                    </span>
+                    <aura:if isTrue="{! not(empty(v.scopedNotification.messages))}">
+                        <c:ScopedNotification messages="{!v.scopedNotification.messages}" severity="{!v.scopedNotification.severity}" border="{!v.scopedNotification.border}" allowClosing="{!v.scopedNotification.allowClosing}" theme="{!v.scopedNotification.theme}" class="{!v.scopedNotification.class}" messageTitle="{!v.scopedNotification.messageTitle}" inverse="{!v.scopedNotification.inverse}"/>
+                    </aura:if>
+                </aura:if>
+            </span>
+            </div>
+            <aura:if isTrue="{!and(v.fieldData.error != null , v.fieldData.error != '')}">
+                <div class="slds-form-element__help">{!v.fieldData.error}</div>
+            </aura:if>
+            <aura:if isTrue="{!and(v.fieldData.updated != null , v.fieldData.updated != '')}">
+                <div class="slds-is-absolute" style="width:100%; top: -1px;">
+                    <div class="slds-form-element__help field_warning slds-float_right slds-m-right_medium">
+                        <!-- Text in undo displays trimmed value -->
+                            Field Updated From
+                        <span>&nbsp;"</span>
+                        <div class="undo-text-container">
+                        <span class="slds-truncate">
+                            <aura:if isTrue="{!v.fieldData.type == 'RICHTEXT'}">
+                                <aura:unescapedHtml value="{!v.fieldData.updated}" />
+                                <aura:set attribute="else">
+                                    {!v.fieldData.updated}
+                                </aura:set>
+                            </aura:if>
+                        </span>
+                        </div>
+                        <span>".&nbsp;</span>
+                        <span class="" onclick="{!c.changeUpdate}"><a href="javascript:void(0);">Undo</a></span>
+                    </div>
+                </div>
+            </aura:if>
+        </div>
+    </aura:if>
+
+</aura:component>

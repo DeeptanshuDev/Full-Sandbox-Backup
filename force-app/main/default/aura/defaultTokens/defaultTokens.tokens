@@ -1,0 +1,50 @@
+<!--
+ Description  : Default CSS Tokens
+ Created By   : Abhinav Sharma
+-->
+<aura:tokens extends="force:base">
+
+    <!-- Added because it is documented to be in the default, but seems to be missing -->
+    <aura:token name="colorTextWarningAlt" value="#844800"/>
+
+    <!-- Default colors Salesforce Lightning -->
+    <aura:token name="colorLinkWater" value="#F4F6F9"/>
+    <aura:token name="colorStream" value="#E0E5EE"/>
+    <aura:token name="colorGeyser" value="#D8DDE6"/>
+    <aura:token name="colorCadetBlue" value="#A8B7C7"/>
+    <aura:token name="colorKasmir" value="#54698D"/>
+    <aura:token name="colorBiscay" value="#16325C"/>
+    <aura:token name="colorDeepCove" value="#061C3F"/>
+    <aura:token name="colorEmerald" value="#4BCA81"/>
+    <aura:token name="colorSalem" value="#04844B"/>
+    <aura:token name="colorKoromiko" value="#FFB75D"/> <!-- Warning -->
+    <aura:token name="colorFlushMahogany" value="#C23934"/>
+    <aura:token name="colorAzure" value="#1589EE"/>
+    <aura:token name="colorScienceBlue" value="#0070D2"/>
+    <aura:token name="colorEndeavor" value="#005FB2"/>
+    <aura:token name="colorMidnightBlue" value="#00396B"/>
+    <aura:token name="colorSelected" value="#F0F8FC"/>
+    <aura:token name="colorSteam" value="#E0E5EE"/>
+    <aura:token name="colorPaletteGray5" value="#dddbda"/>
+    <aura:token name="cardColorBorder" value="#dddbda"/>
+
+    <!-- Default font sizes. (somehow missing in salesforce design tokens) -->
+    <aura:token name="fontSizeXSmall" value="0.625rem"/> <!-- 10px -->
+    <aura:token name="fontSizeSmall" value="0.75rem"/> <!-- 12px -->
+    <aura:token name="fontSizeMedium" value="0.8125rem"/> <!-- 13px -->
+    <aura:token name="fontSizeMediumA" value="0.875rem"/> <!-- 14px -->
+    <aura:token name="fontSizeLarge" value="1rem"/> <!-- 16px -->
+    <aura:token name="fontSizeXLarge" value="1.25rem"/> <!-- 20px -->
+    <aura:token name="fontSizeXLargeA" value="1.57rem"/> <!-- 25.12px -->
+    <aura:token name="fontSizeXXLarge" value="1.75rem"/> <!-- 28px -->
+
+    <!-- Entered by Warren to try and fix the CodeShip error -->
+    <aura:token name="spacingXXLarge" value="3rem"/>
+
+    <!-- SLDS table styles -->
+    <aura:token name="tableColumnHoverBackgroundColor" value="#f3f2f2"/>
+    <aura:token name="tableColumnHoverBoxShadow" value="rgb(221, 219, 218) 0 -1px 0 inset, rgb(221, 219, 218) 0 1px 0 inset"/>
+    <aura:token name="headerBackgroundColor" value="rgb(250, 250, 249)"/>
+    <aura:token name="headerBorder" value="1px solid rgb(221, 219, 218)"/>
+    
+</aura:tokens>

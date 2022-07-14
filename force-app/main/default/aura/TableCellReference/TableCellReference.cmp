@@ -1,0 +1,22 @@
+<!--
+	Description  : Table Cell Reference Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="TableCellReference">
+    
+    <!--Public Attributes-->
+    <aura:attribute name="id" type="String" description="The id of the linked object."/>
+    <aura:attribute name="name" type="String" description="The name which is displayed as label for this object."/>
+    <aura:attribute name="class" type="String" description="Class of the cell"/>
+    <aura:attribute name="customComponentName" type="String" description="Name of custom component"/>
+    <aura:attribute name="objName" type="String" description="Name of object"/>
+    <aura:attribute name="isCommunityUser" type="Boolean" description="Do we logged in to the community?" default="false"/>
+    <aura:attribute name="overlay" type="Aura.Component[]"/>
+    
+	<!--Anchor Link-->    
+    <a onclick="{!c.navigate}" title="{! v.name }">{!v.name}</a>
+    
+    <!--Overlay Library-->
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+
+</aura:component>

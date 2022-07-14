@@ -1,0 +1,7 @@
+<aura:interface description="Interface template">
+    <aura:attribute name="recordId" type="String" access="public" 
+                    description="This is used to hold record id of design request record."/>
+    
+    <aura:attribute name="sObjectName" type="String" access="public"
+                    description="This is used to hold object api name of design request object."/>
+</aura:interface>

@@ -1,0 +1,55 @@
+<!-- Response page when user click on save button of eSignature form page -->
+
+<apex:page showHeader="false" standardStylesheets="false" lightningStylesheets="true" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <style type="text/css">
+        .slds-modal__content{
+        border-bottom-right-radius: 0.25rem !important;
+        border-top-right-radius: 0.25rem !important;
+        border-bottom-left-radius: 0.25rem !important;
+        border-top-left-radius: 0.25rem !important;
+        box-shadow: 0 6px 3px 2px rgb(0 0 0 / 16%) !important;
+        }
+        
+        .slds-modal__content-redShadow{
+        border-bottom-right-radius: 0.25rem !important;
+        border-top-right-radius: 0.25rem !important;
+        border-bottom-left-radius: 0.25rem !important;
+        border-top-left-radius: 0.25rem !important;
+        box-shadow: 0 3px 6px 1px rgb(143 20 20 / 75%) !important;
+        }
+    </style>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <title>Art Approval File Is Deleted</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        <body>
+            <div class="slds-scope">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                       <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="min-width: max-content;">
+                           <div class="slds-scoped-notification slds-media slds-media_center slds-theme_error slds-modal__content-redShadow" role="status">
+                               <div class="slds-media__figure">
+                                   <span class="slds-icon_container slds-icon-utility-error" title="error">
+                                       <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                       <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#error')}"></use>
+                                        </svg>
+                                       <span class="slds-assistive-text">error</span>
+                                   </span>
+                               </div>
+                               <div class="slds-media__body">
+                                   <p style="font-size : 15px;">File Not Found ! The Art Approval file is deleted. Please connect with your sales rep for more information.</p>
+                               </div>
+                           </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </body>
+    </html>
+</apex:page>

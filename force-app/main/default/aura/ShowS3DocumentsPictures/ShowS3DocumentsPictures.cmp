@@ -1,0 +1,64 @@
+<aura:component controller="ShowS3DocumentsPicturesCtrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+	
+    <aura:attribute name="S3Documents" type="List"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="isMessage" type="Boolean"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        border-top-right-radius: var(--sds-c-modal-radius-border, var(--lwc-borderRadiusMedium,0.25rem));
+        border-top-left-radius: var(--sds-c-modal-radius-border, var(--lwc-borderRadiusMedium,0.25rem));
+        }       
+        .slds-modal__content{
+        overflow:unset !important;
+        max-height: 80% !important;
+        }
+        .slds-modal__container {
+        margin: 0 auto !important;
+        width: 90% !important;
+        max-width: 85rem !important;
+        min-width: 65% !important;
+        }
+        .quick-actions-panel {
+        overflow-y: scroll !important;
+        }
+    </aura:html>
+    
+    <div>
+        <div>
+            <aura:if isTrue="{!v.isMessage}">
+                <div class="errorDiv">
+                    {!v.errorMessage}
+                </div>
+                <aura:set attribute="else">
+                    <lightning:accordion aura:id="accordion" allowMultipleSectionsOpen="true">
+                        <aura:iteration items="{!v.S3Documents}" var="item">
+                            <lightning:accordionSection name="{!item.documentCategory}" label="{!item.documentCategory}">
+                                <lightning:accordion aura:id="accordionIn" allowMultipleSectionsOpen="true">
+                                    <aura:iteration items="{!item.subcategoryList}" var="item1">
+                                        <lightning:accordionSection name="{!item1.subcategory}" label="{!item1.subcategory}">
+                                            <div>
+                                                <lightning:datatable
+                                                                     keyField="id"
+                                                                     data="{!item1.documentList }"
+                                                                     columns="{! v.columns }"
+                                                                     hideCheckboxColumn="true"/>
+                                            </div>
+                                        </lightning:accordionSection>
+                                    </aura:iteration>
+                                </lightning:accordion>
+                            </lightning:accordionSection>
+                        </aura:iteration>
+                    </lightning:accordion>
+                </aura:set>
+            </aura:if>
+        </div>
+    </div>
+    
+</aura:component>

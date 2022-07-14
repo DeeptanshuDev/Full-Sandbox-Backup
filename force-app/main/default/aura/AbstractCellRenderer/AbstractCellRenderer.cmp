@@ -1,0 +1,40 @@
+<!--
+	Description  : Lightning component to display orders and have associated functionalities with it.
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="This is the base class for any 'cell' level components in a data grid." extensible="true">
+    
+    <!--Static Resource to fetch the generic utility methods and properties-->
+    <ltng:require scripts="{!$Resource.Baseutility}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="column" type="Object" required="true" access="public" description="The information about the column this cell is a field for."/>
+    <aura:attribute name="value" type="Object" required="false" access="public" description="The value for the column"/>
+    <aura:attribute name="row" type="Object" required="false" access="public" description="Table row, needed for custom components"/>
+	<aura:attribute name="fieldValue" type="String" access="public" description="Parsed Field value."/>
+    <aura:attribute name="generateReferenceLink" type="Boolean" access="public" description="Will determine if a name value needs to be generated as a hyperlink. Default it does"  default="true"/>
+    <aura:attribute name="isCommunityUser" type="Boolean" default="false" access="public" description="Is logged in user is a community user"/>
+    <aura:attribute name="navigationType" type="String" description="Navigation type value" access="public"/>
+    <aura:attribute name="isMobileShrink" type="Boolean" default="false" description="Shrink header on mobile devices"  access="public"/>
+    
+    <!-- Register Event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+
+    <!--Fetching Dependencies-->
+    <aura:dependency resource="markup://lightning:formattedDateTime"/>
+    <aura:dependency resource="markup://ui:outputText"/>
+    <aura:dependency resource="markup://ui:outputCheckbox"/>
+    <aura:dependency resource="markup://c:TableCellReference"/>
+    <aura:dependency resource="markup://c:TableLinkModal"/>
+    <aura:dependency resource="markup://ui:outputSecret"/>
+    <aura:dependency resource="markup://ui:outputCurrency"/>
+    <aura:dependency resource="markup://ui:outputTextArea"/>
+    <aura:dependency resource="markup://ui:outputEmail"/>
+    <aura:dependency resource="markup://ui:outputNumber"/>
+    <aura:dependency resource="markup://ui:outputPhone"/>
+    <aura:dependency resource="markup://ui:outputURL"/>
+    <aura:dependency resource="markup://c:TableCellRating"/>
+    <aura:dependency resource="markup://c:TableCellInputField"/>
+
+    {!v.body}
+</aura:component>

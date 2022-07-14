@@ -1,0 +1,103 @@
+<!--
+    - Created by nat on 13-Feb-18.
+    -->
+
+<aura:component description="Dropdown">
+
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{! c.doInit }"/>
+
+    <!-- public attributes -->
+    <aura:attribute name="class" type="String" access="public" />
+    <aura:attribute name="buttonClass" type="String" access="public" />
+    <aura:attribute name="buttonLabel" type="String" access="public" />
+    <aura:attribute name="buttonLabelWhenOpen" type="String" access="public" />
+    <aura:attribute name="buttonIconName" type="String" access="public" />
+    <aura:attribute name="buttonIconNameWhenOpen" type="String" access="public" />
+    <aura:attribute name="buttonIconSize" type="String" default="x-small" access="public" description="The size of the buttonIcon. Options include xx-small, x-small, small, and medium." />
+    <aura:attribute name="buttonStateful" type="Boolean" default="{! false }" access="public" />
+    <aura:attribute name="buttonSelected" type="Boolean" default="{! false }" access="public" description="If true, sets the stateful button to selected" />
+    <aura:attribute name="dropdownClass" type="String" access="public" />
+    <aura:attribute name="dropdownIsOpenClass" type="String" default="slds-is-open" access="public" description="The class used to set when the dropdown is open" />
+    <aura:attribute name="size" type="String" default="small" access="public" description="The size of the dropdown (and button), possible values: small, medium, large, full and auto" />
+    <aura:attribute name="persistent" type="Boolean" default="{! false }" access="public" description="When set to true, clicking outside the dropdown will not close it. Only clicking the button will close the dropdown" />
+    <aura:attribute name="showChevron" type="Boolean" default="true" access="public" description="When set to false, no chevron icon will be shown on the button. Stateful buttons can not show chevrons" />
+    <aura:attribute name="disabled" type="Boolean" default="false" access="public" description="If the button has to be disabled (greyed out), disabled buttons do not open the menu on a click." />
+    <aura:attribute name="truncate" type="Boolean" default="true" access="public" description="If the label has to be truncated. When set to true, the button is forced to fixed width, regardless of the label text length and overflow text is clipped of and replaced by an ellipsis." />
+    <aura:attribute name="displayAutomatically" type="Boolean" default="{! true }" access="public" />
+    <aura:attribute name="dropDownPosition" type="String" default="auto" access="public" description="What side of the button the dropdown will be positioned. Possible values: auto, top, bottom"/>
+
+    <!-- private attributes -->
+    <aura:attribute name="columnWidth" type="String" access="private" description="The width of the column as asked by lightning:flexipageRegionInfo"/>
+	<aura:attribute name="isOpened" type="Boolean" default="{! false }" access="private" />
+	<aura:attribute name="dropdownPositionClass" type="String" default="slds-dropdown_right" access="private" />
+    <aura:attribute name="invisible" type="Boolean" default="true" access="private" description="Private flag to set the dropdown body hidden while calculating the position" />
+
+    <!-- Aura methods -->
+    <aura:method name="open" action="{! c.open }" access="public" description="Method to open the dropdown" />
+    <aura:method name="close" action="{! c.close}" access="public" description="Method to close the dropdown" />
+    <aura:method name="isOpen" action="{! c.isOpen }" access="public" description="Returns true if the dropdown is opened" />
+    <aura:method name="setDropdownPosition" action="{! c.setDropdownPosition}" access="public" description="Sets the dropdown position so it doesn't appear offscreen" >
+        <aura:attribute name="showDropDownBody" type="Boolean" />
+    </aura:method>
+
+    <!-- public events -->
+    <aura:registerEvent name="onOpen" type="c:genericComponentEvent" />     <!-- This event is fired when the dropdown is opened -->
+    <aura:registerEvent name="onClose" type="c:genericComponentEvent" />    <!-- This event is fired when the dropdown is closed -->
+
+    <!-- event handlers -->
+    <aura:handler name="change" value="{! v.disabled }" action="{! c.onDisabledChange }" />
+
+    <!-- COMPONENT START -->
+    <div aura:id="dropdownButton" class="{! v.class + ' slds-m-right--xx-small slds-dropdown-trigger slds-dropdown-trigger_click ' + (v.isOpened ? v.dropdownIsOpenClass : '') + ' ' + (v.size + '-width')}" >
+
+        <!-- Only button icon -->
+        <aura:if isTrue="{! not(empty(v.buttonIconName))}">
+
+            <aura:if isTrue="{! v.buttonStateful }">
+                <lightning:buttonIconStateful
+                    class="{! v.buttonClass }"
+                    iconName="{! and(v.isOpened, v.buttonIconNameWhenOpen) ? v.buttonIconNameWhenOpen : v.buttonIconName }"
+                    alternativeText="{! and(v.isOpened, v.buttonLabelWhenOpen) ? v.buttonLabelWhenOpen : v.buttonLabel }"
+                    onclick="{! c.toggle }"
+                    selected="{! or(v.isOpened, v.buttonSelected) }"
+                    disabled="{! v.disabled }"
+                    size="{!v.buttonIconSize}"
+                />
+                <aura:set attribute="else">
+                    <lightning:button
+                        title="{! and(v.isOpened, v.buttonLabelWhenOpen) ? v.buttonLabelWhenOpen : v.buttonLabel }"
+                        onclick="{! c.toggle }"
+                        class="{! v.buttonClass + ' slds-button_icon slds-button_icon-border ' + (v.showChevron ? 'slds-button--icon-more' :'' )}"
+                        variant="base"
+                        disabled="{! v.disabled }"
+                    >
+                        <lightning:icon iconName="{! and(v.isOpened, v.buttonIconNameWhenOpen) ? v.buttonIconNameWhenOpen : v.buttonIconName }" size="{!v.buttonIconSize}"/>
+                        <aura:if isTrue="{! v.showChevron }">
+                            <lightning:icon iconName="utility:down" size="xx-small" alternativeText="down" class="slds-button__icon slds-button__icon--xx-small slds-m-left_xx-small" />
+                        </aura:if>
+                    </lightning:button>
+                </aura:set>
+            </aura:if>
+
+            <aura:set attribute="else">
+                <lightning:flexipageRegionInfo width="{!v.columnWidth}"/>
+
+                <lightning:button title="{! and(v.isOpened, v.buttonLabelWhenOpen) ? v.buttonLabelWhenOpen : v.buttonLabel }"
+                                  onclick="{! c.toggle }"
+                                  class="{!v.buttonClass + (v.truncate ? ' slds-truncate' : '') + ' slds-button--icon-more'}"
+                                  variant="base"
+                                  disabled="{! v.disabled }"
+                                  >
+                    <span class="{! (v.truncate ? ' slds-truncate' : '') + ' label'}">{! and(v.isOpened, v.buttonLabelWhenOpen) ? v.buttonLabelWhenOpen : v.buttonLabel }</span>
+                    <aura:if isTrue="{! v.showChevron }">
+                        <lightning:icon iconName="utility:down" size="xx-small" alternativeText="down" class="slds-button__icon slds-button__icon--xx-small slds-m-left_xx-small" />
+                    </aura:if>
+                </lightning:button>
+            </aura:set>
+        </aura:if>
+        <div class="{! ' slds-dropdown ' + ('slds-dropdown_' + (v.size == 'full' ? 'x-small' : v.size) + ' ') + v.dropdownClass + ' ' + v.dropdownPositionClass + ' '  + (v.invisible ? 'invisible' : '') }" aura:id="dropdown">
+            {! v.body }
+        </div>
+    </div>
+</aura:component>

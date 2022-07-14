@@ -1,0 +1,63 @@
+<!--
+	Description  : Section lightning Component.
+	Created By   : Abhinav Sharma
+-->
+<aura:component extends="c:Base" extensible="true" description="Section">
+    
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}" afterScriptsLoaded="{!c.doInit }"/>
+    
+    <!-- (optional) design attributes -->
+    <aura:attribute name="sectionHeader" type="String" default="" description="If this attribute is not empty, it will add a section header with collapse/expand icon" access="Global"/>
+    <aura:attribute name="sectionOpen" type="Boolean" default="true" description="Whether the section is open (true) or closed (false)" access="Global"/>
+    <aura:attribute name="sectionDescription" type="String" default="" description="If this attribute is not empty, it will add a section description" access="Global"/>
+    <aura:attribute name="tabHeader" type="Boolean" default="false" description="If this attribute is not empty, it will add a section header with collapse/expand icon" access="Global"/>
+
+    <!-- own attributes -->
+    <aura:attribute name="showSpinner" type="Boolean" default="false" description="Turn the spinner on or off."/>
+    <aura:attribute name="overruleSpinner" type="Boolean" default="false" description="Overrule the spinner to off."/>
+    <aura:attribute name="spinnerHeight" type="Integer" description="The height in pixels of the area containing the spinner, this does not change the actual height of the spinner itself."/>
+    <aura:attribute name="isEmbedded" default="false" type="Boolean" description="Defines if the component is Standalone or Embedded"/>
+    <aura:attribute name="sectionHeaderLoading" type="Boolean" default="false" description="Whether or not the section header (label) is loading."/>
+    <aura:attribute name="extraClass" type="String" default="" description="Additional css class for the section" access="public"/>
+
+    <!-- event handlers -->
+    <aura:handler name="change" value="{!v.sectionHeader}" action="{!c.handleSectionHeaderChange}"/>
+
+    <!--Component Markup-->
+    <span class="{!v.extraClass +' connexys-embedded_'+v.isEmbedded+' connexys-has-header_'+(v.sectionHeader != null &amp;&amp; v.sectionHeader != '')}">
+        <div class="{! 'slds-section '  +if(v.tabHeader,'slds-section_tab ' ) +if(v.sectionOpen,'slds-is-open','cxs-is-closed')}">
+            <aura:if isTrue="{!v.messages.length == 0 || v.messageHideComponent == false}">
+                <aura:if isTrue="{!v.sectionHeader != null &amp;&amp; v.sectionHeader != ''}">
+                    <h3 class="slds-section__title">
+                        <button class="slds-button slds-section__title-action" onclick="{!c.toggleSection}">
+                            <lightning:icon iconName="utility:switch" size="x-small" class="cxs-switch-icon"/>
+                            <span class="titleSpan">
+                                <aura:if isTrue="{!v.sectionHeaderLoading == true}">...</aura:if>
+                                <aura:if isTrue="{!v.sectionHeaderLoading == false}">{!v.sectionHeader}</aura:if>
+                            </span>
+                        </button>
+                    </h3>
+                </aura:if>
+                <div class="{! v.sectionOpen || v.sectionHeader == null || v.sectionHeader == '' ? 'slds-show':'slds-hide'}">
+                    <span>
+                        <aura:if isTrue="{!v.sectionDescription != null &amp;&amp; v.sectionDescription != ''}">
+                            <div class="slds-section__content cxsrec-introduction">
+                                <!-- Display unescaped HTML, from backend its value is sanitised -->
+                                <aura:unescapedHtml value="{!v.sectionDescription}"/>
+                            </div>
+                        </aura:if>
+                        <span>
+                            <div class="{!'slds-section__content '+if(v.showSpinner &amp;&amp; !v.overruleSpinner,'cxs-spinner__holder','')}" style="{!if(v.showSpinner,(v.spinnerHeight != null?'min-height:'+v.spinnerHeight+'px':''),'')}">
+                                <aura:if isTrue="{!v.showSpinner &amp;&amp; !v.overruleSpinner}">
+                                    <lightning:spinner size="medium" alternativeText="{!$Label.c.Loading}"/>
+                                </aura:if>
+                                {!v.body}
+                            </div>
+                        </span>
+                    </span>
+                </div>
+            </aura:if>
+        </div>
+    </span>
+</aura:component>

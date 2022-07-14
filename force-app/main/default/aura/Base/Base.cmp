@@ -1,0 +1,37 @@
+<!--
+	Description  : Base Lightning Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component extensible="true" description="Base">
+
+    <!-- own attribute -->
+    <aura:attribute name="messages" type="String[]" description="One or more message to show to the users, is automatically shown when a communication error occurs."/>
+
+    <aura:attribute name="messageTitle" type="String" default="{!$Label.c.Error_has_occurred}" description="The title above the messages, like all attributes here, can be overwriten in the child: .cmp, Helper.js or Controller.js"/>
+    <aura:attribute name="messageLevel" type="String" default="error" description="The highest level in the messages. Options: error, warning, success or info"/>
+    <aura:attribute name="messageIconName" type="String" default="utility:warning" description="The icon show in the notification, as passed to the lightning:icon component inside the notification."/>
+    <aura:attribute name="messageHideComponent" type="Boolean" default="true" description="If this Boolean is true, it will hide the child component on a message."/>
+
+    <aura:attribute name="packagePrefix" type="String" default="" description="The package prefix, calculated by the init handler."/>
+    <aura:attribute name="labelPrefix" type="String" default="c" description="The label prefix, calculated from the package prefix."/>
+    <aura:attribute name="componentStack" type="Object[]" description="The stack of components from the inheritance hierarchy" />
+
+    <aura:attribute name="preloadedLabel" type="String"  description="Attribute to preload custom labels ,used only internal but can't be set to private" />
+
+    <!-- handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:if isTrue="{!v.messages.length > 0}">
+        <div class="{!'slds-box slds-has-'+v.messageLevel}">
+            <div class="slds-grid slds-grid--align-center">
+                <div class="slds-grid">
+                    <c:ScopedNotification theme="alert" messages="{!v.messages}" messageTitle="{!v.messageTitle}" severity="{!v.messageLevel}" messageIconName = "{!v.messageIconName}" />
+                </div>
+            </div>
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.messages.length == 0 || !v.messageHideComponent}">
+        {!v.body}
+    </aura:if>
+</aura:component>

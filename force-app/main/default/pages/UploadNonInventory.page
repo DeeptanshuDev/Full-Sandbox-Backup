@@ -1,0 +1,24 @@
+<apex:page standardController="Opportunity" showHeader="false" sidebar="false" extensions="AttachmentVf">
+    <apex:includeLightning />
+    <div id="lightning" />
+    
+    <script>
+    	var theme = '{!$User.UITheme}';
+        $Lightning.use(
+            "c:UploadNonInventoryApp", 
+            function() {
+                $Lightning.createComponent(
+                    "c:UploadNonInventoryComponent",
+                    {
+                        recordId : "{!JSENCODE(oppIdPage)}",
+                        isUIThemeClassic : {!$User.UITheme != 'Theme4d'}
+                    },
+                    "lightning",
+                    function(cmp) {
+                        
+                    }
+                );
+            }
+        );
+    </script>
+</apex:page>

@@ -1,0 +1,28 @@
+.THIS.slds-is-sortable .slds-th__action:hover .slds-is-sortable__icon {
+    display: inline-block;
+    fill: token(colorScienceBlue);
+}
+
+.THIS.setMinWidth {
+    min-width:150px;
+}
+
+.THIS .slds-th__action:hover, .THIS .slds-th__action:focus {
+    background: #fafaf9;
+}
+
+.THIS.slds-is-sortable .slds-icon_container {
+    min-width: 16px;
+}
+
+.THIS .max_width_header {
+    max-width : 120px !important;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.THIS .max_mobile_width_header {
+    max-width : 100px !important;
+    word-break: break-word;
+    white-space: normal;
+}

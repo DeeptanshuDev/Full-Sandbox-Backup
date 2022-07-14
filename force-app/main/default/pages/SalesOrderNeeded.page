@@ -1,0 +1,108 @@
+<apex:page standardController="Opportunity" extensions="AttachmentController2">
+
+<script type='text/javascript'>
+var maxStringSize = 6000000;
+var attachmentList;
+var j;
+var len =0;
+function uploadFiles()
+{
+    input = document.getElementById('fileinput');
+    attachmentList = input.files;
+    if(j == undefined) 
+    j = 0;   
+    var file;
+    len = attachmentList.length;
+    if(j < attachmentList.length)
+    {
+        file = attachmentList[j];
+     var name = file.name;
+        var reader = new FileReader();  
+        reader.onload = function(e) {  
+         
+         var attachmentbodybase64 = reader.result.split('base64,')[1];
+            console.log(attachmentbodybase64.length);
+            if(attachmentbodybase64.length > maxStringSize )
+            alert("File size is too large to handle");
+            else
+            {
+                j++;
+                saveFileAF(attachmentbodybase64, name, len);
+            }
+        }
+         reader.readAsDataURL(file);
+        
+    }
+    else
+    {
+        console.log('this is end');
+        
+        /*var url = window.location.origin + '/'+"{!$CurrentPage.parameters.Id}";
+        console.log(url);
+        window.location.href = url;*/
+    }
+    
+ }
+</script>
+
+
+<apex:form >
+    <apex:pageBlock title="SO Needed">
+        <apex:panelGrid columns="2" id="theGrid">
+        <apex:pageBlock title="Comment Section:">
+             <apex:inputText id="oppName" value="{!soDescription}" style="width: 500px; height: 50px"/>
+        </apex:pageBlock>   
+        <apex:pageBlock title="Promo Code">
+             <apex:inputText id="oppName2" value="{!soPromoCode}" style="width: 500px; height: 50px"/>
+        </apex:pageBlock>
+        </apex:panelGrid>
+        <apex:pageBlock title="Upload Images:"> 
+          <!--<input type= "file" Id= "fileinput"  multiple="multiple" style="width: 300px; height: 100px; display:hidden"/>
+            <apex:commandButton onclick="uploadFiles(); return false;" value="Upload"/>
+            <apex:actionFunction name="saveFileAF" 
+                 action="{!saveFiles}" oncomplete="uploadFiles()" rerender="form"  status="uploading">
+                <apex:param name="base64File" value="" assignTo="{!base64}"/>
+                <apex:param name="fileName" value="" assignTo="{!fileName}"/>
+            </apex:actionFunction>
+            
+            <apex:actionStatus id="uploading" >
+                <apex:facet name="start" >
+                    <img src="/img/loading.gif" />                    
+                </apex:facet>
+            </apex:actionStatus> -->
+            <input type= "file" Id= "fileinput"  multiple="multiple" />
+            <apex:commandButton onclick="uploadFiles(); return false;" value="Upload"/>
+            <apex:actionFunction name="saveFileAF" 
+                 action="{!saveFiles}" oncomplete="uploadFiles()" rerender="form"  status="uploading">
+                <apex:param name="base64File" value="" assignTo="{!base64}"/>
+                <apex:param name="fileName" value="" assignTo="{!fileName}"/>
+                <apex:param name="filelen" value="" assignTo="{!fileLen}"/>
+            </apex:actionFunction>
+            <apex:actionStatus id="uploading" >
+                <apex:facet name="start" >
+                    <img src="/img/loading.gif" />                    
+                </apex:facet>
+            </apex:actionStatus> 
+             
+        </apex:pageBlock> 
+        
+        <apex:pageBlockButtons location="bottom" style="font-size: 15px; ">
+            <apex:commandButton action="{!saveMethod}" value="save" />
+            <!--<apex:actionFunction name="filelength" 
+                                 action="{!save}" oncomplete="saveFileAF" rerender="form"  status="uploading">
+                <apex:param name="filelen" value="" assignTo="{!fileLen}"/>
+                
+            </apex:actionFunction>-->
+            <apex:commandButton action="{!cancel}" value="Cancel"/>
+            
+            <!--<apex:actionRegion >
+                <apex:actionFunction action="{!setParams}" name="setParams" oncomplete="uploadFiles()" rerender="form">
+                <apex:param name="param1" assignTo="{!param1}" value="" />
+                <apex:param name="param2" assignTo="{!param2}" value="" />
+                </apex:actionFunction>
+                
+                </apex:actionRegion>-->
+        </apex:pageBlockButtons>
+    </apex:pageBlock>
+</apex:form>
+ </apex:page>

@@ -1,0 +1,119 @@
+<!--
+*  Purpose          :   Page to have the logic associated with the Add Athlete To Team
+*
+*  Create By        :   
+*  
+*  Revision Log     :   v1.0 -  Created - 6/15/2020
+* 
+-->
+<apex:page controller="FF_Add_Athlete_To_Team" lightningStylesheets="true" 
+           sidebar="false" standardStylesheets="false" docType="html-5.0">
+    
+    
+    <head>
+        <apex:slds />
+        <style>
+            .sectionheadercustom 
+            {
+            display: flex;
+            }
+        </style>
+    </head>
+    <script type="text/javascript">
+    function selectAllCheckboxes(obj,receivedInputID){
+        var inputCheckBox = document.getElementsByTagName("input");
+        // alert('inputCheckBox.length = '  +  inputCheckBox.length);
+        
+        for(var i=0; i<inputCheckBox.length; i++)
+        {
+            if(inputCheckBox[i].id.indexOf(receivedInputID)!=-1){                                     
+                inputCheckBox[i].checked = obj.checked;
+            }
+        }
+    }
+    </script>
+    
+    <div class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div align="center" draggable="false" style=" font-size: 30px;">
+            <span class="slds-icon_container slds-icon-standard-contact" >
+                <svg aria-hidden="true" class="slds-icon">
+                    <use 
+                         xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#contact">
+                    </use>
+                </svg>
+               <!-- <span class="slds-assistive-text">Contact</span> -->
+            </span>
+            <br/>
+            Add Athlete To Team
+        </div>
+        <br/>
+    </div>
+    
+    <apex:form id="pb">
+        
+       <apex:pageMessages id="showmsg"></apex:pageMessages>
+        
+        <apex:outputText rendered="{!isConstructorError}">
+            <div align="center">
+                <apex:commandButton value="Back" action="{!cancel}" />
+            </div>
+        </apex:outputText>
+        
+        <apex:outputPanel rendered="{! !isConstructorError}" >
+            <apex:pageBlock >
+                <br/>
+                <div style="text-align: center">
+                    <apex:commandButton style="background-color: green; color:white; background-image:none" value="Save" action="{!save}"  /> <!-- oncomplete="save()" -->
+                    <apex:commandButton value="Cancel" action="{!cancel}" />
+                </div>
+                <br/>
+                
+                <apex:pageBlockSection title="Athlete Details" columns="1" >
+                     <apex:outputPanel rendered="{!contactData.size == 0 }">
+                        <div align="center">
+                            <h3><b>No records to display.</b></h3>
+                        </div>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!contactData.size > 0 }">
+                        <apex:pageBlockTable value="{!contactData}" var="wrp" >
+                            
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:inputCheckbox onclick="selectAllCheckboxes(this,'inputCusId')"/>
+                                </apex:facet>
+                                <apex:inputCheckbox value="{!wrp.checked}" id="inputCusId"/>
+                            </apex:column>
+                            <apex:column headerValue="First Name">
+                                <apex:outputField value="{!wrp.con.FirstName}" />
+                            </apex:column>
+                            <apex:column headerValue="Last Name">
+                                <apex:outputField value="{!wrp.con.LastName}"/>
+                            </apex:column>
+                            <apex:column headerValue="Gender">
+                                <apex:outputField value="{!wrp.con.gender__c}"/>
+                            </apex:column>
+                            <apex:column headerValue="Email">
+                                <apex:outputField value="{!wrp.con.Email}"/>
+                            </apex:column>
+                            <apex:column headerValue="Mobile Phone">
+                                <apex:outputField value="{!wrp.con.MobilePhone}"/>
+                            </apex:column>
+                            <apex:column headerValue="Fit Freedom Type">
+                                <apex:outputField value="{!wrp.con.fit_Freedom_Type__c}"/>
+                            </apex:column>
+                        </apex:pageBlockTable> 
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
+                
+                
+                <br/>
+                <div style="text-align: center">
+                    <apex:commandButton style="background-color: green; color:white; background-image:none" value="Save" action="{!save}"  /> <!-- oncomplete="save()" -->
+                    <apex:commandButton value="Cancel" action="{!cancel}" />
+                </div>
+                <br/>
+            </apex:pageBlock>      
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

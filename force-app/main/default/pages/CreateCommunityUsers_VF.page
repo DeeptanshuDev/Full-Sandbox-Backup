@@ -1,0 +1,9 @@
+<!--We have create community user listview button on contact, when we click on that button then 
+it will run batch to create community user and navigate to apex job execution page. If batch 
+execution fails for some users then error message will auto populate on Error Message field on 
+contact.
+-->
+<apex:page standardController="Contact" recordSetVar="contacts" extensions="CommunityUserCreateController" 
+           action="{!callBatchToCreateCommunityUser}" lightningStylesheets="true">
+    <apex:pageMessages ></apex:pageMessages> 
+</apex:page>

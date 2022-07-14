@@ -1,0 +1,101 @@
+<!--
+ Description  : Object Detail Page Lightning Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" extends="c:Section" controller="StageDetail">
+    
+    <!--Attribute to hold the sections and page layout related details with it-->
+    <aura:attribute name="fieldSetsDetails" type="List" access="public" description="List of objects to hold the detail page related details" default="[]"/>
+    
+    <!--Attributes related to record header-->
+    <aura:attribute name="showHeader" type="Boolean" access="public" description="Boolean to have record header related details" default="false"/>
+    <aura:attribute name="title" type="String" access="public" description="Title of record header" default=""/>
+    <aura:attribute name="label" type="String" access="public" description="label of record header" default="Opportunity"/>
+    <aura:attribute name="imageSize" type="String" access="public" description="Record Header Image Size" default="medium"/>
+    <aura:attribute name="iconName" type="String" access="public" description="Record Header Icon Name" default="standard:opportunity"/>
+    <aura:attribute name="showRecordTypeSelection" type="Boolean" access="public" description="To determine whether we need to display record header" default="false"/>
+    <aura:attribute name="showSpinnerOverDetailsPage" type="Boolean" access="public" description="Boolean to have record header related details" default="true"/>
+    
+    <!--Private attributes-->
+    <aura:attribute name="initDone" type="Boolean" access="private" description="Boolean to check for init state" default="false"/>
+    <aura:attribute name="noOfFieldSets" type="Integer" access="private" description="Total number of field sets" default="0"/>
+    <aura:attribute name="selectedStep" type="String" default="2"/>
+    
+    <!--Event Handlers-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <!--Event Handlers-->
+    <aura:handler name="genericComponentEvent" event="c:genericComponentEvent" action="{!c.onGenericComponentEvent}" />
+
+
+    <!--Component Markup-->
+    <aura:if isTrue="{!v.initDone}">
+
+        <lightning:progressIndicator currentStep="{!v.selectedStep}" type="base">
+            <lightning:progressStep label="Open" value="1"/>
+            <lightning:progressStep label="Closed - Balance Due" value="2"/>
+            <lightning:progressStep label="Closed - Paid" value="3"/>
+            <lightning:progressStep label="Closed Lost" value="4"/>
+            <lightning:progressStep label="Grey Out" value="5"/>
+        </lightning:progressIndicator>
+        
+        
+        
+        <!--Record Header-->
+        <c:RecordDetailHeader showHeader="{!v.showHeader}" 
+                              title="{!v.title}" 
+                              label="{!v.label}" 
+                              imageSize="{!v.imageSize}"
+                              iconName="{!v.iconName}" 
+                              className="{!(v.showRecordTypeSelection ? 'slds-m-bottom_large' : '')}"/>
+
+                              
+        
+            
+                
+       <!-- <div class="slds-clearfix">
+            <div class="slds-float_right">
+                <lightning:button label="Edit" class="slds-m-left_x-small" onclick="{! c.handleEdit }"  id="{!v.Id}"></lightning:button>
+                <button class="slds-button slds-button_brand" onclick="{!c.handleEdit}" id="{!v.recordId}">Edit</button>
+                
+                         
+            </div>
+            
+        </div>-->
+        
+        
+        <!--Margins-->
+        <div class="slds-m-bottom_medium"></div>
+        
+        
+        <!--Page Layout Sections Markup-->
+        <aura:iteration items="{!v.fieldSetsDetails}" var="fieldset">
+            rec id {!fieldset.selectedRecordId}
+            <c:FieldSet aura:id="fieldset"
+                        sectionHeader="{!fieldset.sectionHeader}"
+                        sectionDescription="{!fieldset.sectionDescription}"
+                        sectionOpen="{!fieldset.sectionOpen}"
+                        fieldsetName="{!fieldset.fieldsetName}"
+                        fieldList="{!fieldset.detailFields}"
+                        fieldsToBlock="{!fieldset.fieldsToBlock}"
+                        sObjectName="{!fieldset.sObjectName}"
+                        recordId="{!fieldset.selectedRecordId}"
+                        recordTypeId="{!fieldset.selectedRecordRecordTypeId}"
+                        state="{!fieldset.readOnly ? 'Read' : 'Edit'}"
+                        isEmbedded="{!fieldset.isEmbedded}"
+                        buttonsVisible="{!fieldset.buttonsVisible}"
+                        overruleSpinner="true"
+                        showToast="{!fieldset.showToast}"
+                        columns="{!fieldset.columns}"
+                        showSpinner="{!v.showSpinner}"
+                        editmodeAllowed="false"
+                        /> 
+                        
+        </aura:iteration>
+        
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showSpinnerOverDetailsPage}">
+        <lightning:spinner size="medium" alternativeText="{!$Label.c.Loading}"/>
+    </aura:if>
+</aura:component>

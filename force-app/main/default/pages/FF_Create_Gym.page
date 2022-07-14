@@ -1,0 +1,343 @@
+<!--
+*  Purpose          :   Page to have the logic associated with the create FF User button on account detail page
+*
+*  Create By        :   Abhinav Sharma - 5/18/2020 - FF3.0-SFDC Integration
+*  
+*  Revision Log     :   v1.0 -  Created - 5/18/2020
+* 
+-->
+<apex:page controller="FF_CreateGymController" tabStyle="Account" lightningStylesheets="true" 
+           sidebar="false" standardStylesheets="false" docType="html-5.0">
+    
+  
+    <head>
+        <apex:slds />
+        <style>
+            .sectionheadercustom 
+            {
+                display: flex;
+            }
+        </style>
+    </head>
+   
+    <apex:form id="pb">
+        <div class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            
+            <apex:outputPanel rendered="{!if(errorMessage == '' , true ,false)}"> 
+                
+                 <apex:outputPanel rendered="{!if(gymScreen, true ,false)}">
+                    <br/>
+                    <br/>
+                    <div align="center" draggable="false" style=" font-size: 30px;">
+                        <span class="slds-icon_container slds-icon-standard-account" >
+                            <svg aria-hidden="true" class="slds-icon">
+                                <use 
+                                     xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#account">
+                                </use>
+                            </svg>
+                            <span class="slds-assistive-text">Account</span>
+                        </span>
+                        <br/>
+                        Account Details
+                    </div>
+                    <br/>
+                    
+                    <apex:pageBlock id="GymScreenId" mode="edit">
+                        <apex:pageMessages id="showmsg"></apex:pageMessages>
+                        <br/>
+                        <br/>
+                        <div style="text-align: center">
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!step1}" value="Next" status="loadStatus" rerender="showmsg,pb,GymScreenId,gymOwnerScreenId,TeamScreenId,ReviewScreenId"/>
+                            <apex:commandButton action="{!navigateToAccountDetailPage}" value="Back" immediate="true"/>  
+                        </div>
+                        <br/>
+                        <div >
+                            
+                        </div>
+                        <div style="margin-left:30%;">
+                            <apex:pageBlockSection title="Account details" columns="1" showHeader="false">
+                                <apex:inputField id="accountName" value="{!account.Name}" />
+                                <apex:inputField id="accountGymType" value="{!account.Type}" />
+                                <apex:inputField id="accountShippingCity" label="Location" value="{!account.ShippingCity}" />
+                            </apex:pageBlockSection>
+                        </div>
+                        <br/>
+                        <div style="text-align: center">
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!step1}" value="Next" status="loadStatus" rerender="showmsg,pb,GymScreenId,gymOwnerScreenId,TeamScreenId,ReviewScreenId"/>
+                            <apex:commandButton action="{!navigateToAccountDetailPage}" value="Back" immediate="true"/>  
+                        </div>
+                        <br/>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!if(gymOwnerScreen, true ,false)}">
+                    <br/>
+                    <br/>
+                    <div align="center" draggable="false" style=" font-size: 30px;">
+                        <span class="slds-icon_container slds-icon-standard-contact" >
+                            <svg aria-hidden="true" class="slds-icon">
+                                <use 
+                                     xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#contact">
+                                </use>
+                            </svg>
+                            <span class="slds-assistive-text">Contact</span>
+                        </span>
+                        <br/>
+                        FF User Details
+                    </div>
+                    <br/>
+                    <div align="center" draggable="false" style="font-size: 18px;font-weight:bold;">
+                        <apex:commandLink action="{!useDefaultGymOwner}" value="Use Preferred Contact" id="theCommandLink" immediate="true" reRender="contactInfo" />
+                    </div>
+                    
+                    <apex:pageBlock id="GymOwnerScreenId" mode="edit">
+                        <apex:pageMessages id="showmsg"></apex:pageMessages>
+                        <br/>
+                        <br/>
+                        <div style="text-align: center">
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!step2}" value="Next" status="loadStatus" rerender="showmsg,pb,gymOwnerScreenId,TeamScreenId,ReviewScreenId" />
+                            <apex:commandButton action="{!goToGym}" value="Back" immediate="true"/>
+                            
+                        </div>
+                        <br/>
+                        <div style="margin-left:30%;">
+                            <apex:pageBlockSection title="Owner Information" id="contactInfo" columns="1" showHeader="false">
+                                <apex:inputField value="{!contact.FirstName}"/>
+                                <apex:inputField value="{!contact.LastName}" required="false" />
+                                <apex:inputField value="{!contact.Email}" />
+                                <apex:inputField value="{!contact.MobilePhone}" />
+                            </apex:pageBlockSection>
+                        </div>
+                        <br/>
+                        <div style="text-align: center">
+                            
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!step2}" value="Next" status="loadStatus" rerender="showmsg,pb,gymOwnerScreenId,TeamScreenId,ReviewScreenId" />
+                            <apex:commandButton action="{!goToGym}" value="Back" immediate="true"/>
+                            
+                        </div>
+                        <br/>
+                        <div>
+                            <apex:pageBlockTable value="{!contacts}" var="contact">
+                                <apex:column width="10px">
+                                    <apex:outputPanel rendered="{!if(selectedContactId == contact.Id , true ,false)}">
+                                        <input type="radio" name="group1" checked="checked" style="margin:1px 5px 5px 3px;"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!if(selectedContactId == contact.Id , false ,true)}">
+                                        <input type="radio" name="group1" style="margin:1px 5px 5px 3px;"/>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:actionSupport event="onclick" action="{!selectedContact}" reRender="contactInfo">
+                                        <apex:param assignTo="{!selectedContactId}" name="contactId" value=" {!contact.Id}"/>
+                                    </apex:actionSupport>
+                                </apex:column>
+                                
+                                <apex:column headerValue="First Name">
+                                    <apex:outputField value="{!contact.FirstName}" style="padding-left: 3px;"/>
+                                </apex:column>
+                                <apex:column headerValue="Last Name">
+                                    <apex:outputField value="{!contact.LastName}"/>
+                                </apex:column>
+                                <apex:column headerValue="Email">
+                                    <apex:outputField value="{!contact.Email}"/>
+                                </apex:column>
+                                <apex:column headerValue="Mobile Phone">
+                                    <apex:outputField value="{!contact.MobilePhone}"/>
+                                </apex:column>
+                                <apex:column headerValue="Contact Type">
+                                    <apex:outputField value="{!contact.Contact_Type__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Fit Freedom Type">
+                                    <apex:outputField value="{!contact.fit_Freedom_Type__c}"/>
+                                </apex:column>
+                            </apex:pageBlockTable> 
+                            <apex:outputPanel rendered="{!contacts.size == 0}">
+                                <h3><b style="margin-left: 45%;">No records to display.</b></h3>
+                            </apex:outputPanel>
+                        </div>
+                        <br/>
+                    </apex:pageBlock>           
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!if(teamScreen, true ,false)}">
+                    <br/>
+                    <br/>
+                    <div align="center" draggable="false" style=" font-size: 30px;">
+                        <span class="slds-icon_container slds-icon-standard-opportunity" >
+                            <svg aria-hidden="true" class="slds-icon">
+                                <use 
+                                     xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#opportunity">
+                                </use>
+                            </svg>
+                            <span class="slds-assistive-text">Rosters</span>
+                        </span>
+                        <br/>
+                        Rosters
+                    </div>
+                    <br/>
+                    
+                    <apex:pageBlock id="TeamScreenId" mode="edit">
+                        <apex:pageMessages id="showmsg"></apex:pageMessages>
+                        <br/>
+                        <div style="text-align: center">
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!step3}" value="Review and Confirm" status="loadStatus" rerender="pb,gymOwnerScreenId,TeamScreenId,ReviewScreenId" />
+                            <apex:commandButton action="{!goToGymOwner}" value="Back" immediate="true"/>
+                        </div>
+                        <br/>
+                        <div style="margin-left:33%;">
+                            <apex:pageBlockSection title="Roster Information" id="rosterInfo" columns="1" showHeader="false">
+                                <apex:inputField value="{!roster.Name}" required="false"/>                         
+                            </apex:pageBlockSection>
+                            
+                        </div>
+                        <br/>
+                        <div style="text-align: center">
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!step3}" value="Review and Confirm" status="loadStatus" rerender="pb,gymOwnerScreenId,TeamScreenId,ReviewScreenId" />
+                            <apex:commandButton action="{!goToGymOwner}" value="Back" immediate="true"/>
+                        </div>
+                        <br/>
+                        <div>
+                            <apex:pageBlockTable value="{!rosters}" var="roster">
+                                <apex:column width="10px">
+                                    <apex:outputPanel rendered="{!if(selectedRosterId == roster.Id , true ,false)}">
+                                        <input type="radio" name="group1" checked="checked" style="margin:1px 5px 5px 3px;"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!if(selectedRosterId == roster.Id , false ,true)}">
+                                        <input type="radio" name="group1" style="margin:1px 5px 5px 3px;"/>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:actionSupport event="onclick" action="{!selectedRoster}" reRender="rosterInfo">
+                                        <apex:param assignTo="{!selectedRosterId}" name="rosterId" value=" {!roster.Id}"/>
+                                    </apex:actionSupport>
+                                </apex:column>
+                               
+                                <apex:column headerValue="Roster Name">
+                                    <apex:outputField value="{!roster.Name}"/>
+                                </apex:column>
+                                <apex:column headerValue="Account Name">
+                                    <apex:outputField value="{!roster.Account__c }"/>
+                                </apex:column>
+                                <apex:column headerValue="FF Create Rosters Successful">
+                                    <apex:outputField value="{!roster.FF_Create_Rosters_Successful__c}"/>
+                                </apex:column>
+                            </apex:pageBlockTable>
+                            <apex:outputPanel rendered="{!rosters.size == 0}">
+                                <h3><b style="margin-left: 45%;">No records to display.</b></h3>
+                            </apex:outputPanel>
+                        </div>
+                        <br/>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!if(reviewScreen, true ,false)}">
+                    
+                    <div align="center" draggable="false" style=" font-size: 30px;">
+                        Review &amp; Create FF User
+                    </div>
+                    <br/>
+                    
+                    <apex:pageBlock id="ReviewScreenId">
+                        <apex:pageMessages id="showmsg"></apex:pageMessages>
+                        <br/>
+                        <div style="text-align: center">
+                            
+                            <apex:commandButton style="margin-right: 10px" action="{!goToTeam}" value="Back"/>  
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!save}" value="Create FF User" status="loadStatus"/>
+                        </div>
+                        <br/>
+                        <div>
+                            <apex:pageBlockSection title="Account Details" columns="1">
+                                <apex:outputField id="accName" value="{!account.Name}"/>
+                                <apex:outputField id="accType" value="{!account.Type}"/>
+                                <apex:outputField id="accShippingCity" label="Location" value="{!account.ShippingCity}" />                                                
+                            </apex:pageBlockSection>
+                        </div>
+                        <br/>
+                        <div>
+                            <apex:pageBlockSection title="FF User Details" columns="1">
+                                <apex:outputField id="contactFN" value="{!contact.FirstName}"/>
+                                <apex:outputField id="contactLN" value="{!contact.LastName}"/>
+                                <apex:outputField id="contactEmail" value="{!contact.Email}" />
+                                <apex:outputField id="contactPhone" value="{!contact.MobilePhone}" />
+                            </apex:pageBlockSection>
+                        </div>
+                        <br/>
+                        <div>
+                            <apex:pageBlockSection title="Roster Details" columns="1">
+                                <apex:outputField value="{!roster.Name}"/>
+                            </apex:pageBlockSection>
+                        </div>
+                        <br/>
+                        <div style="text-align: center">
+                            <apex:commandButton style="margin-right: 10px" action="{!goToTeam}" value="Back"/>  
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!save}" value="Create FF User" status="loadStatus"/>
+                        </div>
+                        <br/>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!if(successScreen, true ,false)}">
+                    <apex:pageMessages id="showmsg"></apex:pageMessages>
+                    
+                    <div align="center" draggable="false" >
+                        <apex:commandButton action="{!navigateToAccountDetailPage}" value="Back to Account"/>  
+                    </div>
+                </apex:outputPanel>
+                
+                <div align="center" draggable="false" >
+                    <!-- Show Spinner -->
+                    <apex:actionStatus onstart="startLoading();" onstop="stopLoading();" id="loadStatus" />
+                    <style>
+                        .overlay {
+                            display: none;
+                            height: 100%;
+                            left: 0;
+                            position: fixed;
+                            top: 0;
+                            opacity: 0.3;
+                            -moz-opacity: 0.3;
+                            width: 100%;
+                            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+                            filter: alpha(opacity=30);
+                            background: #000;
+                            -khtml-opacity: 0.3;
+                            z-index: 1000;
+                        }
+                        
+                        .loader {
+                            background: url('/img/loading32.gif') scroll no-repeat 0 0;
+                            width: 32px;
+                            height: 32px;
+                            position: absolute;
+                            left: 50%;
+                        }
+                    </style>
+                    
+                    <div id="load_scrl" class="loadingBox loader" style="display:none"> </div>
+                    <div class="loadingBox overlay"> </div>
+                    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+                    
+                    <script type="text/javascript">
+                        function startLoading() 
+                        {
+                            $('#load_scrl').css('top', $(document).scrollTop() + 200);
+                            $('.loadingBox').show();
+                        }
+                    
+                        function stopLoading() 
+                        {
+                            $('.loadingBox').hide();
+                        }
+                    </script>
+                </div>
+                
+            </apex:outputPanel>    
+            <apex:outputPanel rendered="{!if(errorMessage != '' , true ,false)}"> 
+                <apex:pageMessages id="showmsg1"></apex:pageMessages>
+                
+                <div align="center" draggable="false" >
+                    <apex:commandButton action="{!navigateToAccountDetailPage}" value="Back to Account"/>  
+                </div>
+            </apex:outputPanel>
+        </div>
+    </apex:form>
+</apex:page>

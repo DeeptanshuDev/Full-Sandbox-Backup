@@ -1,0 +1,20 @@
+.roundedBorders 
+{
+    border-radius: token(borderRadiusMedium);
+}
+
+.allowClosing_true
+{
+    cursor:pointer;
+}
+
+.wrapMessageText
+{
+    word-break: break-word;
+}
+
+.iconAlignment{
+    float: right;
+    text-align: right;
+    flex: 1;
+}

@@ -1,0 +1,42 @@
+<!-- VF Page to create sales order summary record from account page on button click -->
+<!-- Created By :- Chirag Soni - 04/12/2020 -->
+<!-- Version :- V_1.0 - Created -- CR- 00000120 -->
+
+<apex:page showHeader="true" sidebar="true" standardController="Account"
+           extensions="SoSummaryCtrl" lightningStylesheets="true" docType="html-5.0">
+    
+    <apex:form id="frm">
+        <apex:pageMessages escape="false" id="msgId"/>
+        <c:Overlay />
+        <apex:sectionHeader title="Create Sales Order Summary"/>
+        <apex:pageBlock title="Sales Order Details">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Save" action="{!saveSoSummary}"/>
+                <apex:commandButton value="Cancel" action="{!URLFOR($Action.Account.View, Account.Id)}" immediate="true"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:inputField value="{!soSummary.Summary_Type__c}"/>
+                <apex:inputField value="{!soSummary.Summary_Date__c }"/>
+                <apex:inputField value="{!soSummary.Customer_PO_Number__c}"/>
+                <apex:inputField value="{!soSummary.PaymentTerms__c}"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Sales Orders" columns="1">
+                <apex:facet name="body">
+                    <apex:pageBlockTable value="{!salesOrderList}" var="sOrder" rendered="{!salesOrderList.size > 0}">
+                        <apex:column headerValue="Select" style="text-align: center;">
+                         <apex:inputCheckbox value="{!sOrder.Selected}" />
+                        </apex:column>
+                        <apex:column value="{!sOrder.item.Sales_Order_Number_Text__c}" />
+                        <apex:column value="{!sOrder.item.SCMC__Sales_Order_Date__c}" />
+                        <apex:column value="{!sOrder.item.Opportunity__c}" />
+                        <apex:column value="{!sOrder.item.Opportunity_Number__c}" />
+                        <apex:column value="{!sOrder.item.SCMC__Status__c}" />
+                        <apex:column value="{!sOrder.item.Total_Percentage_Paid__c}" />
+                        <apex:column value="{!sOrder.item.Remaining_Payment_Balance__c}" />
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

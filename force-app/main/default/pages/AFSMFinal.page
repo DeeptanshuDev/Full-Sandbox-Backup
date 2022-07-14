@@ -1,0 +1,20 @@
+<apex:page standardcontroller="Opportunity" extensions="AFSMFinalController" action="{!validateAFSFileOnOpportunity}" sideBar="false" >
+	<apex:form >
+
+        <apex:pageblock >
+    
+          <apex:pageMessages id="showmsg"></apex:pageMessages>
+        
+        </apex:pageblock>
+        
+        <apex:outputPanel layout="block" html-align="center">
+        
+            <apex:commandButton action="{!goBack}" value="Go Back" id="theButton"/>    
+        
+        </apex:outputPanel>
+                
+ 	</apex:form>    
+    
+    
+   
+</apex:page>

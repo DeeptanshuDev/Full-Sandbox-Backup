@@ -1,0 +1,43 @@
+.THIS {
+}
+
+.THIS .slds-button--icon-more .slds-button__icon--xx-small svg {
+    height: .5rem;
+    width: .5rem;
+}
+
+.THIS.full-width {
+    width: 100%;
+}
+
+.THIS.full-width > .slds-button {
+    width: 100%;
+}
+
+.THIS.full-width .slds-dropdown {
+    width: 100%;
+    max-width: 100%;
+}
+
+.THIS.small-width.slds-dropdown-trigger > button.slds-truncate > .label {
+    min-width: 128px;
+    max-width: 128px;
+    display: block;
+    float: left;
+}
+
+.THIS .filter-selected-icon svg {
+    fill: token(colorTextBrand);
+}
+
+.THIS .text-color-brand {
+    color: token(colorTextBrand);
+}
+
+.THIS .slds-button[disabled] svg {
+    fill: currentColor;
+}
+
+.THIS .invisible {
+    visibility: hidden !important;
+}

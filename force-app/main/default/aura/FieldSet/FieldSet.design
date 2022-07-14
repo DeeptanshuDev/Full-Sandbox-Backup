@@ -1,0 +1,8 @@
+<design:component label="Fieldset">
+    <design:attribute name="sectionHeader" label="Section header" description="The title of the section header, clear to hide the section header." default="fieldSetHeader"/>
+    <design:attribute name="sectionOpen" label="Section open" description="How the section is shown on default" default="true"/>
+    <design:attribute name="fieldsetName" label="Fieldset name" description="Name of the fieldset to show" dataSource="apex://FieldsetPickList"/>
+    <design:attribute name="readOnly" label="Read only" description="Disallow editing of this fieldset" default="false"/>
+    <design:attribute name="recordDetailStyle" label="Embedded Style" description="Changes the style if the Fieldset is inside a Tab or another component" default="false"/>
+	<design:attribute name="columns" label="Columns" description="Column size on layout" default="2" dataSource="1,2,3"/>
+</design:component>

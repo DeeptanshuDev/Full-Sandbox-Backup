@@ -1,0 +1,4 @@
+<apex:page standardController="Fit_Kit_Request__c" extensions="ffirule.IntegrationRuleEngine" 
+           action="{!convert}" lightningStylesheets="true">
+    <ffirule:IntegrationRule engine="{!engine}"/>
+</apex:page>

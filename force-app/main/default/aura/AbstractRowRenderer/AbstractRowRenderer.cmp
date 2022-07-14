@@ -1,0 +1,47 @@
+<!--
+	Description  : Abstract Row Renderer Component
+	Created By   : Abhinav Sharma
+-->
+<aura:component description="The base object for single row in one of the data grid classes (table, tiles, etc)" extensible="true">
+
+    <!--Static Resource-->
+    <ltng:require scripts="{!$Resource.Baseutility}"/>
+    
+    <!--Public Attributes-->
+    <aura:attribute name="columns" type="Object" access="public" required="true" description="The columns data"/>
+
+    <aura:attribute name="rows" type="Object" access="public"  description="Scope of object rows from current page"/>
+    <aura:attribute name="row" type="Object" access="public" required="true" description="The row of data"/>
+    <aura:attribute name="rowNumber" type="Integer" access="public" required="true" description="denotes row number"/>
+
+    <aura:attribute name="actionComponents" type="List" description="A list of all components, by name which have to be rendered as actions" default="[]" access="public"/>
+	<aura:attribute name="isHideInfoIcon" type="Boolean" description="Boolean to decide whether info column will be displayed or not" default="false" access="public"/>
+    
+    <aura:attribute name="renderedActionComponents" type="List" access="public" default="[]" description="The actions components, created by javascript."/>
+
+    <aura:attribute name="selectable" type="Boolean" access="public" description="Indicate if the row has a select checkbox in the first column" default="false"/>
+    <aura:attribute name="selected" type="Boolean" default="false" access="public" description="Indicate if the row is selected"/>
+
+    <aura:attribute name="cellComponentName" type="String" access="public" required="true" description="The name of the component to create the cells with"/>
+
+    <aura:attribute name="record" type="Object" access="private" description="Record data"/>
+	<aura:attribute name="objectAccess" type="Object" access="public" description="Object to hold the object CRUD access details for the current logged in user"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false" description="Turn the spinner on or off." />
+	<aura:attribute name="generateReferenceLinks" type="Boolean" default="true" access="public" description="attribute will determine if name field needs to be generated as a link. default it will"/>
+    <aura:attribute name="isCommunityUser" type="Boolean" default="false" access="public" description="Is logged in user is a community user"/>
+    <aura:attribute name="navigationType" type="String" description="Navigation type value" access="public"/>
+    <aura:attribute name="mobileShrinkFields" type="Integer" default="0" description="Total number of fields to be shrink to fit mobile devices"  access="public"/>
+    
+    <!-- Register Event -->
+    <aura:registerEvent name="genericComponentEvent" type="c:genericComponentEvent" />
+
+    <!-- Methods -->
+    <aura:method name="setSelectedAction" description="Method sets the data" action="{!c.setSelected}" access="public">
+        <aura:attribute name="selected" type="Boolean" description="Select or deselect the row"/>
+    </aura:method>
+
+    <aura:method name="getDynamicComponents" description="returns the dynamic components" action="{!c.getDynamicComponents}" access="public"/>
+
+    {!v.body}
+
+</aura:component>

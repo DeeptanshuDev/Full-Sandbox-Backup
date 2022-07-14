@@ -1,0 +1,486 @@
+<apex:page standardController="Design_Request__c" extensions="DesignArtPricingCtrl"  sidebar="true" showHeader="false"
+           standardStylesheets="false" lightningStylesheets="true">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" 
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"/>
+    
+    <style type="text/css">
+        .subtitle 
+        {
+        margin-bottom: 0;
+        }
+        
+        .control-row > * {
+        margin-right: 5px;
+        margin-bottom: 10px;
+        vertical-align: baseline;
+        }
+        
+        .item-heading {
+        margin-bottom: 10px;
+        }
+        
+        .item-heading > * {
+        margin-right: 10px;
+        }
+        
+        .item-heading .badge {
+        vertical-align: text-bottom;
+        }
+        
+        .item-image {
+        margin-bottom: 10px;
+        display: block;
+        }
+        
+        .notes-field {
+        width: 400px;
+        height: 100px;
+        }
+        
+        .table.item-table {
+        font-size: 80%;
+        }
+        
+        .item-table-container {
+        width: 100%;
+        overflow-x: auto;
+        }
+        
+        .table.item-table .input-column {
+        min-width: 120px;
+        }
+        
+        .table.item-table input, .table.item-table select {
+        font-size: 100%;
+        }
+        
+        .form-control {
+        padding: .2rem;
+        width: 75px;
+        }
+        
+        select.form-control {
+        height: calc(2.5rem + 2px) !important;
+        width: 125px;
+        }
+        
+        .numeric {
+        text-align: right;
+        }
+        
+    </style>
+    
+    <div class="bootstrap-scope">
+        
+        <apex:form >
+            <apex:actionFunction name="redirectToDesignRound" action="{!redirectToDesignRounds}" rerender=""> 
+                <apex:param name="designRoundId" value="" id="designRoundId"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="redirectToDesignRequest" action="{!redirectToDesignRequests}" rerender="">
+                <apex:param name="designRequestId" value="" id="designRequestId"/>
+            </apex:actionFunction>  
+            <h6 class="text-muted subtitle">Edit Pricing</h6>
+            <h3>{!Design_Request__c.Name}</h3>
+            <apex:outputPanel styleClass="form-group row" layout="block"
+                              rendered="{!Design_Request__c.International_Pricing__c}">
+                <label class="col-sm-2 col-form-label">Exchange Rate:</label>
+                <div class="col-sm-10">
+                    <apex:inputField value="{!Design_Request__c.Opportunity__r.Currency_Exchange_Rate__c}" />
+                </div>
+            </apex:outputPanel>
+            
+            <div style="margin-bottom:10px;">
+                <apex:commandButton value="Save" styleClass="btn btn-primary" style="margin-right:5px;" action="{!save}"
+                                    reRender="designs-wrapper,pageMessages" onComplete="saveComplete();"/>
+                <apex:commandButton value="Cancel" styleClass="btn" onclick="returnToDesignRequest()"
+                                    reRender="designs-wrapper,pageMessages" />
+            </div>
+            <div style="color:#dc3545">
+                <apex:pageMessages id="pageMessages"/>
+            </div>
+            <div class="control-row">
+                <h6 class="d-inline">Version</h6>
+                <apex:selectList styleClass="form-control d-inline-block w-25" value="{!SelectedVersion}" size="1">
+                    <apex:actionSupport event="onchange" action="{!findDesigns}" rerender="designs-wrapper"
+                                        onComplete="versionChanged();"/>
+                    <apex:selectOptions value="{!VersionSelectOptions}" />
+                    
+                </apex:selectList>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label id="small-image-button" class="btn btn-secondary">
+                        <input type="radio" name="size-options" id="small" autocomplete="off"
+                               value="300" /> Small
+                    </label>
+                    <label id="medium-image-button" class="btn btn-secondary active">
+                        <input type="radio" name="size-options" id="medium" autocomplete="off" checked="checked"
+                               value="600" /> Medium
+                    </label>
+                    <label id="large-image-button" class="btn btn-secondary">
+                        <input type="radio" name="size-options" id="large" autocomplete="off"
+                               value="1200"/> Large
+                    </label>
+                </div>
+                
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label id="show-items-button" class="btn btn-secondary active">
+                        <input type="radio" name="items-display-options" autocomplete="off" checked="checked"/>
+                        Show Items
+                    </label>
+                    <label id="hide-items-button" class="btn btn-secondary">
+                        <input type="radio" name="items-display-options" autocomplete="off" />
+                        Hide Items
+                    </label>
+                </div>
+            </div>
+            
+            <apex:outputPanel id="designs-wrapper">
+                <apex:inputHidden id="selectedDesignRoundId" value="{!SelectedDesignRoundId}" />
+                <apex:inputHidden id="saveSuccess" value="{!SaveSuccess}" />
+                <apex:repeat id="designs" value="{!Designs}" var="d">
+                    <apex:outputPanel layout="block" styleClass="rbl-design-wrapper">
+                        <div class="item-heading" style="margin-top:15px;">
+                            <h4 class="d-inline">Option {!d.Option_Number__c}</h4>
+                            <apex:outputLink value="#" styleClass="badge badge-warning" rendered="{!d.Needs_Pricing__c && ! d.Pricing_Complete__c }">Needs Pricing</apex:outputLink>
+                            <apex:outputLink value="#" styleClass="badge badge-success" rendered="{! d.Pricing_Complete__c }">Pricing Complete</apex:outputLink>
+                        </div>
+                        <div >
+                            <img class="item-image" src="/sfc/servlet.shepherd/version/download/{!d.Content_Version_Id__c}"
+                                 width="{!ImageWidthInPixles}px"/>
+                            <h5>Notes</h5>
+                            <apex:inputField styleClass="notes-field" value="{!d.Notes__c}" />
+                        </div>
+                        <div style="display:{!IF(d.Design_Items__r.size == 0 ,'block', 'none')}; margin-top:10px; margin-bottom:10px;">
+                            <h5>Items</h5>
+                            <table class="table item-table">
+                                <tr><td>No Design Items</td></tr>
+                            </table>
+                        </div>
+                        <div class="item-table-container" style="display:{!IF(d.Design_Items__r.size > 0 ,'block', 'none')}; margin-top:10px;">
+                            <h5>Items</h5>
+                            <table class="table item-table">
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Stated Quantity</th>
+                                    <th>Quantity</th>
+                                    <th>Wholesale</th>
+                                    <th>Markup %</th>
+                                    <th>Wholesale Volume</th>
+                                    <th>Early Bird</th>
+                                    <th>Early Bird Volume</th>
+                                    <th>Sponsorship Price</th>
+                                    <th>Sponsorship Type</th>
+                                    <th>Wholesale Special Offer</th>
+                                    <th>Type</th>
+                                    <th>Price</th>
+                                    <th>Shipping</th> 
+                                    <th>International</th>
+                                    <th>Commission</th>
+                                    <th>P commission</th>
+                                    <th>Category</th>
+                                    <th>Product Style</th>
+                                    <th>Collection</th>
+                                    <th class="numeric">MSRP</th>
+                                    <th>Tax</th>
+                                    <th>Crystal Count</th>
+                                    
+                                    
+                                </tr>
+                                <apex:repeat value="{!d.Design_Items__r}" var="di">
+                                    
+                                    <tr>
+                                        <td class="text-nowrap">{!di.Name}</td>
+                                        <td class="input-column">
+                                            <apex:outputPanel rendered="{!di.Custom_Item__c != null}">
+                                                {!di.Custom_Item__r.Name}
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!di.Standardized_Item__c != null}">
+                                                {!di.Standardized_Item__r.Name}
+                                            </apex:outputPanel>
+                                        </td>
+                                        <td class="numeric"><apex:outputField value="{!di.Stated_Quantity__c}"  /></td>
+                                        <td class="numeric"><apex:outputField value="{!di.Quantity__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control numeric data-wholesale-price"
+                                                                                  value="{!di.Wholesale_Price__c}" /></td>
+                                        <td class="input-column">
+                                            <apex:inputField styleClass="form-control numeric data-markup"
+                                                             value="{!di.Markup__c}" />
+                                        </td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control numeric data-wholesale-volume-price"
+                                                                                  value="{!di.Wholesale_Volume_Price__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control numeric data-early-bird-price"
+                                                                                  value="{!di.Early_Bird_Price__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control numeric data-early-bird-volume-price"
+                                                                                  value="{!di.Early_Bird_Volume_Price__c}" /></td>
+                                        
+                                        <td class="input-column"><apex:inputField styleClass="form-control numeric data-sponsorship-price"
+                                                                                  value="{!di.Partner_Price__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control "
+                                                                                  value="{!di.Sponsorship_Type__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control numeric data-wholesale-special-offer-price"
+                                                                                  value="{!di.Wholesale_Special_Offer__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control "
+                                                                                  value="{!di.Wholesale_Special_Offer_Type__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control numeric data-price"
+                                                                                  value="{!di.Price__c}" /></td>
+                                        <td class="input-column">
+                                            <apex:outputPanel layout="none" rendered="{! !Design_Request__c.International_Pricing__c}">
+                                                <span class="data-shipping"></span>
+                                            </apex:outputPanel>
+                                            <!--<apex:outputField rendered="{! !Design_Request__c.International_Pricing__c}"-->
+                                            <!--styleClass="form-control numeric data-shipping"-->
+                                            <!--value="{!di.Shipping_per_Item__c}" />-->
+                                            <apex:inputField rendered="{!Design_Request__c.International_Pricing__c}"
+                                                             styleClass="form-control numeric data-shipping"
+                                                             value="{!di.Shipping_per_Item__c}" />
+                                            <apex:inputHidden value="{!di.Custom_Item__r.Product_Style__c}"
+                                                              html-data-product-style="1" />
+                                        </td>
+                                        
+                                        
+                                        <td class="input-column"><apex:inputField styleClass="form-control"
+                                                                                  value="{!di.International_Pricing__c}" /></td>
+                                        <td class="input-column"><apex:inputField styleClass="form-control"
+                                                                                  value="{!di.Commission_Option__c}" />
+                                        </td>
+                                        <td class="input-column">
+                                            <apex:inputField styleClass="form-control" value="{!di.P_commission__c}" />
+                                        </td>
+                                        
+                                        <apex:inputHidden value="{!di.Type_of_Discount__c}" html-data-type-of-discount="1" />
+                                    
+                                
+                                
+                                
+                                <!--  <td class="input-column">
+                                        <apex:selectList id="Position" size="1" value="{!di.Custom_Item_Category__c}" >
+                                        <apex:selectOptions value="{!categorylist}" ></apex:selectOptions> 
+                                        
+                                        </apex:selectList> 
+                                        </td>
+                                        -->
+                                <td class="input-column">
+                                    <apex:outputPanel rendered="{!di.Custom_Item__r.Category__c !=''}" >
+                                        
+                                        <apex:selectList id="Positions3" size="1" value="{!di.Custom_Item_Category__c}" >
+                                            <apex:selectOptions value="{!categorylist}" ></apex:selectOptions> 
+                                            
+                                        </apex:selectList> 
+                                        
+                                        
+                                        
+                                    </apex:outputPanel>
+                                    <apex:outputPanel id="Positions4" rendered="{!di.Custom_Item__r.Category__c == ''}">
+                                        <apex:selectList size="1" value="{!di.Custom_Item_Category__c}">
+                                            <apex:selectOptions value="{!dynamiclist3}">                                                    
+                                            </apex:selectOptions>
+                                        </apex:selectList> 
+                                    </apex:outputPanel> 
+                                </td>
+                                
+                                <td class="numeric"><apex:outputField value="{!di.Custom_Item__r.Product_Style__c}" /></td>
+                                <td class="input-column">
+                                    <apex:outputPanel rendered="{!di.Custom_Item__r.Product_Style__c == 'Uniform'}" >
+                                        
+                                        <apex:selectList id="Positions" size="1" value="{!di.Custom_Item_Collection__c}" >
+                                            <apex:selectOptions value="{!dynamiclist}" ></apex:selectOptions> 
+                                            
+                                        </apex:selectList> 
+                                        
+                                        
+                                        
+                                    </apex:outputPanel>
+                                    <apex:outputPanel id="Positions2" rendered="{!di.Custom_Item__r.Product_Style__c != 'Uniform'}">
+                                        <apex:selectList size="1" value="{!di.Custom_Item_Collection__c}">
+                                            <apex:selectOptions value="{!dynamiclist2}">                                                    
+                                            </apex:selectOptions>
+                                        </apex:selectList> 
+                                    </apex:outputPanel> 
+                                </td>
+                                
+                                 <td class="input-column numeric">
+                                           <span class="numeric data-retail"></span>
+                                            <apex:inputHidden html-data-retail="1" value="{!di.MSRP__c}" /> 
+                                    
+                                        </td>
+                                
+                                <td class="input-column"><apex:inputField styleClass="form-control numeric data-tax"
+                                                                                  value="{!di.Tax__c}" /></td>
+                                
+                                <td class="input-column">
+                                    <apex:inputField styleClass="form-control" value="{!di.Crystal_Count__c}" />
+                                </td>
+                                
+                                
+                            </tr>
+                        </apex:repeat>
+                        
+                    </table>
+                </div>
+            </apex:outputPanel>
+        </apex:repeat>
+    </apex:outputPanel>
+</apex:form>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+<script>
+    
+    var designRequestId = '{!DesignRequestId}';
+var selectedDesignRoundId = '{!SelectedDesignRoundId}'; 
+var isInternational = {!Design_Request__c.International_Pricing__c};
+
+var shippingRateByProductStyle = {
+    'Warmup': .03,
+    'Practicewear': .06,
+    'Noveltywear': .06,
+    'Custom Bow': .06,
+    'Uniform': .03,
+    'Logo/Add-on': .06
+}
+
+
+$(function() {
+    addDesignItemHandlers();
+    $('#show-items-button').click(function () {
+        $('.item-table-container').removeClass('d-none');
+    });
+    $('#hide-items-button').click(function () {
+        $('.item-table-container').addClass('d-none');
+    });
+    $('#small-image-button').click(function() {
+        setImageWidth('300');
+    });
+    $('#medium-image-button').click(function() {
+        setImageWidth('600');
+    });
+    $('#large-image-button').click(function() {
+        setImageWidth('1200');
+    });
+});
+
+function setImageWidth(width) {
+    $('img.item-image').prop('width', width);
+}
+
+function saveComplete() {
+    if ($('[id$=saveSuccess]').val() === 'true') {
+        goToDesignRound();
+    }
+    else {
+        updateElementDisplay();
+    }
+}
+
+function returnToDesignRequest() {
+    redirectToDesignRequest(designRequestId);
+    //window.parent.document.location.href = '/' + designRequestId;
+}
+
+
+function goToDesignRound() {
+    redirectToDesignRound(selectedDesignRoundId);
+    //window.parent.document.location.href = '/' + $('[id$=selectedDesignRoundId]').val();
+}
+
+function versionChanged() {
+    updateElementDisplay();
+    addDesignItemHandlers();
+}
+
+function updateElementDisplay() {
+    $('input[name=size-options]:checked').each(function(idx, el) {
+        setImageWidth($(el).val());
+    });
+    $('#show-items-button input:checked').each(function (idx, el) {
+        $('.item-table').removeClass('d-none');
+    });
+    $('#hide-items-button input:checked').each(function (idx, el) {
+        $('.item-table').addClass('d-none');
+    });
+}
+
+function addDesignItemHandlers() {
+    $('.data-wholesale-price, .data-markup').change(function(e) {
+        var $row = $(e.target).closest('tr');
+        var wholesale = $row.find('.data-wholesale-price').val() - 0;
+        var markup = $row.find('.data-markup').val() - 0;
+        var price = ((wholesale) * (markup / 100 + 1)).toFixed(2);
+        if (isNumeric(price)) {
+            $row.find('.data-retail').text('$' + price);
+            $row.find('[data-retail]').val(price);
+        }
+        setSalesPrice($row);
+    })
+    $('.data-wholesale-volume-price, .data-early-bird-price, .data-early-bird-volume-price, ' +
+      '.data-sponsorship-price, .data-wholesale-special-offer-price')
+    .change(function(e) {
+        var $el = $(e.target);
+        setSalesPrice($el.closest('tr'));
+    });
+    // fire the change event to pre populate MSRP, etc.
+    $('.data-wholesale-price, .data-markup').trigger('change');
+}
+
+function setSalesPrice($tr) {
+    var prices = {
+        'Early Bird': $tr.find('.data-early-bird-price').val(),
+        'Early Bird Volume': $tr.find('.data-early-bird-volume-price').val(),
+        'Sponsorship': $tr.find('.data-sponsorship-price').val(),
+        'Wholesale': $tr.find('.data-wholesale-price').val(),
+        'Wholesale Volume': $tr.find('.data-wholesale-volume-price').val(),
+        'Wholesale Special Offer': $tr.find('.data-wholesale-special-offer-price').val()
+    }
+    // var wholesalePrice = $tr.find('.data-wholesale-price').val() - 0;
+    
+    var sellingPrice = null;
+    var discountType = null;
+    
+    for (var priceType in prices) {
+        var price = prices[priceType];
+        var numericPrice = price - 0;
+        if ((sellingPrice === null  && isNumeric(price))
+            || (isNumeric(price) && numericPrice < sellingPrice)) {
+            sellingPrice = numericPrice;
+            discountType = priceType;
+        }
+    }
+    if (isNumeric(sellingPrice)) {
+        sellingPrice = sellingPrice.toFixed(2);
+    }
+    else {
+        sellingPrice = '';
+    }
+    $tr.find('.data-price').val(sellingPrice);
+    $tr.find('[data-type-of-discount]').val(discountType);
+    
+    if (!isInternational) {
+        var shipping;
+        var basePrice;
+        if (discountType === 'Early Bird') {
+            basePrice = prices['Early Bird'];
+        }
+        else {
+            basePrice = prices['Wholesale'];
+        }
+        var style = $tr.find('[data-product-style]').val();
+        var rate = shippingRateByProductStyle[style];
+        if (rate) {
+            if (basePrice) {
+                shipping = basePrice * rate;
+            }
+            else {
+                shipping = 0;
+            }
+            $tr.find('.data-shipping').text('$' + shipping.toFixed(2));
+        }
+    }
+}
+
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+</script>
+</apex:page>

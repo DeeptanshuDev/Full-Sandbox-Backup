@@ -1,0 +1,90 @@
+<!--
+    Purpose         :   Upload Design Art Components screen on Design Request.
+    
+    Created By      :   Abhinav Sharma
+    
+    Created Date    :   01/20/2020
+    
+    Current Version :   v1.0
+    
+    Revision Log    :   V_1.0 Created - Abhinav Sharma - 01/20/2020
+-->
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasSObjectName,force:hasRecordId,force:lightningQuickActionWithoutHeader,c:sObjectsPropertiesInterface" access="global">
+    
+    <!--To hold details related to design round.-->
+    <aura:attribute name="allDetailsOfDesignRound" type="Object[]" access="public"
+                    description="This is used to hold all details of design round to going to be create."/>
+    
+    <aura:attribute name="infoMessage" type="List" default="" access="public"
+                    description ="This is used to hold all error messages."/>
+    
+    <!--Aura Handlers-->
+    <aura:handler name="passAllErrorOnMainComponent" event="c:PassAllErrorOnMainComponent" 
+                  action="{!c.handlePassAllErrorOnMainComponent}"/>
+    
+    <!--To modify width of component-->
+    <aura:html tag="style">
+        .slds-modal__container 
+        {
+            max-width: 90rem !important;
+            width: 90% !important;
+            min-height:40rem !important;
+        }
+        .slds-modal__close {
+        display:none;
+        }
+    </aura:html>
+    
+    <!--Component Markup-->
+    <section role="dialog" aria-labelledby="modal-heading-01" aria-modal="true" 
+             aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            
+            <!--Header-->
+            <header class="slds-modal__header">
+                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate"><b>Upload Design Art</b></h2>
+                <div class="slds-text-align_right">
+                    <button class="slds-button slds-button--brand" onclick="{!c.handleCancel}">Close</button>  
+                </div>
+                <div class="slds-m-top_medium"></div>
+                
+                <!--Error/info messages-->
+                <aura:if isTrue="{!not(empty(v.infoMessage))}">
+                    <c:Notification allowClosing="true" severity="error" 
+                                    messages="{!v.infoMessage}" inverse="true"/>
+                    <div class="slds-text-align_right">
+                        <button class="slds-button slds-button--brand" onclick="{!c.handleCancel}">Close</button>  
+                    </div>
+                    <div class="slds-m-top_medium"></div>
+                </aura:if>
+            </header>
+            
+            <!--Upload Designs Section-->
+            <div class="slds-grid slds-wrap slds-scrollable_y">
+                <div class="slds-col slds-size_12-of-12">
+                    <c:Section sectionHeader="Designs Round Details" sectionOpen="true">
+                        <div class="slds-p-left_small slds-p-right_small">
+                            <!--To hold details related to design round to going be create 
+								record under design request.-->
+                            <c:DesignRoundComponent aura:id="UpdateDetailPageRecordCmpId" 
+                                                    method="{!c.getDesignBoundAttributes}">
+                            </c:DesignRoundComponent>
+                        </div>
+                    </c:Section>
+                </div>
+                
+                <!--Upload Design Image Section-->
+                <div class="slds-col slds-size_12-of-12">
+                    <c:DesignAndDesignItemCreationComponent aura:id="RecordCreationWIthFileCmpId"
+                                                            recordId = "{!v.recordId}"
+                                                            sObjectName="{!v.sObjectName}" 
+                                                            allDetailsOfDesignRound="{!v.allDetailsOfDesignRound}">
+                    </c:DesignAndDesignItemCreationComponent>
+                </div>
+                <div class="slds-m-top_medium"></div>
+                <div class="slds-m-top_medium"></div>
+                <div class="slds-m-top_medium"></div>
+            </div>
+        </div>
+    </section>
+</aura:component>

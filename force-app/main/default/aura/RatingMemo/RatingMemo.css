@@ -1,0 +1,91 @@
+.THIS .slds-textarea {
+    height: 100px;
+    max-height: 250px;
+}
+
+.THIS .cxsPlaceholder {
+    color:token(colorTextPlaceholder)!important;
+    opacity:0.5 !important;
+}
+
+.THIS textarea::-webkit-input-placeholder {
+    color:token(colorTextPlaceholder)!important;
+    opacity:0.5 !important;
+}
+
+.THIS textarea:-moz-placeholder {
+    color:token(colorTextPlaceholder)!important;
+    opacity:0.5 !important;
+}
+
+.THIS textarea:-ms-input-placeholder {
+    color:token(colorTextPlaceholder)!important;
+    opacity:0.5 !important;
+}
+
+.THIS p {
+    white-space: inherit;
+    overflow-wrap: break-word;
+    word-break: break-all;
+}
+.THIS label {
+    color: rgb(112, 110, 107);
+    margin-bottom: .5rem;
+    font-size: 0.8125rem
+}
+
+.THIS .popover-memo {
+
+}
+
+.THIS .west {
+    position:absolute;
+    left:-450px;
+    top:+15px;
+}
+
+.THIS.no-pointer .pointer{
+    visibility: hidden;
+}
+
+.THIS .slds-nubbin--left {
+    top:30px;
+}
+
+.THIS .slds-nubbin--right {
+    top:12px;
+}
+
+.THIS .cxsEditMode {
+    opacity: 0.2;
+    cursor:pointer;
+    transition: all .1s linear;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+}
+
+.THIS .cxsMemoRead, .THIS .cxsMemoRead label {
+    cursor:pointer !important;
+}
+
+.THIS .cxsMemoRead:hover .cxsEditMode {
+     opacity: 1;
+}
+
+.THIS .cxsEditMode:hover {
+    opacity: 1;
+}
+
+.THIS .slds-popover__close:hover svg {
+    fill: currentColor;
+}
+
+
+.THIS .slds-form-element__control {
+    margin-bottom: .5rem;
+}
+
+.THIS  button.slds-button.slds-button--neutral.slds-float--right {
+    margin-bottom: token(spacingXSmall);
+}

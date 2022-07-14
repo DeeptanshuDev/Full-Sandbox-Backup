@@ -1,0 +1,42 @@
+.THIS {
+    display:inline;
+}
+
+.THIS .cxsTooltip .cxsToolPop {
+	display:none;
+}
+
+.THIS .cxsTooltip:hover .cxsToolPop, .THIS .cxsTooltip:active .cxsToolPop {
+	display:block;
+}
+
+.THIS .cxsTooltip {
+    position:relative;
+    top: -3px;
+}
+
+.THIS .cxsTooltip .cxsToolPop {
+    position:absolute;
+}
+
+.THIS .slds-nubbin--bottom-left {
+    bottom:30px;
+    left:-16px;
+}
+
+.THIS .slds-nubbin--bottom-right {
+    bottom:30px;
+    left: 37px;
+    transform: translate(-100%, 0px);
+}
+
+.THIS .slds-nubbin--top-left {
+    top: 30px;
+    left: -16px;
+}
+
+.THIS .slds-nubbin--top-right {
+    top:30px;
+    left:37px;
+    transform: translate(-100%, 0px);
+}

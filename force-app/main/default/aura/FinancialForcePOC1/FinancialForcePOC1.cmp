@@ -1,0 +1,123 @@
+<!-- Testing POC for CR-20210323-15018 - created by - chirag soni - 05/12/2021 -->
+<aura:component implements="force:hasRecordId,force:lightningQuickAction" access="global" controller="LookupfieldController1"> 
+    
+    <aura:attribute name="objectName" type="String" access="public" default="c2g__codaDimension1__c"/>
+    <aura:attribute name="fieldName" type="String" default="Name" access="public"/>
+    <aura:attribute name="selectRecordId" type="String" access="public"/>
+    <aura:attribute name="reportingCode" type="String" access="public"/>
+    <aura:attribute name="selectRecordName" type="String" access="public"/>
+    <aura:attribute name="Label" type="String" default = "Budgeted Cost Center" access="public"/>
+    <aura:attribute name="searchRecords" type="List" access="public"/>
+    <aura:attribute name="required" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="isSelected" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="isSavingRecord" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="iconName" type="String" default="action:new_account" access="public"/>
+    <aura:attribute name="LoadingText" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="issearching"    type="Boolean" default="false" access="public"/>
+    
+    <!--Modal Box Start-->
+    <section role="dialog" class="slds-modal slds-modal_large slds-fade-in-open ">
+        <div class="slds-modal__container">
+            
+            <div class="slds-modal__header">
+                <h1 class="slds-text-heading--medium">Select Budgeted Cost Center</h1>
+            </div> 
+
+            <!--Modal Box Header-->
+            <div class="slds-modal__content slds-p-around--medium modelHeight" >
+                <div>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-combobox_container">
+                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aura:id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                                        <aura:if isTrue="{!!empty(v.selectRecordId)}">
+                                            <!--  <span class="slds-icon_container slds-icon-utility-search slds-input__icon iconheight">
+                                                <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="{!v.iconName}" size="x-small" alternativeText="icon" />
+                                            </span> -->
+                                        </aura:if>
+                                        <lightning:input required="{!v.required}" aura:id="userinput" label="{!v.Label}" name="searchText" onchange="{!c.searchField}" value="{!v.selectRecordName}" /> 
+                                        <aura:if isTrue="{!empty(v.selectRecordId)}">
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
+                                                <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="utility:search" size="x-small" alternativeText="icon" />
+                                            </span> 
+                                            <aura:set attribute="else">
+                                                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon iconheightAfterSelect" onclick="{!c.resetData}">
+                                                    <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="utility:close" size="x-small" alternativeText="icon" />
+                                                    <span class="slds-assistive-text">Clear</span></button>
+                                            </aura:set>
+                                        </aura:if>
+                                    </div>
+                                    
+                                    <!-- Second part display result -->
+                                    <div id="listbox-id-1" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                            <aura:iteration items="{!v.searchRecords}" var="serecord" indexVar="hdtv">
+                                                <li role="presentation" class="slds-listbox__item">
+                                                   <div id="{!serecord.recId}" data-name="{!serecord.recName}" data-status = "{!serecord.recCode}"  onclick="{!c.setSelectedRecord}" class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" role="option">
+                                                        <span class="slds-media__figure">
+                                                            <span class="slds-icon_container slds-icon-standard-account">
+                                                                <lightning:icon iconName="{!v.iconName}" class="slds-icon slds-icon slds-icon_small slds-icon-text-default" size="x-small"/>
+                                                            </span>
+                                                        </span>
+                                                        <span class="slds-media__body">
+                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{!serecord.recName}</span>
+                                                            <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">{!v.objectName} • {!serecord.recName}</span>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </aura:iteration>
+                                            <aura:if isTrue="{!and(v.searchRecords.length == 0 , !v.LoadingText)}">
+                                                No result found.
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.LoadingText}">
+                                                <div class="demo-only" style="height:4rem;position:relative">
+                                                    <div class="slds-spinner_container">
+                                                        <div role="status" class="slds-spinner slds-spinner_small slds-spinner_brand">
+                                                            <span class="slds-assistive-text">Loading</span>
+                                                            <div class="slds-spinner__dot-a"></div>
+                                                            <div class="slds-spinner__dot-b"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </aura:if>
+                                        </ul>
+                                    </div>
+                                    <aura:if isTrue="{!v.isSelected}">
+                                        <div class="slds-section slds-is-open slds-m-top_medium">
+                                            <h3 class="slds-section__title slds-theme_shade">
+                                                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Record Id : {!v.selectRecordId}</span>
+                                            </h3>
+                                            <dl class="slds-list_horizontal slds-wrap slds-m-left_small">
+                                                <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-top_x-small slds-border_bottom  slds-p-top_xx-small slds-p-bottom_xx-small" title="First Label">Name :</dt>
+                                                <dd class="slds-item_detail slds-truncate slds-m-top_x-small  slds-border_bottom leftspace slds-p-top_xx-small slds-p-bottom_xx-small" title="Description for first label">{!v.selectRecordName}</dd>
+                                                <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-top_x-small slds-border_bottom  slds-p-top_xx-small slds-p-bottom_xx-small" title="Second Label">Reporting Code :</dt>
+                                                <dd class="slds-item_detail slds-truncate slds-m-top_x-small  slds-border_bottom leftspace slds-p-top_xx-small slds-p-bottom_xx-small" title="Description for second label">{!v.reportingCode}</dd>
+                                            </dl>
+                                        </div>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.isSavingRecord}">
+                                        <div class="demo-only" style="height:6rem;position:relative">
+                                            <div class="slds-spinner_container">
+                                                <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                                    <span class="slds-assistive-text">Loading</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!--Modal Box Button-->
+            <div class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral " onclick="{!c.handleCloseModal}">Cancel</button>
+                <button class="slds-button slds-button--brand" onclick="{!c.saveAndUpdateEvent}">Save</button>
+            </div>
+        </div> 
+    </section> 
+</aura:component>

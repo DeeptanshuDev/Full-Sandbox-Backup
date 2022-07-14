@@ -1,0 +1,319 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false"
+           standardController="Design_Round__c" extensions="ArtApprovalPpPdfCtrl"
+           applyBodyTag="false" applyHtmlTag="false" renderAs="pdf"  lightningStylesheets="false">
+    
+    <html>
+        <head>
+            <style type="text/css">
+                @page{
+                size: A4 Portrait;
+                border : 1.5px solid black;
+                padding-top : 130px;
+                }
+                @page {
+                @top-center {
+                content: element(header);
+                }
+                }
+                div.header {
+                padding:60px 10px 10px 10px;
+                position: running(header);
+                }
+                
+                .header-clearfix{
+                width: 100%;
+                }
+                
+                .header-left {
+                float: left;
+                width:32%;
+                }
+                
+                .header-center {
+                float: left;
+                width: 35%;
+                }
+                
+                .header-right {
+                float:right;
+                width: 32%;
+                }
+                
+                #header-table{
+                width: 100%;
+                }
+                
+                #header-table th{
+                font-family: Arial, Helvetica, sans-serif;
+                font-size : 12px;
+                margin:0px;
+                line-height:normal;
+                }
+                
+                .headingLogo{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                }
+                
+                .agreement-Header{
+                clear: both;
+                width: 100%;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+                margin-top:0;
+                }
+                
+                #artApprovalAgreement{
+                text-align: center; 
+                font-size : 30px;
+                color : #cb4478;
+                font-family: Arial, Helvetica, sans-serif;
+                font-style: oblique;
+                width: 100%;
+                display: block;
+                margin-top:0;
+                margin-left: auto;
+                margin-right: auto;
+                }
+                .greeting-Header{
+                margin-top:0;
+                width: 100%;
+                }
+                
+                #greeting{
+                text-align: center; 
+                font-size : 16px;
+                font-family: Arial, Helvetica, sans-serif;
+                margin:0px;
+                }
+                
+                .itemTableDiv{
+                width: 100%;
+                margin-top:18px;
+                
+                }
+                
+                .item-table{
+                width: 98%;
+                margin: auto;
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                }
+                
+                .item-table, .item-table th, .item-table td{
+                border: 1px solid #ccc;
+                } 
+                
+                .item-table th, .item-table td {
+                padding: 4px;
+                font-size:10px;
+                }
+                
+                .item-table th {
+                border-bottom : 2px solid black;
+                
+                }
+                
+                .item-table td {
+                border-bottom: 1px solid #ccc;
+                }
+                
+                .has-text-right {
+                text-align: right;
+                }
+                
+                .first-content{
+                width : 100%;
+                margin-top: 15px;
+                margin-left: 10px;
+                margin-right: 10px;
+                }
+                .termsAndconditions{
+                width : 100%;
+                margin-top: 0;
+                margin-left: 10px;
+                margin-right: 10px;
+                }
+                .lastConfirmations {
+                width : 100%;
+                margin-top: 0;
+                margin-left: 10px;
+                margin-right: 10px;
+                }
+                
+                .first-content p, .termsAndconditions p, .lastConfirmations p{
+                width : 98%;
+                font-family: Arial, Helvetica, sans-serif;
+                text-align : justify;
+                font-size : 12px;
+                margin:5px 0 0 0;
+                }
+                
+                .pricingAndFees, .protoType, .artWork, .termsAndconditions{
+                width : 100%;
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-top: 10px;
+                }
+                
+                .pricingAndFees h4, .protoType h4, .artWork h4{
+                font-family: Arial, Helvetica, sans-serif;
+                font-size : 14px;
+                margin:5px 0 5px 0;
+                }
+                
+                .pricing-para{
+                margin-top: 0px;
+                }
+                
+                .protoType p, .artWork p, .pricingAndFees p {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size : 12px;
+                width : 98%;
+                text-align:justify;  
+                margin:5px 0 0 0;
+                }
+                
+                .option-page-center-column{
+                width: 100%;
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-bottom: 10px;
+                }
+                
+                .designImages{
+                width : 98%;
+                }
+                  .page_break_before{
+                    page-break-before: always;
+                }
+            </style>
+        </head>
+        
+        <body>
+            <div class="header">
+                <div class="header-clearfix">
+                    <div class="header-left">
+                        <table id="header-table">
+                            <tr>
+                                <th align="left">Customer: {!Customer}</th>
+                            </tr>
+                            <tr>
+                                <th align="left" >Rep: {!OwnerName}</th>
+                            </tr>
+                            <tr>
+                                <th align="left" >Designer: {!Designer}</th>
+                            </tr>
+                            <tr>
+                                <th align="left">Date: {!Today}</th>
+                            </tr>
+                        </table>   
+                    </div>
+                    <div class="header-center">
+                        <apex:image styleClass="headingLogo" value="{!URLFOR($Resource.RebelAthleticLogo3)}" width="100%" />
+                    </div>
+                    <div class="header-right">
+                        <table id="header-table">
+                            <tr>
+                                <th align="right">Option #: {!Version} Options: {!OptionNumbers}</th>
+                            </tr>
+                            <tr>
+                                <th align="right">Prototype Status: {!protoTypeStatus}</th> 
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="agreement-Header">
+                        <h1 id="artApprovalAgreement">{!$Label.ArtApprovalPdf_Label1}</h1>  
+                    </div>
+                </div>
+            </div>
+            <div class="greeting-Header">
+                <h3 id="greeting">{!$Label.ArtApprovalPdf_Label2}</h3>  
+            </div>
+            <div class="itemTableDiv">
+                <table class="item-table">
+                    <tr class="header">
+                        <th>Item #</th>
+                        <th>Style</th>
+                        <th class="has-text-right">Wholesale Price</th>
+                        <th class="has-text-right">Price</th>
+                        <th class="has-text-right">Option #</th>
+                    </tr>
+                    <apex:repeat value="{!DesignItems}" var="di">
+                        <tr>
+                            <td>{!di.Custom_Item__r.Item_Number_Edit__c}{!di.Standardized_Item__r.Product_Code__c}</td>
+                            <td>{!di.Custom_Item__r.Style__c} {! di.Standardized_Item__r.Product_Name__c +
+                                IF(ISNULL(di.Standardized_Item__c), '', ' - ')
+                                + di.Standardized_Item__r.Product_Description__c}</td>
+                            <!--td class="has-text-right">${!di.Custom_Item__r.Price__c}<!--11/20/2019 ShellBlack changed from:  ${!di.Custom_Item__r.Price_per_item__c}>{!di.Standardized_Item__r.List_Price__c}</td-->
+                            <td class="has-text-right">{!IF(ISNULL(di.Wholesale_Price__c), '-', '$' + text(di.Wholesale_Price__c))}</td>
+                            <td class="has-text-right">{!IF(ISNULL(di.Price__c), '-', '$' + text(di.Price__c))}</td>
+                            <td class="has-text-right">{!di.Design__r.Option_Number__c}</td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </div>
+            <div class="first-content">
+                <p><b>{!$Label.ArtApprovalPdf_BagLabel3}</b></p>    
+            </div>
+            <div class="pricingAndFees">
+                <h4>Pricing and Fees</h4>
+                <p class="pricing-para">{!$Label.ArtApprovalPdf_BagLabel4}</p>
+                <p>{!$Label.ArtApprovalPdf_BagExtraLabel4}</p>
+                <p>{!$Label.ArtApprovalPdf_BagLabel5}</p>
+                <p>{!$Label.ArtApprovalPdf_BagLabel6 }<i>See further Terms and Conditions below.</i></p>
+            </div>
+            <div class="protoType">
+                <h4>Prototype</h4>
+                <p class="pricing-para">{!$Label.ArtApprovalPdf_BagLabel7}</p>
+                <p>{!$Label.ArtApprovalPdf_BagExtraLabel7}</p>
+                <p>{!$Label.ArtApprovalPdf_BagLabel8}</p>
+                <p>{!$Label.ArtApprovalPdf_BagExtraLabel8}</p>
+                <p>{!$Label.ArtApprovalPdf_BagLabel9}</p>
+                <p>{!$Label.ArtApprovalPdf_BagExtraLabel9}</p>
+            </div>
+            <div class="artWork">
+                <h4>Artwork</h4>
+                <p class="pricing-para">{!$Label.ArtApprovalPdf_Label11}</p>
+                <p>{!$Label.ArtApprovalPdf_Label12}</p>
+                <p>{!$Label.ArtApprovalPdf_BagLabel1}</p>
+            </div>
+            
+            <div class="termsAndconditions">
+                <p class="pricing-para"><b>{!$Label.ArtApprovalPdf_Label13}</b></p>
+            </div>
+            
+            <div class="customeimage page_break_before" style="float:left; width:100%; display:block;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td>                            
+                            <apex:repeat value="{!Designs}" var="d">
+                                <div class="option-page-center-column">
+                                    <apex:image styleClass="designImages" value="/sfc/servlet.shepherd/version/download/{!d.Content_Version_Id__c}" />
+                                </div>                      
+                            </apex:repeat>      
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="customeimage" style="float:left; width:100%; display:block;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td>
+                            <div class="lastConfirmations">
+                                <br/><p class="pricing-para"><b>{!$Label.ArtApprovalPdf_Label14}</b></p>
+                                <p><b>{!$Label.ArtApprovalPdf_BagLabel15}</b></p> 
+                                <p><b>{!$Label.ArtApprovalPdf_Label16}</b></p> 
+                                <p><b>{!$Label.ArtApprovalPdf_Label17}</b></p> 
+                                <p><b>{!$Label.ArtApprovalPdf_Label18}</b></p> 
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </body>
+    </html>
+</apex:page>

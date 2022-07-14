@@ -1,0 +1,142 @@
+<!--
+ Description  : My Orders Lightning Component
+ Created By   : Abhinav Sharma
+-->
+<aura:component implements="force:appHostable,c:DataServiceInterface,forceCommunity:availableForAllPageTypes" access="global" 
+                controller="MyOrdersController" extends="c:Section">
+	
+    <!--Static Resource to fetch the generic utility methods and properties-->
+    <ltng:require scripts="{!join(',',$Resource.FilterField,$Resource.lightningDataServiceDesignUtility,$Resource.Baseutility)}" afterScriptsLoaded="{!c.doInit }"/>
+     
+    <!-- global attributes -->
+    <aura:attribute name="view" type="String" description="Either table, kanban, tiles or groupedTiles " default="table" access="global"/>
+    <aura:attribute name="listView" type="String" description="Either all orders, open orders, closed orders" default="allOrders" access="global"/>
+    <aura:attribute name="tabHeader" type="Boolean" default="true" description="If this attribute is not empty, it will add a section header with collapse/expand icon" access="global"/>
+     
+    <!-- public attributes  -->
+    <aura:attribute name="orders" type="List" default="[{fieldName:'CloseDate',direction: 'ORDER_DESC'}]" access="public"/>
+    <aura:attribute name="filters" type="Map" access="public" description="TODO" default="{'filterFields':[]}"/>
+    <aura:attribute name="fieldSets" type="List" access="public" default="['My_Orders_Fields']"/>
+    <aura:attribute name="fields" type="List"  access="public" default=""/>
+    <aura:attribute name="navigationHash" type="String"  access="public" default=""/>
+    
+    <!-- private attributes  -->
+    <aura:attribute name="initDone" type="Boolean" access="private" />
+    <aura:attribute name="hasUtilityBar" type="Boolean" default="false" access="private" description="Boolean attribute to check whether utilityBar exists or not"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false" access="private" description="Is the dataservice loading?"/>
+    <aura:attribute name="infoMessage" type="String" access="private"/>
+    
+    <!-- Design attributes-->
+    <aura:attribute name="fieldsString" type="String" access="global"/>
+    <aura:attribute name="fieldSetsString" type="String"  access="global"/>
+    <aura:attribute name="showFilters" type="Boolean"  access="global" default="true"/>
+    <aura:attribute name="filtersString" type="String" access="global"/>
+    <aura:attribute name="filterLogic" type="String"  access="global"/>
+    <aura:attribute name="ordersString" type="String" access="global" default="Name ORDER_ASC"/>
+    <aura:attribute name="pageSize" type="Integer" default="10" description="Number of records in a single page. Example: 10" access="global"/>
+    <aura:attribute name="showViewSelector" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="showListViewSelector" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="filterFieldSet" type="String" default="MyOrdersFilters" access="global"/>
+    <aura:attribute name="isCommunityUser" type="Boolean" default="false" access="public" description="Is logged in user is a community user"/>
+    <aura:attribute name="navigationType" type="String" description="Navigation type value" access="public" default="Overlay"/>
+    
+    <!--handlers-->
+    <aura:handler name="genericComponentEvent" event="c:genericComponentEvent" action="{!c.onGenericComponentEvent}"/>
+    <aura:handler name="render" value="{!this}" action="{!c.setTitle}"/>
+    <aura:handler name="change" value="{!v.listView}" action="{!c.onFilterChange}"/>
+    
+    <!--Feteching Dependencies for performance-->
+    <aura:dependency resource="markup://c:MyOrdersRowActions"/>
+    
+    <!--Utility Bar-->
+    <lightning:utilityBarAPI aura:id="utilitybar" />
+    
+    <aura:if isTrue="{!v.initDone}">
+        <c:TabHeader showHeader="{!v.tabHeader}" label="{!$Label.c.My_Orders}" title="{!$Label.c.My_Orders}" imageSize="medium" customIconName="workflow">
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <div class="slds-button-group slds-m-right_xx-small " role="group">
+                        <!--Global Actions will come here-->
+                    </div>
+                </div>
+                <div class="slds-float_right">
+                    <aura:if isTrue="{!v.showListViewSelector}">
+                        <c:OrdersListViewSwitcher view="{!v.listView}"/>
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.showViewSelector}">
+                        <!--<c:DataGridSelector view="{!v.view}"/>-->
+                    </aura:if>
+                </div>
+            </div>
+            <aura:if isTrue="{!and(v.showFilters, v.filterFieldSet)}">
+                <div class="slds-clearfix">
+                    <c:DataServiceFilters aura:id="myOrderDataFilter"
+                                          sObjectName="Opportunity"
+                                          queryStructure="{!v.queryStructure }"
+                                          filters="{!v.filters }"
+                                          fieldSet="{!v.filterFieldSet}"
+                                          isLoading="{!v.isLoading}"
+                                          enableSoslFilter="false"
+                                          isCommunityUser="{!v.isCommunityUser}"
+                                          requiredDefaultFilters="['AccountId']"
+                                          />
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!not(empty(v.infoMessage))}">
+                <div class="slds-p-top_x-small"></div>
+                <div class="slds-clearfix">
+                    <div class="slds-float_left">
+                        <c:ScopedNotification severity="info" theme="default" size="x-small" inverse="false" 
+                                              class="slds-m-bottom--small" 
+                                              roundedBorders="true" border="true" divider="true"
+                                              allowClosing="false">
+                            {!v.infoMessage}
+                        </c:ScopedNotification>
+                     </div>
+                </div>     
+            </aura:if>        
+        </c:TabHeader>
+        
+        <div class="slds-is-relative">
+            
+            <c:DataService aura:id="MyOrdersDataService"
+                           orders="{!v.orders}"
+                           fieldSets="{!v.fieldSets}"
+                           fields="{!v.fields}"
+                           sObjectName="Opportunity"
+                           pageSize="{!v.pageSize}"
+                           currentPageNumber="{!v.currentPageNumber}"
+                           totalPages="{!v.totalPages}"
+                           recordsFromTo="{!v.recordsFromTo}"
+                           fieldsDescribe="{!v.fieldsDescribe}"
+                           dataScope="{!v.dataScope}"
+                           queryStructure="{! v.queryStructure }"
+                           filters="{! v.filters }"
+                           isStorable="false"
+                           isLoading="{!v.isLoading}"
+                           hasMoreRecords="{!v.hasMoreRecords}"
+                           isCommunityUser="{!v.isCommunityUser}"
+                           />
+            
+            <div class="{! 'slds-grid ' +if(v.tabHeader == false,'slds-m-top_small ' )}">
+                <c:DataGrid aura:id="grid" orders="{!v.orders}" columns="{!v.fieldsDescribe}" 
+                            data="{!v.dataScope}"
+                            view="{!v.view}" actionComponents="['MyOrdersRowActions']" 
+                            selectable="false"
+                            isCommunityUser="{!v.isCommunityUser}"
+                            navigationType="{!v.navigationType}"
+                            isLoading="{!v.isLoading}"
+                            truncateFields="['Amount','Sales_Order_Number__c', 'Opportunity_Auto_Number__c','Design_Request__r.Name']"
+                            mobileShrinkFields="2"/>
+            </div>
+            <div class="{! 'slds-grid  slds-m-top_small slds-grid_align-center ' +if(v.hasUtilityBar == true,'utilityBarAdjustments')}">
+                <c:Paginator currentPageNumber="{!v.currentPageNumber}" totalPages="{!v.totalPages}"
+                             pagePrevious="{!c.doPrevious}" pageNext="{!c.doNext}" 
+                             recordsFromTo='{!v.recordsFromTo}' 
+                             hasMoreRecords ='{!v.hasMoreRecords}'/>
+                
+            </div>
+        </div>
+    </aura:if>    
+</aura:component>

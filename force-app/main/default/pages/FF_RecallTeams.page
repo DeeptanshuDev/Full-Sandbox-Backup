@@ -1,0 +1,155 @@
+<!--
+*  Purpose          :   Page to have the logic associated with the create FF User button on account detail page
+*
+*  Create By        :   Abhinav Sharma - 5/18/2020 - FF3.0-SFDC Integration
+*  
+*  Revision Log     :   v1.0 -  Created - 5/18/2020
+* 
+-->
+<apex:page controller="FF_Recall_Teams_Controller" tabStyle="Account" lightningStylesheets="true" 
+           sidebar="false" standardStylesheets="false" docType="html-5.0">
+    
+  
+    <head>
+        <apex:slds />
+        <style>
+            .sectionheadercustom 
+            {
+                display: flex;
+            }
+        </style>
+    </head>
+   
+    <apex:form id="pb">
+        <div class="slds-scope" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            
+            <!-- This section use to show back button -->
+       
+        <!-- Show Error message on screen -->
+        <apex:outputPanel rendered="{!IF(errorMessage == '', true, false)}">
+             
+                <apex:outputPanel rendered="{!if(teamScreen, true ,false)}">
+                    <br/>
+                    <br/>
+                    <div align="center" draggable="false" style=" font-size: 30px;">
+                        <span class="slds-icon_container slds-icon-standard-opportunity" >
+                            <svg aria-hidden="true" class="slds-icon">
+                                <use 
+                                     xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#opportunity">
+                                </use>
+                            </svg>
+                            <span class="slds-assistive-text">Recall Rosters</span>
+                        </span>
+                        <br/>
+                       Recall Rosters
+                    </div>
+                    <br/>
+                    
+                    <apex:pageBlock id="TeamScreenId" mode="edit">
+                        <apex:pageMessages id="showmsg"></apex:pageMessages>
+                        
+                        <br/>
+                        <div style="text-align: center">
+                            <apex:commandButton style="background-color: green; color:white; background-image:none" action="{!save}" value="Submit" status="loadStatus" rerender="pb,TeamScreenId" />
+                            <apex:commandButton action="{!navigateToAccountDetailPage}" value="Back" immediate="true"/>
+                        </div>
+                        <br/>
+                        <apex:pageBlockSection title="Rosters"  columns="1">
+                        <div>
+                             <apex:outputPanel >
+                            <apex:pageBlockTable value="{!teamDetails}" var="ros">
+                            
+                                <apex:column >
+                                <apex:inputCheckbox value="{!ros.isSelected}"/>
+                            </apex:column>
+                                
+                                <apex:column headerValue="Roster Name">
+                                    <apex:outputField value="{!ros.roster.Name}"/>
+                                </apex:column>
+                                <apex:column headerValue="Account Name">
+                                    <apex:outputField value="{!ros.roster.Account__c }"/>
+                                </apex:column>
+                                <apex:column headerValue="Created At">
+                                    <apex:outputField value="{!ros.roster.Createddate}"/>
+                                </apex:column>
+                                <apex:column headerValue="Created By">
+                                    <apex:outputField value="{!ros.roster.CreatedBy.Name}"/>
+                                </apex:column>
+                            
+                            </apex:pageBlockTable>
+                            <apex:outputPanel rendered="{!teamDetails == 0}">
+                                <h3><b style="margin-left: 45%;">No records to display.</b></h3>
+                            </apex:outputPanel>
+                            </apex:outputPanel>
+                        </div>
+                        <br/>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+               
+                <apex:outputPanel rendered="{!if(successScreen, true ,false)}">
+                    <apex:pageMessages id="showmsg"></apex:pageMessages>
+                    
+                    <div align="center" draggable="false" >
+                        <apex:commandButton action="{!navigateToAccountDetailPage}" value="Back to Account"/>  
+                    </div>
+                </apex:outputPanel>
+                
+                <div align="center" draggable="false" >
+                    <!-- Show Spinner -->
+                    <apex:actionStatus onstart="startLoading();" onstop="stopLoading();" id="loadStatus" />
+                    <style>
+                        .overlay {
+                            display: none;
+                            height: 100%;
+                            left: 0;
+                            position: fixed;
+                            top: 0;
+                            opacity: 0.3;
+                            -moz-opacity: 0.3;
+                            width: 100%;
+                            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+                            filter: alpha(opacity=30);
+                            background: #000;
+                            -khtml-opacity: 0.3;
+                            z-index: 1000;
+                        }
+                        
+                        .loader {
+                            background: url('/img/loading32.gif') scroll no-repeat 0 0;
+                            width: 32px;
+                            height: 32px;
+                            position: absolute;
+                            left: 50%;
+                        }
+                    </style>
+                    
+                    <div id="load_scrl" class="loadingBox loader" style="display:none"> </div>
+                    <div class="loadingBox overlay"> </div>
+                    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+                    
+                    <script type="text/javascript">
+                        function startLoading() 
+                        {
+                            $('#load_scrl').css('top', $(document).scrollTop() + 200);
+                            $('.loadingBox').show();
+                        }
+                    
+                        function stopLoading() 
+                        {
+                            $('.loadingBox').hide();
+                        }
+                    </script>
+                </div>
+                
+            </apex:outputPanel>    
+            <apex:outputPanel rendered="{!if(errorMessage != '' , true ,false)}"> 
+                <apex:pageMessages id="showmsg1"></apex:pageMessages>
+                
+                <div align="center" draggable="false" >
+                    <apex:commandButton action="{!navigateToAccountDetailPage}" value="Back to Account"/>  
+                </div>
+            </apex:outputPanel>
+        </div>
+    </apex:form>
+</apex:page>
